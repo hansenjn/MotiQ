@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+ 
+    <parent>
+		<groupId>sc.fiji</groupId>
+		<artifactId>pom-fiji</artifactId>
+		<version>17.0.0</version>
+		<relativePath />
+	</parent>
+ 
+ 	<artifactId>MotiQ_Cropper</artifactId>
+    <version>0.1.1-SNAPSHOT</version>
+ 
+<!-- TODO: Fill out these sections -->
+    <name>MotiQ/MotiQ_Cropper.jar</name>
+    <description></description>
+ 
+    <developers>
+        <developer>
+            <id></id>
+            <name>Jan N Hansen</name>
+            <email>jan.hansen@caesar.de</email>
+            <url>r</url>
+            <organization></organization>
+            <organizationUrl></organizationUrl>
+            <roles>
+                <role>founder</role>
+                <role>lead</role>
+                <role>developer</role>
+                <role>debugger</role>
+                <role>reviewer</role>
+                <role>support</role>
+                <role>maintainer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>        
+    </developers>
+    <contributors>
+        <!--
+        NB: Need a least one element to override the parent.
+        See: https://issues.apache.org/jira/browse/MNG-5220
+        -->
+        <contributor><name>None</name></contributor>
+    </contributors>
+ 	
+ 	<properties>
+		<main-class>Cropper</main-class>
+	</properties>
+ 	
+ 	<repositories>
+        <!-- NB: for project parent, in case of partial checkout -->
+        <repository>
+            <id>imagej.public</id>
+            <url>http://maven.imagej.net/content/groups/public</url>
+        </repository>
+    </repositories>
+ 
+<!-- TODO: See Optional Dependencies section -->
+    <dependencies>
+        <!-- ImageJ dependencies -->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+        </dependency>        
+    </dependencies>  
+    
+    <build>
+        <directory>target</directory>
+    	<outputDirectory>target/classes</outputDirectory>
+    	<finalName>${artifactId}-${version}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<projectName>MotiQ cropper</projectName>
+					<organizationName>Jan Niklas Hansen</organizationName>
+					<archive>
+						<manifest>
+							<mainClass>${main-class}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+    <groupId>MotiQ</groupId>
+</project>
