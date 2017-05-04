@@ -68,7 +68,7 @@
 		<connection>scm:git:git://github.com/hansenjn/MotiQ</connection>
 		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/imagej/example-legacy-plugin</url>
+		<url>https://github.com/hansenjn/MotiQ</url>
 	</scm>
  	
  	<issueManagement>
@@ -77,7 +77,7 @@
 	</issueManagement>
  	
  	<properties>
-		<main-class>Cropper</main-class>
+		<main-class>Cropper_</main-class>
 	</properties>
  	
  	<repositories>
