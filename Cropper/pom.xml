@@ -17,17 +17,19 @@
 	</parent> -->    
  
  	<artifactId>MotiQ_Cropper</artifactId>
+ 	<groupId>JNH</groupId>
     <version>0.1.1-SNAPSHOT</version>
  
 <!-- Plugin Information -->
     <name>MotiQ Cropper</name>
 	<description>Aids in the selection of 2D or 3D, time-lapse or non-time-lapse regions in image stacks.</description>
-	<url></url>
+	<url>https://github.com/hansenjn/MotiQ</url>
 	<inceptionYear>2014</inceptionYear>
 	<organization>
-		<name></name>
-		<url></url>
+		<name>JNH</name>
+		<url>https://github.com/hansenjn</url>
 	</organization>
+	
 	<licenses>
 		<license>
 			<name>GNU General Public License v3+</name>
@@ -64,6 +66,13 @@
         <contributor><name>None</name></contributor>
     </contributors>
  	
+ 	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>http://forum.imagej.net/</archive>
+		</mailingList>
+	</mailingLists>
+ 	
  	<scm>
 		<connection>scm:git:git://github.com/hansenjn/MotiQ</connection>
 		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ</developerConnection>
@@ -76,16 +85,24 @@
 		<url>https://github.com/hansenjn/MotiQ/issues</url>
 	</issueManagement>
  	
+ 	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+	
  	<properties>
 		<main-class>Cropper_</main-class>
+		<package-name>motiQ_cr</package-name>
+		<license.licenseName>gpl_v3</license.licenseName>
+		<license.copyrightOwners>Jan Niklas Hansen.</license.copyrightOwners>
+		<license.projectName>MotiQ_cropper plugin for ImageJ.</license.projectName>
 	</properties>
  	
- 	<repositories>
-        <repository>
-            <id>imagej.public</id>
-            <url>http://maven.imagej.net/content/groups/public</url>
-        </repository>
-    </repositories>
+<!--  	<repositories> -->
+<!--         <repository> -->
+<!--             <id>imagej.public</id> -->
+<!--             <url>http://maven.imagej.net/content/groups/public</url> -->
+<!--         </repository> -->
+<!--     </repositories> -->
  
     <dependencies>
         <!-- ImageJ dependencies -->
@@ -103,7 +120,7 @@
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
-					<projectName>MotiQ cropper</projectName>
+					<projectName>MotiQ cropper for ImageJ.</projectName>
 					<organizationName>Jan Niklas Hansen</organizationName>
 					<archive>
 						<manifest>
@@ -114,5 +131,4 @@
 			</plugin>
 		</plugins>
 	</build>
-    <groupId>JNH</groupId>
 </project>
