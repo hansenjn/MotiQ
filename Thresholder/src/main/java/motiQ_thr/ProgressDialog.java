@@ -1,6 +1,6 @@
 /***===============================================================================
  *  
- * MotiQ_thresholder Version 20170503
+ * MotiQ_thresholder plugin for ImageJ, Version 20170503
  * 
  * Copyright (C) 2015-2017 Jan Niklas Hansen
  * First version: January 05, 2015
