@@ -22,7 +22,7 @@
  
 <!-- Plugin Information -->
     <name>MotiQ Cropper</name>
-	<description>Aids in the selection of 2D or 3D, time-lapse or non-time-lapse regions in image stacks.</description>
+	<description>Aids in deriving 2D or 3D regions from time-lapse or non-time-lapse image stacks.</description>
 	<url>https://github.com/hansenjn/MotiQ</url>
 	<inceptionYear>2014</inceptionYear>
 	<organization>
@@ -73,12 +73,12 @@
 		</mailingList>
 	</mailingLists>
  	
- 	<scm>
-		<connection>scm:git:git://github.com/hansenjn/MotiQ</connection>
-		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/hansenjn/MotiQ</url>
-	</scm>
+<!--  	<scm> -->
+<!-- 		<connection>scm:git:git://github.com/hansenjn/MotiQ</connection> -->
+<!-- 		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ</developerConnection> -->
+<!-- 		<tag>HEAD</tag> -->
+<!-- 		<url>https://github.com/hansenjn/MotiQ</url> -->
+<!-- 	</scm> -->
  	
  	<issueManagement>
 		<system>GitHub Issues</system>
