@@ -1,10 +1,10 @@
 /***===============================================================================
  *  
- * MotiQ_thresholder plugin for ImageJ, Version 20170503
+ * MotiQ_thresholder plugin for ImageJ, Version v0.1.1
  * 
  * Copyright (C) 2015-2017 Jan Niklas Hansen
  * First version: January 05, 2015
- * This Version: May 03, 2017
+ * This version: May 03, 2017
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

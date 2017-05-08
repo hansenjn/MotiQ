@@ -74,12 +74,12 @@
 		</mailingList>
 	</mailingLists>
  	
-<!--  	<scm> -->
-<!-- 		<connection>scm:git:git://github.com/hansenjn/MotiQ</connection> -->
-<!-- 		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ</developerConnection> -->
-<!-- 		<tag>HEAD</tag> -->
-<!-- 		<url>https://github.com/hansenjn/MotiQ</url> -->
-<!-- 	</scm> -->
+ 	<scm>
+		<connection>scm:git:git://github.com/hansenjn/MotiQ/Thresholder</connection>
+		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ/Thresholder</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/hansenjn/MotiQ/Thresholder</url>
+	</scm>
  	
  	<issueManagement>
 		<system>GitHub Issues</system>

@@ -73,12 +73,12 @@
 		</mailingList>
 	</mailingLists>
  	
-<!--  	<scm> -->
-<!-- 		<connection>scm:git:git://github.com/hansenjn/MotiQ</connection> -->
-<!-- 		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ</developerConnection> -->
-<!-- 		<tag>HEAD</tag> -->
-<!-- 		<url>https://github.com/hansenjn/MotiQ</url> -->
-<!-- 	</scm> -->
+ 	<scm>
+		<connection>scm:git:git://github.com/hansenjn/MotiQ/Cropper</connection>
+		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ/Cropper</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/hansenjn/MotiQ/Cropper</url>
+	</scm>
  	
  	<issueManagement>
 		<system>GitHub Issues</system>

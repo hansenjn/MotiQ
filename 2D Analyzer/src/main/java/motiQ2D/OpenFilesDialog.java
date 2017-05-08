@@ -1,6 +1,6 @@
 /***===============================================================================
  *  
- * MotiQ_2D plugin for imageJ, Version 20170503
+ * MotiQ_2D plugin for imageJ,  Version v0.1.1
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: November 07, 2014 

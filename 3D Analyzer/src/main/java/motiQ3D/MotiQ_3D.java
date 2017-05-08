@@ -1,6 +1,6 @@
 /***===============================================================================
  * 
- * MotiQ_3D Version plugin for ImageJ, 20170503
+ * MotiQ_3D Version plugin for ImageJ, Version v0.1.1
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: July 28, 2014 
@@ -42,7 +42,7 @@ import java.text.*;
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String pluginName = "MotiQ 3D Analyzer";
-	static final String pluginVersion = "V20170503";
+	static final String pluginVersion = "v0.1.1";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
