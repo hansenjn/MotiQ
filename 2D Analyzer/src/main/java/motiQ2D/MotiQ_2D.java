@@ -806,19 +806,19 @@ public void run(String arg) {
 				legendA2 += "	" + "area [" + calibrationDimension + "^2]";
 				legendA2 += "	" + "outline [" + calibrationDimension + "]";
 				legendA2 += "	" + "ramification index";
-				legendA2 += "	" + "convex hull area [" + calibrationDimension + "^2]";
-				legendA2 += "	" + "convex hull outline [" + calibrationDimension + "]";
-				legendA2 += "	" + "convex hull center x [" + calibrationDimension + "]";
-				legendA2 += "	" + "convex hull center y [" + calibrationDimension + "]";
+				legendA2 += "	" + "spanned area (convex hull) [" + calibrationDimension + "^2]";
+				legendA2 += "	" + "spanned outline (convex hull) [" + calibrationDimension + "]";
+				legendA2 += "	" + "spanned area center x (convex hull) [" + calibrationDimension + "]";
+				legendA2 += "	" + "spanned area center y (convex hull) [" + calibrationDimension + "]";
 				legendA2 += "	" + "polarity vector x (binary) [" + calibrationDimension + "]";
 				legendA2 += "	" + "polarity vector y (binary) [" + calibrationDimension + "]";
 				legendA2 += "	" + "polarity vector length (binary) [" + calibrationDimension + "]";
 				legendA2 += "	" + "polarity index (binary)";
 				
-				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity vector x (COM-based) [" + calibrationDimension + "]";}
-				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity vector y (COM-based) [" + calibrationDimension + "]";}
-				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity vector length (COM-based) [" + calibrationDimension + "]";}
-				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity index (COM-based)";}
+				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity vector x [" + calibrationDimension + "]";}
+				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity vector y [" + calibrationDimension + "]";}
+				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity vector length [" + calibrationDimension + "]";}
+				legendA2 += "	"; if(semiBinary){ legendA2 += "polarity index";}
 			
 				legendA2 += "	"; if(skeletonize){ legendA2 += "ID of largest skeleton (skl)";}
 				legendA2 += "	"; if(skeletonize){ legendA2 += "# found skls";}
@@ -846,10 +846,10 @@ public void run(String arg) {
 				legendA2 += "	"; if(skeletonize){ legendA2 += "shortest path (all skl) [" + calibrationDimension + "]";}
 							
 				legendA21 += "	" + "moving vector length (binary) [" + calibrationDimension + "/" + timeUnit + "]";
-				legendA21 += "	"; if(semiBinary){ legendA21 += "moving vector length (COM-based) [" + calibrationDimension + "/" + timeUnit + "]";}
-				legendA21 += "	" + "newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]";
-				legendA21 += "	" + "lost area [" + calibrationDimension + "^2/" + timeUnit + "]";
-				legendA21 += "	" + "motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]";
+				legendA21 += "	"; if(semiBinary){ legendA21 += "moving vector length [" + calibrationDimension + "/" + timeUnit + "]";}
+				legendA21 += "	" + "extended area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				legendA21 += "	" + "retracted area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				legendA21 += "	" + "shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
 				legendA21 += "	" + "measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]";
 				legendA21 += "	" + "measured ramification index difference [1/" + timeUnit + "]";
 				legendA21 += "	" + "# extensions [1/" + timeUnit + "]";
@@ -865,7 +865,7 @@ public void run(String arg) {
 				}
 				legendB1 += "	" + "Long-term directionality of movement (binary)";
 				legendB1 += "		";
-				legendB1 += "	"; if(semiBinary){ legendB1 += "Long-term directionality of movement (COM-based)";}
+				legendB1 += "	"; if(semiBinary){ legendB1 += "Long-term directionality of movement";}
 				legendB1 += "		";
 				legendB1 += "		" + "Averages (av) morphological parameters (" + dformat0.format(totalGroupSize) +" time-steps/group)";
 				for(int s = 0; s < 47; s++){
@@ -885,9 +885,9 @@ public void run(String arg) {
 				legendB2 += "	" + "projected area (= 'scanned area') [" + calibrationDimension + "^2/" + groupTimeString + "]";
 				legendB2 += "	" + "static area [" + calibrationDimension + "^2/" + groupTimeString + "]";
 				legendB2 += "	" + "dynamic fraction of projected area (= 'scanning activity')";
-				legendB2 += "	" + "projected convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]";
-				legendB2 += "	" + "static convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]";
-				legendB2 += "	" + "dynamic fraction of convex hull area";
+				legendB2 += "	" + "projected spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]";
+				legendB2 += "	" + "static spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]";
+				legendB2 += "	" + "dynamic fraction of spanned area (convex hull)";
 				
 				legendB2 += "	" + "accumulated distance (binary center displacement) [" + calibrationDimension + "/" + groupTimeString + "]";
 				legendB2 += "	" + "euclidean distance (binary center displacement) [" + calibrationDimension + "/" + groupTimeString + "]";
@@ -912,19 +912,19 @@ public void run(String arg) {
 				legendB2 += "	" + "av area [" + calibrationDimension + "^2]";
 				legendB2 += "	" + "av outline [" + calibrationDimension + "]";
 				legendB2 += "	" + "av ramification index";
-				legendB2 += "	" + "av convex hull area [" + calibrationDimension + "^2]";
-				legendB2 += "	" + "av convex hull outline [" + calibrationDimension + "]";
-				legendB2 += "	" + "av convex hull center x [" + calibrationDimension + "]";
-				legendB2 += "	" + "av convex hull center y [" + calibrationDimension + "]";
+				legendB2 += "	" + "av spanned area (convex hull) [" + calibrationDimension + "^2]";
+				legendB2 += "	" + "av spanned outline (convex hull) [" + calibrationDimension + "]";
+				legendB2 += "	" + "av spanned area center x (convex hull) [" + calibrationDimension + "]";
+				legendB2 += "	" + "av spanned area center y (convex hull) [" + calibrationDimension + "]";
 				legendB2 += "	" + "av polarity vector x (binary) [" + calibrationDimension + "]";
 				legendB2 += "	" + "av polarity vector y (binary) [" + calibrationDimension + "]";
 				legendB2 += "	" + "av polarity vector length (binary) [" + calibrationDimension + "]";
 				legendB2 += "	" + "av polarity index (binary)";
 				
-				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity vector x (COM-based) [" + calibrationDimension + "]";}
-				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity vector y (COM-based) [" + calibrationDimension + "]";}
-				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity vector length (COM-based) [" + calibrationDimension + "]";}
-				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity index (COM-based)";}
+				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity vector x [" + calibrationDimension + "]";}
+				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity vector y [" + calibrationDimension + "]";}
+				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity vector length [" + calibrationDimension + "]";}
+				legendB2 += "	"; if(semiBinary){legendB2 += "av polarity index";}
 			
 				legendB2 += "	"; if(skeletonize){legendB2 += "av # found skls";}
 				legendB2 += "	"; if(skeletonize){legendB2 += "av # branches (largest skl)";}
@@ -951,10 +951,10 @@ public void run(String arg) {
 				legendB2 += "	"; if(skeletonize){legendB2 += "av shortest path (all skl) [" + calibrationDimension + "]";}	//TODO
 				
 				legendB2 += "	" + "av moving vector length (binary) [" + calibrationDimension + "/" + timeUnit + "]";
-				legendB2 += "	"; if(semiBinary){legendB2+= "av moving vector length (COM-based) [" + calibrationDimension + "/" + timeUnit + "]";}
-				legendB2 += "	" + "av newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]";
-				legendB2 += "	" + "av lost area [" + calibrationDimension + "^2/" + timeUnit + "]";
-				legendB2 += "	" + "av motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]";
+				legendB2 += "	"; if(semiBinary){legendB2+= "av moving vector length [" + calibrationDimension + "/" + timeUnit + "]";}
+				legendB2 += "	" + "av extended area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				legendB2 += "	" + "av retracted area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				legendB2 += "	" + "av motility (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
 				legendB2 += "	" + "av measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]";
 				legendB2 += "	" + "av measured ramification index difference [1/" + timeUnit + "]";
 				legendB2 += "	" + "av # extensions [1/" + timeUnit + "]";
@@ -1049,10 +1049,10 @@ public void run(String arg) {
 							appendTxt += "	" + dformat6.format(particle.area [t]);	//	"area [" + calibrationDimension + "^2]";
 							appendTxt += "	" + dformat6.format(particle.outline [t]);	//	"outline [" + calibrationDimension + "]";
 							appendTxt += "	" + dformat6.format(particle.RI [t]);	//	"ramification index";
-							appendTxt += "	" + dformat6.format(particle.convexHullArea [t]);	//	"convex hull area [" + calibrationDimension + "^2]";
-							appendTxt += "	" + dformat6.format(particle.convexHullOutline [t]);	//	"convex hull outline [" + calibrationDimension + "]";
-							appendTxt += "	" + dformat6.format(particle.convexHullxC [t] + xCorr*calibration);	//	"convex hull center x [" + calibrationDimension + "]";
-							appendTxt += "	" + dformat6.format(particle.convexHullyC [t] + yCorr*calibration);	//	"convex hull center y [" + calibrationDimension + "]";
+							appendTxt += "	" + dformat6.format(particle.convexHullArea [t]);	//	"spanned area (convex hull) [" + calibrationDimension + "^2]";
+							appendTxt += "	" + dformat6.format(particle.convexHullOutline [t]);	//	"spanned outline (convex hull) [" + calibrationDimension + "]";
+							appendTxt += "	" + dformat6.format(particle.convexHullxC [t] + xCorr*calibration);	//	"spanned area center x (convex hull) [" + calibrationDimension + "]";
+							appendTxt += "	" + dformat6.format(particle.convexHullyC [t] + yCorr*calibration);	//	"spanned area center y (convex hull) [" + calibrationDimension + "]";
 							appendTxt += "	" + dformat6.format(particle.xPolarityVectorBIN [t]);	//	"polarity vector x (binary) [" + calibrationDimension + "]";
 							appendTxt += "	" + dformat6.format(particle.yPolarityVectorBIN [t]);	//	"polarity vector y (binary) [" + calibrationDimension + "]";
 							appendTxt += "	" + dformat6.format(particle.polarityVectorLengthBIN [t]);	//	"polarity vector length (binary) [" + calibrationDimension + "]";
@@ -1060,13 +1060,13 @@ public void run(String arg) {
 							
 							
 							appendTxt += "	"; if(semiBinary){appendTxt += dformat6.format(particle.xPolarityVectorSemiBIN [t]);}	
-								//	"polarity vector x (COM-based) [" + calibrationDimension + "]";
+								//	"polarity vector x [" + calibrationDimension + "]";
 							appendTxt += "	"; if(semiBinary){appendTxt += dformat6.format(particle.yPolarityVectorSemiBIN [t]);}	
-								//	"polarity vector y (COM-based) [" + calibrationDimension + "]";
+								//	"polarity vector y [" + calibrationDimension + "]";
 							appendTxt += "	"; if(semiBinary){appendTxt += dformat6.format(particle.polarityVectorLengthSemiBIN [t]);}	
-								//	"polarity vector length (COM-based) [" + calibrationDimension + "]";
+								//	"polarity vector length [" + calibrationDimension + "]";
 							appendTxt += "	"; if(semiBinary){appendTxt += dformat6.format(particle.polarityIndexSemiBIN [t]);}	
-								//	"polarity index (COM-based)";
+								//	"polarity index";
 
 							
 							appendTxt += "	"; if(skeletonize){appendTxt += dformat0.format(particle.IDofLargest [t]+1);}
@@ -1097,11 +1097,11 @@ public void run(String arg) {
 							appendTxt += "	"; if(t!=0){ appendTxt += dformat6.format(particle.movingVectorLengthBIN [t]/timePerFrame);}
 							appendTxt += "	"; if(t!=0 && semiBinary){ appendTxt += dformat6.format(particle.movingVectorLengthSemiBIN [t]/timePerFrame);}	
 							appendTxt += "	"; if(t!=0){ appendTxt += dformat6.format(particle.occupArea [t]/timePerFrame);}
-								//	"newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]";
+								//	"extended area [" + calibrationDimension + "^2/" + timeUnit + "]";
 							appendTxt += "	"; if(t!=0){ appendTxt += dformat6.format(particle.lostArea [t]/timePerFrame);}
-								//	"lost area [" + calibrationDimension + "^2/" + timeUnit + "]";
+								//	"retracted area [" + calibrationDimension + "^2/" + timeUnit + "]";
 							appendTxt += "	"; if(t!=0){ appendTxt += dformat6.format(particle.motility [t]/timePerFrame);}
-								//	"motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]";
+								//	"shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
 							appendTxt += "	"; if(t!=0){ appendTxt += dformat6.format(particle.deltaArea [t]/timePerFrame);}
 								//	"measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]";
 							appendTxt += "	"; if(t!=0){ appendTxt += dformat6.format(particle.deltaRI [t]/timePerFrame);}
@@ -1139,9 +1139,9 @@ public void run(String arg) {
 								appendTxt += "	" + dformat6.format(particle.projectedArea [group]);	//	"projected area (= 'scanned area') [" + calibrationDimension + "^2/" + groupTimeString + "]";
 								appendTxt += "	" + dformat6.format(particle.projectedStaticArea [group]);	//	"static area [" + calibrationDimension + "^2/" + groupTimeString + "]";
 								appendTxt += "	" + dformat6.format(particle.projectedDynamicFraction [group]);	//	"dynamic fraction of projected area (= 'scanning activity')";
-								appendTxt += "	" + dformat6.format(particle.projectedConvexHullArea [group]);	//	"projected convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]";
-								appendTxt += "	" + dformat6.format(particle.projectedConvexHullStaticArea [group]);	//	"static convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]";
-								appendTxt += "	" + dformat6.format(particle.projectedConvexHullDynamicFraction [group]);	//	"dynamic fraction of convex hull area";
+								appendTxt += "	" + dformat6.format(particle.projectedConvexHullArea [group]);	//	"projected spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]";
+								appendTxt += "	" + dformat6.format(particle.projectedConvexHullStaticArea [group]);	//	"static spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]";
+								appendTxt += "	" + dformat6.format(particle.projectedConvexHullDynamicFraction [group]);	//	"dynamic fraction of spanned area (convex hull)";
 								
 								appendTxt += "	" + dformat6.format(particle.accumulatedDistanceBIN [group]);	//	"accumulated distance (binary center displacement) [" + calibrationDimension + "/" + groupTimeString + "]";
 								appendTxt += "	" + dformat6.format(particle.euclideanDistanceBIN [group]);	//	"euclidean distance (binary center displacement) [" + calibrationDimension + "/" + groupTimeString + "]";
@@ -1167,19 +1167,19 @@ public void run(String arg) {
 								appendTxt += "	" + dformat6.format(particle.avArea [group]);	//	"area [" + calibrationDimension + "^2]";
 								appendTxt += "	" + dformat6.format(particle.avOutline [group]);	//	"outline [" + calibrationDimension + "]";
 								appendTxt += "	" + dformat6.format(particle.avRI [group]);	//	"ramification index";
-								appendTxt += "	" + dformat6.format(particle.avConvexHullArea [group]);	//	"convex hull area [" + calibrationDimension + "^2]";
-								appendTxt += "	" + dformat6.format(particle.avConvexHullOutline [group]);	//	"convex hull outline [" + calibrationDimension + "]";
-								appendTxt += "	" + dformat6.format(particle.avConvexHullxC [group]+xCorr*calibration);	//	"convex hull center x [" + calibrationDimension + "]";
-								appendTxt += "	" + dformat6.format(particle.avConvexHullyC [group]+yCorr*calibration);	//	"convex hull center y [" + calibrationDimension + "]";
+								appendTxt += "	" + dformat6.format(particle.avConvexHullArea [group]);	//	"spanned area (convex hull) [" + calibrationDimension + "^2]";
+								appendTxt += "	" + dformat6.format(particle.avConvexHullOutline [group]);	//	"spanned outline (convex hull) [" + calibrationDimension + "]";
+								appendTxt += "	" + dformat6.format(particle.avConvexHullxC [group]+xCorr*calibration);	//	"spanned area center x (convex hull) [" + calibrationDimension + "]";
+								appendTxt += "	" + dformat6.format(particle.avConvexHullyC [group]+yCorr*calibration);	//	"spanned area center y (convex hull) [" + calibrationDimension + "]";
 								appendTxt += "	" + dformat6.format(particle.avXPolarityVectorBIN [group]);	//	"polarity vector x (binary) [" + calibrationDimension + "]";
 								appendTxt += "	" + dformat6.format(particle.avYPolarityVectorBIN [group]);	//	"polarity vector y (binary) [" + calibrationDimension + "]";
 								appendTxt += "	" + dformat6.format(particle.avPolarityVectorLengthBIN [group]);	//	"polarity vector length (binary) [" + calibrationDimension + "]";
 								appendTxt += "	" + dformat6.format(particle.avPolarityIndexBIN [group]);	//	"polarity index (binary)";
 								
-								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avXPolarityVectorSemiBIN [group]);}	//	"polarity vector x (COM-based) [" + calibrationDimension + "]";
-								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avYPolarityVectorSemiBIN [group]);}	//	"polarity vector y (COM-based) [" + calibrationDimension + "]";
-								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avPolarityVectorLengthSemiBIN [group]);}	//	"polarity vector length (COM-based) [" + calibrationDimension + "]";
-								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avPolarityIndexSemiBIN [group]);}	//	"polarity index (COM-based)";
+								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avXPolarityVectorSemiBIN [group]);}	//	"polarity vector x [" + calibrationDimension + "]";
+								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avYPolarityVectorSemiBIN [group]);}	//	"polarity vector y [" + calibrationDimension + "]";
+								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avPolarityVectorLengthSemiBIN [group]);}	//	"polarity vector length [" + calibrationDimension + "]";
+								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avPolarityIndexSemiBIN [group]);}	//	"polarity index";
 							
 								appendTxt += "	"; if(skeletonize){ appendTxt += dformat6.format(particle.avFoundSkl [group]);}
 								appendTxt += "	"; if(skeletonize){ appendTxt += dformat6.format(particle.avBranches [group]);}
@@ -1206,10 +1206,10 @@ public void run(String arg) {
 								appendTxt += "	"; if(skeletonize){ appendTxt += dformat6.format(particle.avShortestPathOfAll [group]);}	
 							
 								appendTxt += "	" + dformat6.format(particle.avMovingVectorLengthBIN [group]/timePerFrame);	//	"moving vector length (binary) [" + calibrationDimension + "/" + timeUnit + "]";
-								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avMovingVectorLengthSemiBIN [group]/timePerFrame);}	//	"moving vector length (COM-based) [" + calibrationDimension + "/" + timeUnit + "]";
-								appendTxt += "	" + dformat6.format(particle.avOccupArea [group]/timePerFrame);					//	"newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]";
-								appendTxt += "	" + dformat6.format(particle.avLostArea [group]/timePerFrame);					//	"lost area [" + calibrationDimension + "^2/" + timeUnit + "]";
-								appendTxt += "	" + dformat6.format(particle.avMotility [group]/timePerFrame);					//	"motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]";
+								appendTxt += "	"; if(semiBinary){ appendTxt += dformat6.format(particle.avMovingVectorLengthSemiBIN [group]/timePerFrame);}	//	"moving vector length [" + calibrationDimension + "/" + timeUnit + "]";
+								appendTxt += "	" + dformat6.format(particle.avOccupArea [group]/timePerFrame);					//	"extended area [" + calibrationDimension + "^2/" + timeUnit + "]";
+								appendTxt += "	" + dformat6.format(particle.avLostArea [group]/timePerFrame);					//	"retracted area [" + calibrationDimension + "^2/" + timeUnit + "]";
+								appendTxt += "	" + dformat6.format(particle.avMotility [group]/timePerFrame);					//	"shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
 								appendTxt += "	" + dformat6.format(particle.avDeltaArea [group]/timePerFrame);					//	"measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]";
 								appendTxt += "	" + dformat6.format(particle.avDeltaRI [group]/timePerFrame);						//	"measured ramification index difference [1/" + timeUnit + "]";
 								appendTxt += "	" + dformat6.format(particle.avNrOfExtensions [group]/timePerFrame);				//	"# extensions [1/" + timeUnit + "]";
@@ -1292,18 +1292,18 @@ void saveLegendST(int frames, String savePath){
 	legendTw2 += "	" + "area [" + calibrationDimension + "^2]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	legendTw2 += "	" + "outline [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	legendTw2 += "	" + "ramification index" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "convex hull area [" + calibrationDimension + "^2]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "convex hull outline [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "convex hull center x [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "convex hull center y [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "spanned area (convex hull) [" + calibrationDimension + "^2]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "spanned outline (convex hull) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "spanned area center x (convex hull) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "spanned area center y (convex hull) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	legendTw2 += "	" + "polarity vector x (binary) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	legendTw2 += "	" + "polarity vector y (binary) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	legendTw2 += "	" + "polarity vector length (binary) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	legendTw2 += "	" + "polarity index (binary)" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "polarity vector x (COM-based) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "polarity vector y (COM-based) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "polarity vector length (COM-based) [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
-	legendTw2 += "	" + "polarity index (COM-based)" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "polarity vector x [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "polarity vector y [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "polarity vector length [" + calibrationDimension + "]" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
+	legendTw2 += "	" + "polarity index" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	
 	legendTw2 += "	" + "ID of largest skeleton (skl)" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
 	legendTw2 += "	" + "# found skls" + spacerTabs;	legendTw2l2 +=spacerTabs2l2;
@@ -1334,10 +1334,10 @@ void saveLegendST(int frames, String savePath){
 		String legendTw21 = "";
 		String legendTw21l2 = "";
 		legendTw21 += "	" + "moving vector length (binary) [" + calibrationDimension + "/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
-		legendTw21 += "	" + "moving vector length (COM-based) [" + calibrationDimension + "/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
-		legendTw21 += "	" + "newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
-		legendTw21 += "	" + "lost area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
-		legendTw21 += "	" + "motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
+		legendTw21 += "	" + "moving vector length [" + calibrationDimension + "/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
+		legendTw21 += "	" + "extended area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
+		legendTw21 += "	" + "retracted area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
+		legendTw21 += "	" + "shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
 		legendTw21 += "	" + "measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
 		legendTw21 += "	" + "measured ramification index difference [1/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
 		legendTw21 += "	" + "# extensions [1/" + timeUnit + "]" + spacerTabs;	legendTw21l2 +=spacerTabs2l2;
@@ -1375,7 +1375,7 @@ void saveLegendLT(int frames, String savePath){
 	}
 	legendLTheader += "	" + "Long-term directionality of movement (binary)" + spacer;
 	legendLTheader += "		" + spacer + spacer;
-	legendLTheader += "	" + "Long-term directionality of movement (COM-based)" + spacer;
+	legendLTheader += "	" + "Long-term directionality of movement" + spacer;
 	legendLTheader += "		" + spacer + spacer;
 	
 	legendLTheader += "	" + "Averages (av) morphological parameters (" + dformat0.format(totalGroupSize) +" time-steps/group)" + spacer;	
@@ -1421,9 +1421,9 @@ void saveLegendLT(int frames, String savePath){
 	legendLT += "	" + "projected area (= 'scanned area') [" + calibrationDimension + "^2/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "static area [" + calibrationDimension + "^2/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "dynamic fraction of projected area (= 'scanning activity')" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "projected convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "static convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "dynamic fraction of convex hull area" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "projected spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "static spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "dynamic fraction of spanned area (convex hull)" + spacer;	legendLTtime += timeSpacer;
 	
 	legendLT += "	" + "accumulated distance (binary center displacement) [" + calibrationDimension + "/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "euclidean distance (binary center displacement) [" + calibrationDimension + "/" + groupTimeString + "]" + spacer;	legendLTtime += timeSpacer;
@@ -1447,19 +1447,19 @@ void saveLegendLT(int frames, String savePath){
 	legendLT += "	" + "av area [" + calibrationDimension + "^2]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av outline [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av ramification index" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av convex hull area [" + calibrationDimension + "^2]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av convex hull outline [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av convex hull center x [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av convex hull center y [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av spanned area (convex hull) [" + calibrationDimension + "^2]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av spanned outline (convex hull) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av spanned area center x (convex hull) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av spanned area center y (convex hull) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av polarity vector x (binary) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av polarity vector y (binary) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av polarity vector length (binary) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av polarity index (binary)" + spacer;	legendLTtime += timeSpacer;
 	
-	legendLT += "	" + "av polarity vector x (COM-based) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av polarity vector y (COM-based) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av polarity vector length (COM-based) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av polarity index (COM-based)" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av polarity vector x [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av polarity vector y [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av polarity vector length [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av polarity index" + spacer;	legendLTtime += timeSpacer;
 
 	legendLT += "	" + "av # found skls" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av # branches (largest skl)" + spacer;	legendLTtime += timeSpacer;
@@ -1486,10 +1486,10 @@ void saveLegendLT(int frames, String savePath){
 	legendLT += "	" + "av shortest path (all skl) [" + calibrationDimension + "]" + spacer;	legendLTtime += timeSpacer;
 	
 	legendLT += "	" + "av moving vector length (binary) [" + calibrationDimension + "/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av moving vector length (COM-based) [" + calibrationDimension + "/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av lost area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av moving vector length [" + calibrationDimension + "/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av extended area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av retracted area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av motility (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av measured ramification index difference [1/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av # extensions [1/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
@@ -1615,7 +1615,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax){
-				appendTxtTw3 += "	" + dformat6.format(particle.convexHullArea [t]);	//	"convex hull area [" + calibrationDimension + "^2]";
+				appendTxtTw3 += "	" + dformat6.format(particle.convexHullArea [t]);	//	"spanned area (convex hull) [" + calibrationDimension + "^2]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -1623,7 +1623,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax){
-				appendTxtTw3 += "	" + dformat6.format(particle.convexHullOutline [t]);	//	"convex hull outline [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.convexHullOutline [t]);	//	"spanned outline (convex hull) [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -1631,7 +1631,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax){
-				appendTxtTw3 += "	" + dformat6.format(particle.convexHullxC [t] + xCorr*calibration);	//	"convex hull center x [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.convexHullxC [t] + xCorr*calibration);	//	"spanned area center x (convex hull) [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -1639,7 +1639,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax){
-				appendTxtTw3 += "	" + dformat6.format(particle.convexHullyC [t] + yCorr*calibration);	//	"convex hull center y [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.convexHullyC [t] + yCorr*calibration);	//	"spanned area center y (convex hull) [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -1678,7 +1678,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		}
 		appendTxtTw3 += "	";
 		
-//		"polarity vector x (COM-based) [" + calibrationDimension + "]";
+//		"polarity vector x [" + calibrationDimension + "]";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax&&semiBinary){
 				appendTxtTw3 += "	" + dformat6.format(particle.xPolarityVectorSemiBIN [t]);
@@ -1688,7 +1688,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		}
 		appendTxtTw3 += "	";
 		
-//		"polarity vector y (COM-based) [" + calibrationDimension + "]";
+//		"polarity vector y [" + calibrationDimension + "]";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax&&semiBinary){
 				appendTxtTw3 += "	" + dformat6.format(particle.yPolarityVectorSemiBIN [t]);	
@@ -1698,7 +1698,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		}
 		appendTxtTw3 += "	";
 		
-//		"polarity vector length (COM-based) [" + calibrationDimension + "]";
+//		"polarity vector length [" + calibrationDimension + "]";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax&&semiBinary){
 				appendTxtTw3 += "	" + dformat6.format(particle.polarityVectorLengthSemiBIN [t]);	
@@ -1708,7 +1708,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		}
 		appendTxtTw3 += "	";
 		
-//		"polarity index (COM-based)";
+//		"polarity index";
 		for(int t = 0; t < particle.times; t++){
 			if(t>=particle.tMin&&t<=particle.tMax&&semiBinary){
 				appendTxtTw3 += "	" + dformat6.format(particle.polarityIndexSemiBIN [t]);
@@ -1971,7 +1971,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		
 		for(int t = 0; t < particle.times; t++){
 			if(t>particle.tMin&&t<=particle.tMax&&semiBinary){
-				appendTxtTw3 += "	" + dformat6.format(particle.movingVectorLengthSemiBIN [t]/timePerFrame);	//	"moving vector length (COM-based) [" + calibrationDimension + "/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.movingVectorLengthSemiBIN [t]/timePerFrame);	//	"moving vector length [" + calibrationDimension + "/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -1980,7 +1980,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 	
 		for(int t = 0; t < particle.times; t++){
 			if(t>particle.tMin&&t<=particle.tMax){
-				appendTxtTw3 += "	" + dformat6.format(particle.occupArea [t]/timePerFrame);					//	"newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.occupArea [t]/timePerFrame);					//	"extended area [" + calibrationDimension + "^2/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -1988,7 +1988,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int t = 0; t < particle.times; t++){
 			if(t>particle.tMin&&t<=particle.tMax){
-				appendTxtTw3 += "	" + dformat6.format(particle.lostArea [t]/timePerFrame);					//	"lost area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.lostArea [t]/timePerFrame);					//	"retracted area [" + calibrationDimension + "^2/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -1996,7 +1996,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int t = 0; t < particle.times; t++){
 			if(t>particle.tMin&&t<=particle.tMax){
-				appendTxtTw3 += "	" + dformat6.format(particle.motility [t]/timePerFrame);					//	"motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.motility [t]/timePerFrame);					//	"shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2097,7 +2097,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.projectedConvexHullArea [group]);	//	"projected convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.projectedConvexHullArea [group]);	//	"projected spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2105,7 +2105,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.projectedConvexHullStaticArea [group]);	//	"static convex hull area [" + calibrationDimension + "^2/" + groupTimeString + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.projectedConvexHullStaticArea [group]);	//	"static spanned area (convex hull) [" + calibrationDimension + "^2/" + groupTimeString + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2113,7 +2113,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.projectedConvexHullDynamicFraction [group]);	//	"dynamic fraction of convex hull area";
+				appendTxtTw3 += "	" + dformat6.format(particle.projectedConvexHullDynamicFraction [group]);	//	"dynamic fraction of spanned area (convex hull)";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2276,7 +2276,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullArea [group]);	//	"convex hull area [" + calibrationDimension + "^2]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullArea [group]);	//	"spanned area (convex hull) [" + calibrationDimension + "^2]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2284,7 +2284,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullOutline [group]);	//	"convex hull outline [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullOutline [group]);	//	"spanned outline (convex hull) [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2292,7 +2292,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullxC [group]+xCorr*calibration);	//	"convex hull center x [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullxC [group]+xCorr*calibration);	//	"spanned area center x (convex hull) [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2300,7 +2300,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullyC [group]+yCorr*calibration);	//	"convex hull center y [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avConvexHullyC [group]+yCorr*calibration);	//	"spanned area center y (convex hull) [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2341,7 +2341,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes && semiBinary){
-				appendTxtTw3 += "	" + dformat6.format(particle.avXPolarityVectorSemiBIN [group]);	//	"polarity vector x (COM-based) [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avXPolarityVectorSemiBIN [group]);	//	"polarity vector x [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2349,7 +2349,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes && semiBinary){
-				appendTxtTw3 += "	" + dformat6.format(particle.avYPolarityVectorSemiBIN [group]);	//	"polarity vector y (COM-based) [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avYPolarityVectorSemiBIN [group]);	//	"polarity vector y [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2357,7 +2357,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes && semiBinary){
-				appendTxtTw3 += "	" + dformat6.format(particle.avPolarityVectorLengthSemiBIN [group]);	//	"polarity vector length (COM-based) [" + calibrationDimension + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avPolarityVectorLengthSemiBIN [group]);	//	"polarity vector length [" + calibrationDimension + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2365,7 +2365,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes && semiBinary){
-				appendTxtTw3 += "	" + dformat6.format(particle.avPolarityIndexSemiBIN [group]);	//	"polarity index (COM-based)";
+				appendTxtTw3 += "	" + dformat6.format(particle.avPolarityIndexSemiBIN [group]);	//	"polarity index";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2568,7 +2568,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 	
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes && semiBinary){
-				appendTxtTw3 += "	" + dformat6.format(particle.avMovingVectorLengthSemiBIN [group]/timePerFrame);	//	"moving vector length (COM-based) [" + calibrationDimension + "/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avMovingVectorLengthSemiBIN [group]/timePerFrame);	//	"moving vector length [" + calibrationDimension + "/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2577,7 +2577,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.avOccupArea [group]/timePerFrame);					//	"newly occupied area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avOccupArea [group]/timePerFrame);					//	"extended area [" + calibrationDimension + "^2/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2585,7 +2585,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.avLostArea [group]/timePerFrame);					//	"lost area [" + calibrationDimension + "^2/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avLostArea [group]/timePerFrame);					//	"retracted area [" + calibrationDimension + "^2/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}
@@ -2593,7 +2593,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 		appendTxtTw3 += "	";
 		for(int group = 0; group < nrOfGroups; group++){
 			if(group < particle.projectedTimes){
-				appendTxtTw3 += "	" + dformat6.format(particle.avMotility [group]/timePerFrame);					//	"motility (occupied + lost area) [" + calibrationDimension + "^2/" + timeUnit + "]";
+				appendTxtTw3 += "	" + dformat6.format(particle.avMotility [group]/timePerFrame);					//	"shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
 			}else{
 				appendTxtTw3 += "	";
 			}

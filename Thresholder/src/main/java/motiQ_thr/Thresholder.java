@@ -1262,7 +1262,9 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 				}
 			}
 		}
+		IJ.run(maskImp, "Invert", "");
 		IJ.run(maskImp, "Fill Holes", "slice");
+		IJ.run(maskImp, "Invert", "");
 		
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
@@ -1311,7 +1313,9 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 			}
 		}
 		
+		IJ.run(transImp, "Invert", "");
 		IJ.run(transImp, "Fill Holes", "slice");
+		IJ.run(transImp, "Invert", "");
 		
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
