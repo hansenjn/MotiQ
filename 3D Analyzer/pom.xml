@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  
+<!-- 	<parent> -->
+<!-- 		<groupId>org.scijava</groupId> -->
+<!-- 		<artifactId>pom-scijava</artifactId> -->
+<!-- 		<version>14.0.0</version> -->
+<!-- 		<relativePath /> -->
+<!-- 	</parent> -->
+ 
+	<parent>
+		<groupId>sc.fiji</groupId>
+		<artifactId>pom-fiji</artifactId>
+		<version>17.0.0</version>
+		<relativePath />
+	</parent> 
+ 
+ 	<artifactId>MotiQ_3D</artifactId>
+ 	<groupId>JNH</groupId>
+    <version>0.1.1-SNAPSHOT</version>
+ 
+<!-- Plugin Information -->
+    <name>MotiQ 3D Analyzer</name>
+    <description>A quantification tool for objects in 3D image (time-lapse or non-time-lapse).</description>
+ 	<url>https://github.com/hansenjn/MotiQ</url>
+	<inceptionYear>2014</inceptionYear>
+	<organization>
+		<name>JNH</name>
+		<url>https://github.com/hansenjn</url>
+	</organization>
+		
+	<licenses>
+		<license>
+			<name>GNU General Public License v3+</name>
+			<url>http://www.gnu.org/licenses/gpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+        <developer>
+            <id></id>
+            <name>Jan Niklas Hansen</name>
+            <email>jan.hansen@caesar.de</email>
+            <url>r</url>
+            <organization></organization>
+            <organizationUrl></organizationUrl>
+            <roles>
+                <role>founder</role>
+                <role>lead</role>
+                <role>developer</role>
+                <role>debugger</role>
+                <role>reviewer</role>
+                <role>support</role>
+                <role>maintainer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>        
+    </developers>
+    
+    <contributors>
+        <!--
+        NB: Need a least one element to override the parent.
+        See: https://issues.apache.org/jira/browse/MNG-5220
+        -->
+        <contributor><name>None</name></contributor>
+    </contributors>
+ 	
+ 	<mailingLists>
+		<mailingList>
+			<name>ImageJ Forum</name>
+			<archive>http://forum.imagej.net/</archive>
+		</mailingList>
+	</mailingLists>
+ 	
+<!--  	<scm> -->
+<!-- 		<connection>scm:git:git://github.com/hansenjn/MotiQ/3D Analyzer</connection> -->
+<!-- 		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ/3D Analyzer</developerConnection> -->
+<!-- 		<tag>HEAD</tag> -->
+<!-- 		<url>https://github.com/hansenjn/MotiQ/3D Analyzer</url> -->
+<!-- 	</scm> -->
+ 	
+ 	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/hansenjn/MotiQ/issues</url>
+	</issueManagement>
+ 	
+ 	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+ 	
+ 	<properties>
+		<main-class>MotiQ_3D</main-class>
+		<package-name>motiQ3D</package-name>
+		<license.licenseName>gpl_v3</license.licenseName>
+		<license.copyrightOwners>Jan Niklas Hansen.</license.copyrightOwners>
+		<license.projectName>MotiQ_3D_analyzer plugin for ImageJ.</license.projectName>
+	</properties>
+ 	
+ 	<repositories>
+    	<repository>
+            <id>imagej.public</id>
+            <url>http://maven.imagej.net/content/groups/public</url>
+        </repository>
+    </repositories>
+ 
+<!-- TODO: See Optional Dependencies section -->
+    <dependencies>
+        <!-- ImageJ dependencies -->
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>ij</artifactId>
+        </dependency>        
+        <dependency>
+            <groupId>sc.fiji</groupId>
+  			<artifactId>AnalyzeSkeleton_</artifactId>
+        </dependency>	
+        <dependency>
+            <groupId>sc.fiji</groupId>
+  			<artifactId>Skeletonize3D_</artifactId>
+        </dependency>	
+    </dependencies>  
+    
+    <build>
+        <directory>target</directory>
+    	<outputDirectory>target/classes</outputDirectory>
+    	<finalName>${artifactId}-${version}</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<projectName>MotiQ 3D analyzer for ImageJ.</projectName>
+					<organizationName>Jan Niklas Hansen</organizationName>
+					<archive>
+						<manifest>
+							<mainClass>${main-class}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
