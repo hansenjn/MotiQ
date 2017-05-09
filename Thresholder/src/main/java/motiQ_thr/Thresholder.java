@@ -544,11 +544,15 @@ public void run(String arg) {
 							selectedParImp = getSelectedTimepoints(parImp, (int)((double)zCorr/imp.getNSlices()) + startGroup,
 									(int)((double)zCorr/imp.getNSlices()) + endGroup);							
 							
+//							IJ.log("started: " + startGroup + "-" + endGroup + " " + imp.getNSlices() + "");
 							for(int t = startGroup-1; t < endGroup; t++){
+//								IJ.log("entered1");
 								for(int s = 0; s < imp.getNSlices(); s++){
-									thresholds [impStackIndex[s][t]] 
+//									IJ.log("entered2");
+									thresholds [impStackIndex[s][t]] //TODO
 										= this.getSingleSliceImageThreshold(selectedImp, selectedParImp, 
-												selectedParImp.getStackIndex(1, s, t-startGroup+1));
+												selectedParImp.getStackIndex(1, s+1, t-(startGroup-1)+1));
+//									IJ.log("th " + t + "-" + s + ": " + thresholds [impStackIndex[s][t]]);
 								}
 								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
@@ -1054,7 +1058,6 @@ private static void optimal8BitConversion (ImagePlus imp, ImagePlus parImp){
  * @return a scaled a PolygonRoi @param roi by the factor @param scaling
  * */
 private static PolygonRoi scaleRoi(Roi roi, double scaling){
-		
 	Polygon subimagePolygon = roi.getConvexHull();
 	int [] subXPoints = subimagePolygon.xpoints;
 	int [] subYPoints = subimagePolygon.ypoints;
@@ -1075,16 +1078,18 @@ PolygonRoi getPositionRoi(ImagePlus imp, int startSliceImage, int endSliceImage)
 	int xCorr = (int)Math.round(imp.getCalibration().xOrigin);
 	int yCorr = (int)Math.round(imp.getCalibration().yOrigin);
 	
-	for(int z = startSliceImage; z <= endSliceImage; z++){
-		imp.setSlice(z);
-		
-		for(int x = 0; x < imp.getWidth(); x++){
-			for(int y = 0; y < imp.getHeight(); y++){
+	for(int x = 0; x < imp.getWidth(); x++){
+		for(int y = 0; y < imp.getHeight(); y++){
+			searching: for(int z = startSliceImage; z <= endSliceImage; z++){
 				if(imp.getStack().getVoxel(x,y,z-1) > 0.0){						
 					selectionPolygon.addPoint(x + xCorr,y + yCorr);
+					break searching;
 				}
 			}
-		}
+			if(selectionPolygon.npoints > 2000){
+				selectionPolygon = new PolygonRoi(selectionPolygon,Roi.POLYGON).getConvexHull();
+			}
+		}				
 	}
 	
 	if(selectionPolygon.npoints>0){
@@ -1107,9 +1112,10 @@ private static ImagePlus maximumProjection(ImagePlus imp,int startSlice,int endS
 	
 	//generate maximum intensity projection
 	ImagePlus transImp = IJ.createImage("MIP", imp.getWidth(), imp.getHeight(), 1, imp.getBitDepth());
+	double maximumMeasured;
 	for(int x = 0; x < imp.getWidth(); x++){
 		for(int y = 0; y < imp.getHeight(); y++){
-			double maximumMeasured = 0.0;
+			maximumMeasured = 0.0;
 			for(int z = startSlice-1; z < endSlice; z++){
 				if(imp.getStack().getVoxel(x,y,z) > maximumMeasured){
 					maximumMeasured = imp.getStack().getVoxel(x,y,z);
@@ -1176,6 +1182,7 @@ private double getAverageThreshold (ImagePlus imp, ImagePlus parImp, int startSl
 		parImp.deleteRoi();
 		if(restrictToPos) parImp.setRoi(selection);
 		
+		parImp.setSlice(z);
 		parImp.getProcessor().setSliceNumber(z);
 		IJ.setAutoThreshold(parImp, (selectedAlgorithm+" dark"));
 		parImp.getProcessor().setSliceNumber(z);
@@ -1216,16 +1223,19 @@ private double getSingleSliceImageThreshold (ImagePlus imp, ImagePlus parImp, in
 	}
 	
 	//calculate thresholds	
+	parImp.setSlice(s);
 	parImp.getProcessor().setSliceNumber(s);
 	IJ.setAutoThreshold(parImp, (selectedAlgorithm+" dark"));
 	parImp.getProcessor().setSliceNumber(s);
-	
+//	IJ.log("th " + s + ": " + parImp.getProcessor().getMinThreshold());
 //	parImp.getProcessor().setAutoThreshold(arg0, arg1, arg2);	//TODO check whether here ignore black is possible?
 	return parImp.getProcessor().getMinThreshold();
 }
 
+
 private double getThresholdOfSelection(ImagePlus parImp, Roi selection, int z){
 	parImp.setRoi(selection);
+	parImp.setSlice(z);
 	parImp.getProcessor().setSliceNumber(z);
 	IJ.setAutoThreshold(parImp, (selectedAlgorithm+" dark"));
 	parImp.getProcessor().setSliceNumber(z);
