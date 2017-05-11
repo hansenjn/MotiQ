@@ -954,7 +954,7 @@ public void run(String arg) {
 				legendB2 += "	"; if(semiBinary){legendB2+= "av moving vector length [" + calibrationDimension + "/" + timeUnit + "]";}
 				legendB2 += "	" + "av extended area [" + calibrationDimension + "^2/" + timeUnit + "]";
 				legendB2 += "	" + "av retracted area [" + calibrationDimension + "^2/" + timeUnit + "]";
-				legendB2 += "	" + "av motility (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
+				legendB2 += "	" + "av shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]";
 				legendB2 += "	" + "av measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]";
 				legendB2 += "	" + "av measured ramification index difference [1/" + timeUnit + "]";
 				legendB2 += "	" + "av # extensions [1/" + timeUnit + "]";
@@ -1489,7 +1489,7 @@ void saveLegendLT(int frames, String savePath){
 	legendLT += "	" + "av moving vector length [" + calibrationDimension + "/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av extended area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av retracted area [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
-	legendLT += "	" + "av motility (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
+	legendLT += "	" + "av shape dynamics (extended + retracted area) [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av measured area difference [" + calibrationDimension + "^2/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av measured ramification index difference [1/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
 	legendLT += "	" + "av # extensions [1/" + timeUnit + "]" + spacer;	legendLTtime += timeSpacer;
