@@ -45,7 +45,7 @@ import java.text.*;
 public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Name variables
 	final static String PLUGINNAME = "MotiQ_thresholder";
-	final static String PLUGINVERSION = "v0.1.1";
+	final static String PLUGINVERSION = "v0.1.2";
 	
 	//Fonts
 	static final Font SuperHeadingFont = new Font("Sansserif", Font.BOLD, 16);
@@ -68,7 +68,7 @@ public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	String selectedTaskVariant = taskVariant[1];
 	int tasks = 1;
 	
-	boolean useParent = true;
+	boolean useAlternateRef = true;
 	boolean getImageByName = true;
 	String nameSuffix = "_CUT";
 	String parentEnding = ".tif";
@@ -120,7 +120,7 @@ public void run(String arg) {
 	gd.setInsets(5,0,0);	gd.addChoice("Process ", taskVariant, selectedTaskVariant);
 	
 	gd.setInsets(5,0,0);	gd.addMessage("Reference image", SubHeadingFont);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Use alternate reference image",useParent);
+	gd.setInsets(0,0,0);	gd.addCheckbox("Use alternate reference image",useAlternateRef);
 	gd.setInsets(0,20,0);	gd.addCheckbox("-> Automatically find alternate reference image in origin directory (via file name)",getImageByName);
 	gd.setInsets(0,50,0);	gd.addStringField("-> Begin of suffix in file name of input image",nameSuffix);
 	gd.setInsets(0,50,0);	gd.addStringField("-> Additional suffix in file name of alternate reference image",parentEnding);
@@ -151,12 +151,16 @@ public void run(String arg) {
 	//get variables
 	selectedTaskVariant = gd.getNextChoice();
 	
-	useParent = gd.getNextBoolean();
+	useAlternateRef = gd.getNextBoolean();
 	getImageByName = gd.getNextBoolean();
-	if(useParent == false){getImageByName = false;}
 	nameSuffix = gd.getNextString();
 	parentEnding = gd.getNextString();
-	restrictToPos = gd.getNextBoolean();	//TODO implement method
+	restrictToPos = gd.getNextBoolean();
+	
+	if(useAlternateRef == false){
+		getImageByName = false;
+		restrictToPos = false;
+	}
 	
 	scalingFactor = (double)gd.getNextNumber();
 	conv8Bit = gd.getNextBoolean();	
@@ -164,7 +168,7 @@ public void run(String arg) {
 	selectedAlgorithm = gd.getNextChoice();
 	chosenStackMethod = gd.getNextChoice();
 	separateFrames = gd.getNextBoolean();
-	onlyTimeGroup = gd.getNextBoolean();	//TODO implement method!
+	onlyTimeGroup = gd.getNextBoolean();
 	startGroup = (int)gd.getNextNumber();
 	endGroup = (int)gd.getNextNumber();	
 				
@@ -186,7 +190,7 @@ public void run(String arg) {
 	String parName  = "";
 	String parDir = "";
 		
-	if(useParent==true&&getImageByName==false){
+	if(useAlternateRef==true&&getImageByName==false){
 		//get folder and file name of parent---------------------------------
 			new WaitForUserDialog("Press OK! -> a dialog will pop up: use it to select the parent image for images to process!").show();
 			OpenDialog od = new OpenDialog("Open Parent Image", null);
@@ -319,6 +323,7 @@ public void run(String arg) {
 					break running;
 				}			
 			}
+				
 			
 			//open Image
 			   	ImagePlus imp;
@@ -378,9 +383,11 @@ public void run(String arg) {
 				
 			//open reference Image and scale it
 			   	ImagePlus primaryParImp;
-			 	if(useParent){
+			 	if(useAlternateRef){
 			   		primaryParImp = IJ.openImage(""+parDir+parName+"");
 			   	}else{
+			   		parDir = dir[task];
+			   		parName = name[task];
 			   		primaryParImp = imp.duplicate();
 			   	}
 			 	primaryParImp.deleteRoi();
@@ -417,6 +424,7 @@ public void run(String arg) {
 				
 				//eventually convert to 8bit
 				if(conv8Bit){
+					progressDialog.updateBarText("converting to 8-bit...");
 			 		Thresholder.optimal8BitConversion(imp, parImp);
 			 		if(imp.getBitDepth() != 8 || parImp.getBitDepth() != 8){
 			 			progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": 8-bit conversion failed!", ProgressDialog.ERROR);
@@ -571,6 +579,7 @@ public void run(String arg) {
 						 * */
 						if(separateFrames){
 							for(int t = startGroup-1; t < endGroup; t++){
+								progressDialog.updateBarText("generate maximum projection...");
 								selectedImp = getSelectedTimepoints(imp, t+1, t+1);
 								selectedImp = maximumProjection(selectedImp, 1, selectedImp.getStackSize());								
 								selectedParImp = getSelectedTimepoints(parImp, (int)((double)zCorr/imp.getNSlices()) + t + 1, (int)((double)zCorr/imp.getNSlices()) + t + 1);
@@ -908,7 +917,7 @@ public void run(String arg) {
 					tw1.append("Processing started: " + FullDateFormatter.format(startDate));
 					tw1.append("");
 					
-					if(useParent){
+					if(useAlternateRef){
 						tw1.append("A REFERENCE IMAGE was used for threshold calculation");
 						tw1.append("	Reference image name:	" + parName);
 						tw1.append("");
@@ -1167,9 +1176,11 @@ private static ImagePlus getSelectedTimepoints (ImagePlus imp, int firstTimepoin
  * sliceImage range: 1 <= sliceImage <= stacksize
  * */
 private double getAverageThreshold (ImagePlus imp, ImagePlus parImp, int startSliceImage, int endSliceImage){
+	progressDialog.updateBarText("get average threshold...");
+	
 	//initialize
 	double calculatedThreshold = 0.0;
-	
+		
 	Roi selection = new Roi(0,0,imp.getWidth(), imp.getHeight());
 	if(restrictToPos){
 		selection = this.getPositionRoi(imp, startSliceImage, endSliceImage);
@@ -1192,12 +1203,13 @@ private double getAverageThreshold (ImagePlus imp, ImagePlus parImp, int startSl
 	return calculatedThreshold / (double)(endSliceImage-startSliceImage+1);
 }
 
+/**
+ * Calculates a threshold in the histogram of ImagePlus <parImp> for the image <imp>
+ * Only the slice images between the indicated <startSliceImage> and <endSliceImage> are included into calculation
+ * */
 private double getHistogramThreshold (ImagePlus imp, ImagePlus parImp){
-	/**
-	 * Calculates a threshold in the histogram of ImagePlus <parImp> for the image <imp>
-	 * Only the slice images between the indicated <startSliceImage> and <endSliceImage> are included into calculation
-	 * */
-		
+	progressDialog.updateBarText("get histogram threshold...");
+	
 	parImp.deleteRoi();
 	if(restrictToPos){
 		Roi selection = this.getPositionRoi(imp, 1, imp.getStackSize());
@@ -1215,8 +1227,10 @@ private double getHistogramThreshold (ImagePlus imp, ImagePlus parImp){
  * range: 1 <= z <= stacksize
  * */
 private double getSingleSliceImageThreshold (ImagePlus imp, ImagePlus parImp, int s){
+	progressDialog.updateBarText("determine threshold...");
 	parImp.deleteRoi();
 	if(restrictToPos){
+		progressDialog.updateBarText("find position...");
 		Roi selection = this.getPositionRoi(imp, 1, imp.getStackSize());
 		selection = scaleRoi(selection, scalingFactor);
 		parImp.setRoi(selection);		
@@ -1247,6 +1261,7 @@ private double getThresholdOfSelection(ImagePlus parImp, Roi selection, int z){
  * @return a threshold for the histogram of ImagePlus <parImp> within the <selection>
  * */
 private double getHistogramThresholdOfSelection (ImagePlus parImp, Roi selection){
+	progressDialog.updateBarText("determine histogram threshold...");
 	parImp.deleteRoi();
 	parImp.setRoi(selection);
 	
@@ -1260,6 +1275,7 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 	//z=slicenr
 	int maxValue = getMaxPossibleIntensity(imp);	
 	if(fillHoles){
+		progressDialog.updateBarText("filling holes...");
 		//generate a mask image
 		ImagePlus maskImp = IJ.createImage("Mask", "8-bit", imp.getWidth(), imp.getHeight(), 1);
 		double imageMax = getMaxPossibleIntensity(maskImp);
@@ -1276,6 +1292,7 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 		IJ.run(maskImp, "Fill Holes", "slice");
 		IJ.run(maskImp, "Invert", "");
 		
+		progressDialog.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				if(maskImp.getStack().getVoxel(x,y,0) == 0.0){
@@ -1288,6 +1305,7 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 		maskImp.changes = false;
 		maskImp.close();
 	}else{
+		progressDialog.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				double pxintensity = imp.getStack().getVoxel(x,y,z);
@@ -1306,7 +1324,7 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 	int maxIntensity = getMaxPossibleIntensity(imp);
 	if(fillHoles){
 		//Include fill Holes mechanism
-		
+		progressDialog.updateBarText("filling holes...");
 		ImagePlus transImp = IJ.createHyperStack("Trans Imp", imp.getWidth(), imp.getHeight(), 1,
 				imp.getNSlices(), imp.getNFrames(), imp.getBitDepth());
 		
@@ -1327,6 +1345,7 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 		IJ.run(transImp, "Fill Holes", "slice");
 		IJ.run(transImp, "Invert", "");
 		
+		progressDialog.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				for(int z = 0; z < imp.getStackSize(); z++){
@@ -1344,6 +1363,7 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 		transImp.changes = false;
 		transImp.close();
 	}else{
+		progressDialog.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				for(int z = 0; z < imp.getStackSize(); z++){
@@ -1377,6 +1397,7 @@ private int getMaxPossibleIntensity(ImagePlus imp){
 }
 
 private String getOutputPath(String path, Date d){
+	progressDialog.updateBarText("determine output path...");
 	SimpleDateFormat NameDateFormatter = new SimpleDateFormat("yyMMdd_HHmmss");
 
 	String name = path.substring(path.lastIndexOf(System.getProperty("file.separator"))+1);

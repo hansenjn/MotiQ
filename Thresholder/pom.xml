@@ -18,7 +18,7 @@
  
  	<artifactId>MotiQ_Thresholder</artifactId>
  	<groupId>JNH</groupId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
  
  <!-- Plugin Information -->
  	<name>MotiQ thresholder</name>
