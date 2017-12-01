@@ -18,7 +18,7 @@
  
  	<artifactId>MotiQ_3D</artifactId>
  	<groupId>JNH</groupId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.3-SNAPSHOT</version>
  
 <!-- Plugin Information -->
     <name>MotiQ 3D Analyzer</name>

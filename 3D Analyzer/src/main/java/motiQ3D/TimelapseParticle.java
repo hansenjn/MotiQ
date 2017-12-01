@@ -1,10 +1,10 @@
 /***===============================================================================
  * 
- * MotiQ_3D Version plugin for ImageJ, Version v0.1.1
+ * MotiQ_3D Version plugin for ImageJ, Version v0.1.3
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: July 28, 2014 
- * This Version: May 03, 2017
+ * This Version: December 1, 2017
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -2118,9 +2118,14 @@ public class TimelapseParticle{
 		int orX = 0, orY = imp2.getHeight()-1, orZ = imp2.getNSlices()-1;
 		ImagePlus imp = imp2.duplicate();
 		double maxValue = MotiQ_3D.getMaxIntensity(imp);
-		int thicknessX = (int)Math.round(2.0 / imp.getCalibration().pixelHeight), 
-			thicknessY = (int)Math.round(2.0 / imp.getCalibration().pixelWidth), 
-			thicknessZ = (int)Math.round(2.0 / imp.getCalibration().pixelDepth);
+		
+		double thicknessCal = imp.getCalibration().pixelHeight;
+		if(thicknessCal < imp.getCalibration().pixelWidth) thicknessCal = imp.getCalibration().pixelWidth;
+		if(thicknessCal < imp.getCalibration().pixelDepth) thicknessCal = imp.getCalibration().pixelDepth;
+		
+		int thicknessX = (int)Math.round(thicknessCal / imp.getCalibration().pixelHeight), 
+			thicknessY = (int)Math.round(thicknessCal / imp.getCalibration().pixelWidth), 
+			thicknessZ = (int)Math.round(thicknessCal / imp.getCalibration().pixelDepth);
 		if(thicknessX < 1)	thicknessX = 1;
 		if(thicknessY < 1)	thicknessY = 1;
 		if(thicknessZ < 1)	thicknessZ = 1;

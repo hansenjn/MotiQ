@@ -1,10 +1,10 @@
 /***===============================================================================
  * 
- * MotiQ_3D Version plugin for ImageJ, Version v0.1.1
+ * MotiQ_3D Version plugin for ImageJ, Version v0.1.3
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: July 28, 2014 
- * This Version: May 03, 2017
+ * This Version: December 1, 2017
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ import java.text.*;
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String pluginName = "MotiQ 3D Analyzer";
-	static final String pluginVersion = "v0.1.1";
+	static final String pluginVersion = "v0.1.3";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -610,7 +610,7 @@ public void run(String arg) {
 						}						
 					}
 					
-					//write points in save collection back to image
+					//write points in saveCollection back to image
 					pointSaveCollection.trimToSize();
 					for(int i = 0; i < pointSaveCollection.size(); i++){
 						imp.getStack().setVoxel(pointSaveCollection.get(i).x, pointSaveCollection.get(i).y,
@@ -855,7 +855,7 @@ public void run(String arg) {
 				if(saveDate) filePrefix += "_" + NameDateFormatter.format(currentDate);			
 
 				//Create subfolder to save additional files
-				String subfolderPrefix = "" + dir [task] + filePrefix + System.getProperty("file.separator") + filePrefix;
+				String subfolderPrefix = "" + dir [task] + filePrefix + System.getProperty("file.separator") + "M3D";
 				try{
 					new File(dir [task] + filePrefix).mkdirs();
 				}catch(Exception e){

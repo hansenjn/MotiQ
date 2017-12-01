@@ -1,10 +1,10 @@
 /***===============================================================================
  * 
- * MotiQ_3D Version plugin for ImageJ, Version v0.1.1
+ * MotiQ_3D Version plugin for ImageJ, Version v0.1.3
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: July 28, 2014 
- * This Version: May 03, 2017
+ * This Version: December 1, 2017
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
