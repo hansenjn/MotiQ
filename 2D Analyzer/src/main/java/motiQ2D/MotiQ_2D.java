@@ -1,10 +1,10 @@
 /***===============================================================================
  *  
- * MotiQ_2D plugin for imageJ, Version v0.1.1
+ * MotiQ_2D plugin for imageJ, Version v0.1.2
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: November 07, 2014 
- * This Version: May 03, 2017
+ * This Version: December 1, 2017
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import java.text.*;
 public class MotiQ_2D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 2D Analyzer";
-	static final String PLUGINVERSION = "v0.1.1";
+	static final String PLUGINVERSION = "v0.1.2";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -746,7 +746,7 @@ public void run(String arg) {
 			if(saveDate) filePrefix += "_" + NameDateFormatter.format(currentDate);			
 
 			//Create subfolder to save additional files
-			String subfolderPrefix = "" + dir [task] + filePrefix + System.getProperty("file.separator") + filePrefix;
+			String subfolderPrefix = "" + dir [task] + filePrefix + System.getProperty("file.separator") + "M2D";
 			try{
 				new File(dir [task] + filePrefix).mkdirs();
 			}catch(Exception e){
