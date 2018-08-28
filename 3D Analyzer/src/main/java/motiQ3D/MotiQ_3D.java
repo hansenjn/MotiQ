@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: July 28, 2014 
- * This Version: December 1, 2017
+ * This Version: January 15, 2018
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ import java.text.*;
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String pluginName = "MotiQ 3D Analyzer";
-	static final String pluginVersion = "v0.1.3";
+	static final String pluginVersion = "v0.1.4";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -104,6 +104,8 @@ public class MotiQ_3D implements PlugIn, Measurements{
 
 	boolean continueProcessing = true;
 	boolean allTasksDone = false;
+	
+	Visualizer3D v3D;
 	
 public void run(String arg) {
 	dformatdialog.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
@@ -274,6 +276,8 @@ public void run(String arg) {
 	        	if(allTasksDone==false){
 	        		IJ.error("Script stopped...");
 	        	}
+	        	v3D = null;
+	        	System.gc();
 	        	continueProcessing = false;	        	
 	        	return;
 	        }
@@ -868,37 +872,6 @@ public void run(String arg) {
 				}
 			//Dataname processing
 			
-			//Save Images	
-				Visualizer3D v3D = new Visualizer3D(imp, 3.0f);
-				v3D.setAngle(10.0f, -10.0f, 0.0f);
-				
-				progress.updateBarText("generating visualizations...");
-				if(mergeSelection.equals(mergeOrNotMerge[0])){				
-					IJ.saveAs(allParticles.particleImp, "tif", subfolderPrefix + RPSuffix + ".tif");
-					IJ.saveAs(allParticles.convexHullImp, "tif", subfolderPrefix + "_H.tif");
-					if(skeletonize){
-						IJ.saveAs(allParticles.skeletonImp, "tif", subfolderPrefix + "_Skl.tif");
-					}
-					
-					allParticles.save3DVisualizations(subfolderPrefix, RPSuffix, v3D);
-					allParticles.closeImps();
-					System.gc();
-				}else if(mergeSelection.equals(mergeOrNotMerge[1])){
-					for(int i = 0; i < particleCollection.size(); i++){
-						IJ.saveAs(particleCollection.get(i).particleImp, "tif", subfolderPrefix + "_P" + dformat0.format(i) + RPSuffix + ".tif");
-						IJ.saveAs(particleCollection.get(i).convexHullImp, "tif", subfolderPrefix + "_P" + dformat0.format(i) + "_H.tif");
-						if(skeletonize){
-							IJ.saveAs(particleCollection.get(i).skeletonImp, "tif", subfolderPrefix + "_P" + dformat0.format(i) + "_Skl.tif");
-						}
-						particleCollection.get(i).save3DVisualizations(subfolderPrefix + "_P" + dformat0.format(i), RPSuffix, v3D);
-						particleCollection.get(i).closeImps();
-						System.gc();
-					}				
-				}
-				progress.setBar(0.9);
-				
-			//Save Images
-				
 			//Generate Legends
 				String legendA1 = "";	
 				legendA1 += "	" + "Morphological parameters";
@@ -1389,7 +1362,39 @@ public void run(String arg) {
 					if(frames>=totalGroupSize){
 						saveOneRowResultsLT(particleCollection, frames, xCorr, yCorr, zCorr, dir [task], name [task], (dir[task] + filePrefix + "l2.txt"));
 					}				
-				}			
+				}	
+				
+				//Save Images	
+				v3D = new Visualizer3D(imp, 3.0f);
+				v3D.setAngle(10.0f, -10.0f, 0.0f);
+				
+				progress.updateBarText("generating visualizations...");
+				if(mergeSelection.equals(mergeOrNotMerge[0])){				
+					IJ.saveAs(allParticles.particleImp, "tif", subfolderPrefix + RPSuffix + ".tif");
+					IJ.saveAs(allParticles.convexHullImp, "tif", subfolderPrefix + "_H.tif");
+					if(skeletonize){
+						IJ.saveAs(allParticles.skeletonImp, "tif", subfolderPrefix + "_Skl.tif");
+					}
+					
+					allParticles.save3DVisualizations(subfolderPrefix, RPSuffix, v3D);
+					allParticles.closeImps();
+					System.gc();
+				}else if(mergeSelection.equals(mergeOrNotMerge[1])){
+					for(int i = 0; i < particleCollection.size(); i++){
+						IJ.saveAs(particleCollection.get(i).particleImp, "tif", subfolderPrefix + "_P" + dformat0.format(i+1) + RPSuffix + ".tif");
+						IJ.saveAs(particleCollection.get(i).convexHullImp, "tif", subfolderPrefix + "_P" + dformat0.format(i+1) + "_H.tif");
+						if(skeletonize){
+							IJ.saveAs(particleCollection.get(i).skeletonImp, "tif", subfolderPrefix + "_P" + dformat0.format(i+1) + "_Skl.tif");
+						}
+						particleCollection.get(i).save3DVisualizations(subfolderPrefix + "_P" + dformat0.format(i+1), RPSuffix, v3D);
+						particleCollection.get(i).closeImps();
+						System.gc();
+					}				
+				}
+				progress.setBar(0.9);
+				
+			//Save Images
+				
 			//Save results text files
 				
 			//Update Multi-Task-Manager
