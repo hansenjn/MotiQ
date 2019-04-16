@@ -1,10 +1,10 @@
 /***===============================================================================
  *  
- * MotiQ_2D plugin for imageJ, Version v0.1.2
+ * MotiQ_2D plugin for imageJ, Version v0.1.3
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
- * First version: November 07, 2014 
- * This Version: December 1, 2017
+ * First version: November 07, 2014  
+ * This Version: April 15, 2019
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *   
- * For any questions please feel free to contact me (jan.hansen@caesar.de).
+ * For any questions please feel free to contact me (jan.hansen@uni-bonn.de).
  * 
  * =============================================================================**/
 
