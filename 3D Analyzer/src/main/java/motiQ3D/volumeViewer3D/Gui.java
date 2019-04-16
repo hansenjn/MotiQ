@@ -4,6 +4,8 @@
  * 
  * (C) Kai Uwe Barthel
  * 
+ * The code in this java-file was modified by Jan Niklas Hansen
+ * 
  * Additional note:
  * The volumeViewer3D package was generated based on the code for the FIJI plugin 
  * "Volume Viewer 2.0", 01.12.2012, (C) Kai Uwe Barthel. The present package represents 
@@ -62,7 +64,7 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 	JPanel lowerButtonPanel;
 	JPanel transferFunctionPanel;
 	private JPanel centerPanel;
-	private JPanel slicePanel;
+//	private JPanel slicePanel;
 
 	private JCheckBox checkSlices, checkAxes, checkClipLines;
 
@@ -76,9 +78,9 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 	private String zAspectString = "z-Aspect:";
 	private JTextField tfZaspect;
 
-	private JLabel samplingLabel;
-	private String samplingString = "Sampling:";
-	private JTextField tfSampling;
+//	private JLabel samplingLabel;
+//	private String samplingString = "Sampling:";
+//	private JTextField tfSampling;
 
 	private int xStart, yStart, xAct, yAct;
 	private JLabel scaleLabel1, scaleLabel2, distLabel1, distLabel2;
@@ -158,71 +160,71 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 		
 
 
-		picSlice = new Pic(control, vv, control.windowWidthSlices, control.windowHeight-130);
-		sliceImageRegion = new ImageRegion(control);
-		sliceImageRegion.addMouseMotionListener(this);
-		sliceImageRegion.addMouseListener(this);
-		sliceImageRegion.setPic(picSlice);
-		sliceImageRegion.newLines(3); 
-		sliceImageRegion.newText(3);  
-
-		positionX = (int) ((vv.vol.widthV-1)*control.positionFactorX);
-		positionY = (int) ((vv.vol.heightV-1)*control.positionFactorY);
-		positionZ = (int) ((vv.vol.depthV-1)*control.positionFactorZ)+1;
-		picSlice.drawSlices();
-
-		slicePanel = new JPanel();
-		slicePanel.setLayout(new BorderLayout());
-		slicePanel.add(sliceImageRegion, BorderLayout.NORTH);
-		
-
-
-		JPanel sliderBox = new JPanel();
-		sliderBox.setLayout(new GridLayout(3,1));
-
+//		picSlice = new Pic(control, vv, control.windowWidthSlices, control.windowHeight-130);
+//		sliceImageRegion = new ImageRegion(control);
+//		sliceImageRegion.addMouseMotionListener(this);
+//		sliceImageRegion.addMouseListener(this);
+//		sliceImageRegion.setPic(picSlice);
+//		sliceImageRegion.newLines(3); 
+//		sliceImageRegion.newText(3);  
+//
+//		positionX = (int) ((vv.vol.widthV-1)*control.positionFactorX);
+//		positionY = (int) ((vv.vol.heightV-1)*control.positionFactorY);
+//		positionZ = (int) ((vv.vol.depthV-1)*control.positionFactorZ)+1;
+//		picSlice.drawSlices();
+//
+//		slicePanel = new JPanel();
+//		slicePanel.setLayout(new BorderLayout());
+//		slicePanel.add(sliceImageRegion, BorderLayout.NORTH);
+//		
+//
+//
+//		JPanel sliderBox = new JPanel();
+//		sliderBox.setLayout(new GridLayout(3,1));
+//
 		Border empty = BorderFactory.createTitledBorder( BorderFactory.createEmptyBorder() );
-
-		maxPositionZ = vv.vol.depthV-1;
-		positionZSlider = new JSlider(JSlider.HORIZONTAL, 0, maxPositionZ, (int)(maxPositionZ*control.positionFactorZ)); 
-		positionZSlider.setBorder( new TitledBorder(empty, "xy", TitledBorder.LEADING, TitledBorder.TOP, new Font("Sans", Font.PLAIN, 12), new Color(0, 0xBB, 0xBB))); //Color.cyan));
-		positionZSlider.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.25), 30));
-		positionZSlider.setSnapToTicks(true);
-		positionZSlider.addChangeListener( this );
-		positionZSlider.addMouseListener(this);
-		sliderBox.add(positionZSlider);	
-
-		maxPositionX = vv.vol.widthV-1;
-		positionXSlider = new JSlider(JSlider.HORIZONTAL, 0, maxPositionX, (int)(maxPositionX*control.positionFactorX)); 
-		positionXSlider.setBorder( new TitledBorder(empty, "yz", TitledBorder.LEADING, TitledBorder.TOP, new Font("Sans", Font.PLAIN, 12), new Color(0, 150,0)));
-		positionXSlider.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.25), 30));
-		positionXSlider.setSnapToTicks(true);
-		positionXSlider.addChangeListener( this );
-		positionXSlider.addMouseListener(this);
-		sliderBox.add(positionXSlider);	
-
-		maxPositionY = vv.vol.heightV-1;
-		positionYSlider = new JSlider(JSlider.HORIZONTAL, 0, maxPositionY, (int)(maxPositionY*control.positionFactorY)); 
-		positionYSlider.setBorder( new TitledBorder(empty, "xz", TitledBorder.LEADING, TitledBorder.TOP, new Font("Sans", Font.PLAIN, 12), Color.red));
-		positionYSlider.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.25), 30));
-		positionYSlider.setSnapToTicks(true);
-		positionYSlider.addChangeListener( this );
-		positionYSlider.addMouseListener(this);
-		sliderBox.add(positionYSlider);	
-
-		slicePanel.add(sliderBox,BorderLayout.CENTER);
+//
+//		maxPositionZ = vv.vol.depthV-1;
+//		positionZSlider = new JSlider(JSlider.HORIZONTAL, 0, maxPositionZ, (int)(maxPositionZ*control.positionFactorZ)); 
+//		positionZSlider.setBorder( new TitledBorder(empty, "xy", TitledBorder.LEADING, TitledBorder.TOP, new Font("Sans", Font.PLAIN, 12), new Color(0, 0xBB, 0xBB))); //Color.cyan));
+//		positionZSlider.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.25), 30));
+//		positionZSlider.setSnapToTicks(true);
+//		positionZSlider.addChangeListener( this );
+//		positionZSlider.addMouseListener(this);
+//		sliderBox.add(positionZSlider);	
+//
+//		maxPositionX = vv.vol.widthV-1;
+//		positionXSlider = new JSlider(JSlider.HORIZONTAL, 0, maxPositionX, (int)(maxPositionX*control.positionFactorX)); 
+//		positionXSlider.setBorder( new TitledBorder(empty, "yz", TitledBorder.LEADING, TitledBorder.TOP, new Font("Sans", Font.PLAIN, 12), new Color(0, 150,0)));
+//		positionXSlider.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.25), 30));
+//		positionXSlider.setSnapToTicks(true);
+//		positionXSlider.addChangeListener( this );
+//		positionXSlider.addMouseListener(this);
+//		sliderBox.add(positionXSlider);	
+//
+//		maxPositionY = vv.vol.heightV-1;
+//		positionYSlider = new JSlider(JSlider.HORIZONTAL, 0, maxPositionY, (int)(maxPositionY*control.positionFactorY)); 
+//		positionYSlider.setBorder( new TitledBorder(empty, "xz", TitledBorder.LEADING, TitledBorder.TOP, new Font("Sans", Font.PLAIN, 12), Color.red));
+//		positionYSlider.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.25), 30));
+//		positionYSlider.setSnapToTicks(true);
+//		positionYSlider.addChangeListener( this );
+//		positionYSlider.addMouseListener(this);
+//		sliderBox.add(positionYSlider);	
+//
+//		slicePanel.add(sliderBox,BorderLayout.CENTER);
 		
 
 
-		JPanel labelBox = new JPanel();
-		labelBox.setLayout(new GridLayout(2,1));
-		positionLabel = new JLabel(positionString);
-		positionLabel.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.9), 20));
-		labelBox.add(positionLabel);
-		valueLabel = new JLabel(valueString);
-		valueLabel.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.9), 20));
-		labelBox.add(valueLabel);
+//		JPanel labelBox = new JPanel();
+//		labelBox.setLayout(new GridLayout(2,1));
+//		positionLabel = new JLabel(positionString);
+//		positionLabel.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.9), 20));
+//		labelBox.add(positionLabel);
+//		valueLabel = new JLabel(valueString);
+//		valueLabel.setPreferredSize(new Dimension((int) (control.windowWidthSlices*0.9), 20));
+//		labelBox.add(valueLabel);
 
-		slicePanel.add(labelBox, BorderLayout.SOUTH);
+//		slicePanel.add(labelBox, BorderLayout.SOUTH);
 
 		vv.cube.initTextsAndDrawColors(imageRegion);
 
@@ -230,275 +232,275 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 		centerPanel.setLayout(new BorderLayout());
 
 		centerPanel.add(imageRegion,BorderLayout.CENTER);
-		centerPanel.add(slicePanel,BorderLayout.WEST);
+//		centerPanel.add(slicePanel,BorderLayout.WEST);
 
 		
-		// upper button panel
-		upperButtonPanel = new JPanel();
-		//upperButtonPanel.setLayout(new GridLayout(1,0));
-
-		String renderString = "Mode:";
-		JLabel renderLabel = new JLabel(renderString);
-		upperButtonPanel.add(renderLabel);
-		renderChoice = new JComboBox(Control.renderName);
-		renderChoice.setSelectedIndex(control.renderMode);
-		renderChoice.setAlignmentX(Component.LEFT_ALIGNMENT);
-		renderChoice.addActionListener(this);		
-		renderChoice.setPreferredSize(new Dimension(160,24)); 
-		upperButtonPanel.add(renderChoice);
-
-		String interpolationString = "Interpolation:";
-		JLabel interpolationLabel = new JLabel(interpolationString);
-		upperButtonPanel.add(interpolationLabel);
-		interpolationChoice = new JComboBox(Control.interpolationName);
-		interpolationChoice.setSelectedIndex(control.interpolationMode);
-		interpolationChoice.setAlignmentX(Component.LEFT_ALIGNMENT);
-		interpolationChoice.addActionListener(this);	
-		interpolationChoice.setPreferredSize(new Dimension(160,24)); 
-		upperButtonPanel.add(interpolationChoice);
-
-		JPanel miniPanelZ = new JPanel();
-		//miniPanelZ.setLayout(new GridLayout(1,2));
-		zAspectLabel = new JLabel(zAspectString);
-		zAspectLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		miniPanelZ.add(zAspectLabel);
-
-		tfZaspect = new JTextField();
-		tfZaspect.setText("" + control.zAspect);
-		tfZaspect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				control.zAspect = Float.parseFloat(tfZaspect.getText());
-				vv.setZAspect();
-				vv.initializeTransformation();
-				vv.buildFrame();
-			}
-		});
-		miniPanelZ.add(tfZaspect);
-		upperButtonPanel.add(miniPanelZ);
-
-		JPanel miniPanelSampling = new JPanel();
-		//miniPanelSampling.setLayout(new GridLayout(1,2));
-
-		samplingLabel = new JLabel(samplingString);
-		samplingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		miniPanelSampling.add(samplingLabel);
-
-		tfSampling = new JTextField();
-		tfSampling.setText("" + control.sampling);
-		tfSampling.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				control.sampling = Float.parseFloat(tfSampling.getText());
-				if (control.sampling <= 0) 
-					control.sampling = 1;
-				if (control.sampling > 20) 
-					control.sampling = 20;
-
-				tfSampling.setText("" + control.sampling);	
-				newDisplayMode();
-			}
-		});
-		miniPanelSampling.add(tfSampling);
-		upperButtonPanel.add(miniPanelSampling);
-
-		JButton buttonBackgroundColor = new JButton("Background");
-		buttonBackgroundColor.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Color bgColor = JColorChooser.showDialog(null, "Choose background color", null);
-				if (bgColor != null){
-					control.backgroundColor = bgColor;
-					imageRegion.setPlaneColor(bgColor);
-					newDisplayMode();
-				}
-			}
-		});
-		upperButtonPanel.add(buttonBackgroundColor); 
-
-		JButton buttonSaveView = new JButton("Snapshot");
-		buttonSaveView.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				imageRegion.saveToImage();
-			}
-		});
-		upperButtonPanel.add(buttonSaveView); 
-		
-		
-		JButton buttonReset = new JButton("Reset");
-		buttonReset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				vv.reset();
-			}
-		});
-		upperButtonPanel.add(buttonReset); 
-
-
-		// slider panel (dist & scale) ===========================================
-		JPanel sliderPanel = new JPanel();
-		sliderPanel.setPreferredSize(new Dimension(control.windowWidthSliderRegion, control.windowHeight));
-		sliderPanel.setMaximumSize(new Dimension(control.windowWidthSliderRegion, control.windowHeight));
-		sliderPanel.setLayout(new GridLayout(0,1));
-				
-		control.maxDist = (int)(Math.sqrt(vv.vol.zOffa*vv.vol.zOffa*control.zAspect*control.zAspect + vv.vol.yOffa*vv.vol.yOffa +vv.vol.xOffa*vv.vol.xOffa));
-		if (!control.distWasSet && control.renderMode >= Control.PROJECTION_MAX)
-			control.dist = -control.maxDist;
-		control.dist = Math.min(Math.max(control.dist, -control.maxDist), control.maxDist);
-
-		JPanel panelDist = new JPanel();	
-		
-		picLED = new Pic(control, vv, 15, 15);
-		imageLEDRegion = new ImageRegion(control);	
-		imageLEDRegion.setPlaneColor(UIManager.getColor ( "Panel.background" ));
-		imageLEDRegion.setPic(picLED);
-		panelDist.add(imageLEDRegion);
-		picLED.render_LED(true);
-		imageLEDRegion.setImage(picLED.image);
-		imageLEDRegion.repaint();
-		
-		String textOnButton = (control.showTF) ?"<html><body><center>Hide<br>TF</center></body></html>" :
-			"<html><body><center>Show<br>TF</center></body></html>";
-		JButton tfButton = new JButton(textOnButton);
-		tfButton.setMargin(new Insets(0,-30, 0,-30));
-		tfButton.setPreferredSize(new Dimension(50,40));
-		panelDist.add(tfButton);
-		tfButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				control.showTF = !control.showTF;
-				vv.buildFrame();
-			}
-		});
-
-		panelDist.setPreferredSize(new Dimension(control.windowWidthSliderRegion, (control.windowHeight-20)/2));
-		distSlider = new JSlider(JSlider.VERTICAL, -control.maxDist*2, control.maxDist*2, (int)(2*control.dist) );
-		distSlider.setPreferredSize(new Dimension(20,(control.windowHeight-220)/2));
-		distSlider.addChangeListener( this );
-		distSlider.addMouseListener(this);
-
-		distLabel1 = new JLabel(""+ control.dist);
-		distLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-		distLabel1.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
-		distLabel2 = new JLabel("Distance");
-		distLabel2.setFont(new Font("Sans", Font.PLAIN, 11));
-		distLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-		distLabel2.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
-
-		panelDist.add(distSlider); 
-		panelDist.add(distLabel1);
-		panelDist.add(distLabel2);
-		sliderPanel.add(panelDist); 
-
-		String scaleString = "" + ((int) (control.scale*100 + 0.5f))/100f;
-		int scaleVal = (int) (Math.log(control.scale)/Math.log(1.0717734) + 20);
-
-		JPanel panelScale = new JPanel();
-		panelScale.setPreferredSize(new Dimension(control.windowWidthSliderRegion,(control.windowHeight-20)/2));
-		scaleSlider = new JSlider(JSlider.VERTICAL, 0, 90, scaleVal); 
-		scaleSlider.setPreferredSize(new Dimension(20, (control.windowHeight-90)/2));
-		scaleSlider.addChangeListener( this );
-		scaleSlider.addMouseListener(this);
-
-		scaleLabel1 = new JLabel(scaleString);
-		scaleLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-		scaleLabel1.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
-		scaleLabel2 = new JLabel("Scale");
-		scaleLabel2.setHorizontalAlignment(SwingConstants.CENTER);
-		scaleLabel2.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
-
-
-		panelScale.add(scaleSlider); 
-		panelScale.add(scaleLabel1);
-		panelScale.add(scaleLabel2);		
-		sliderPanel.add(panelScale); 
-
-		
-		// lower button panel (south) ===========================================
-		lowerButtonPanel = new JPanel();
-		lowerButtonPanel.setPreferredSize(new Dimension(900, 40));
-
-		JPanel panelCheck = new JPanel();
-		//panelCheck.setLayout(new GridLayout(1,3));
-
-		checkAxes = new JCheckBox("Show:  Axes");
-		checkAxes.setSelected(control.showAxes);
-		checkAxes.setHorizontalAlignment(JCheckBox.CENTER);
-		checkAxes.setHorizontalTextPosition(SwingConstants.LEADING);
-		checkAxes.addItemListener (this);
-		panelCheck.add(checkAxes);
-
-		checkClipLines = new JCheckBox("Clipping");
-		checkClipLines.setSelected(control.showClipLines);
-		checkClipLines.setHorizontalAlignment(JCheckBox.CENTER);
-		checkClipLines.setHorizontalTextPosition(SwingConstants.LEADING);
-		checkClipLines.addItemListener (this);
-		panelCheck.add(checkClipLines);
-
-		checkSlices = new JCheckBox("Slice positions");
-		checkSlices.setSelected(control.showSlices);
-		checkSlices.setHorizontalAlignment(JCheckBox.CENTER);
-		checkSlices.setHorizontalTextPosition(SwingConstants.LEADING);
-		checkSlices.addItemListener (this);
-		panelCheck.add(checkSlices);
-		
-		JPanel panelSpinners = new JPanel();
-		JLabel labelX = new JLabel("Rotation: x:");
-		panelSpinners.add(labelX);
-		spinnerX = makeSpinner(Math.round(control.degreeX));
-		panelSpinners.add(spinnerX);
-
-		JLabel labelY = new JLabel(" y:");
-		panelSpinners.add(labelY);
-		spinnerY = makeSpinner(Math.round(control.degreeY));
-		panelSpinners.add(spinnerY);
-
-		JLabel labelZ = new JLabel(" z:");
-		panelSpinners.add(labelZ);
-		spinnerZ = makeSpinner(Math.round(control.degreeZ));
-		panelSpinners.add(spinnerZ);
-		
-		JPanel panelOrientationButtons = new JPanel();
-		panelOrientationButtons.setLayout(new GridLayout(1,3));
-
-		JButton buttonXY = new JButton("xy");
-		buttonXY.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				enableSpinnerChangeListener = false;
-				control.degreeX = 0; control.degreeY = 0; control.degreeZ = 0;
-				vv.setRotation(control.degreeX, control.degreeY, control.degreeZ);
-				newDisplayMode();
-				enableSpinnerChangeListener = true;
-			}
-		});
-		panelOrientationButtons.add(buttonXY); 
-
-		JButton buttonYZ = new JButton("yz");
-		buttonYZ.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				enableSpinnerChangeListener = false;
-				control.degreeX = 0; control.degreeY = 90; control.degreeZ = -90;
-				vv.setRotation(control.degreeX, control.degreeY, control.degreeZ);
-				newDisplayMode();
-				enableSpinnerChangeListener = true;
-			}
-		});
-		panelOrientationButtons.add(buttonYZ); 
-
-		JButton buttonXZ = new JButton("xz");
-		buttonXZ.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				enableSpinnerChangeListener = false;
-				control.degreeX = 90; control.degreeY = 0; control.degreeZ = 0;
-				vv.setRotation(control.degreeX, control.degreeY, control.degreeZ);
-				newDisplayMode();
-				enableSpinnerChangeListener = true;
-			}
-		});
-		panelOrientationButtons.add(buttonXZ); 
-
-		lowerButtonPanel.add(panelSpinners);
-		JLabel spaceLabel2 = new JLabel("   ");
-		lowerButtonPanel.add(spaceLabel2);
-		lowerButtonPanel.add(panelOrientationButtons);
-		JLabel spaceLabel1 = new JLabel("   ");
-		lowerButtonPanel.add(spaceLabel1);
-		lowerButtonPanel.add(panelCheck);
+//		// upper button panel
+//		upperButtonPanel = new JPanel();
+//		//upperButtonPanel.setLayout(new GridLayout(1,0));
+//
+//		String renderString = "Mode:";
+//		JLabel renderLabel = new JLabel(renderString);
+//		upperButtonPanel.add(renderLabel);
+//		renderChoice = new JComboBox(Control.renderName);
+//		renderChoice.setSelectedIndex(control.renderMode);
+//		renderChoice.setAlignmentX(Component.LEFT_ALIGNMENT);
+//		renderChoice.addActionListener(this);		
+//		renderChoice.setPreferredSize(new Dimension(160,24)); 
+//		upperButtonPanel.add(renderChoice);
+//
+//		String interpolationString = "Interpolation:";
+//		JLabel interpolationLabel = new JLabel(interpolationString);
+//		upperButtonPanel.add(interpolationLabel);
+//		interpolationChoice = new JComboBox(Control.interpolationName);
+//		interpolationChoice.setSelectedIndex(control.interpolationMode);
+//		interpolationChoice.setAlignmentX(Component.LEFT_ALIGNMENT);
+//		interpolationChoice.addActionListener(this);	
+//		interpolationChoice.setPreferredSize(new Dimension(160,24)); 
+//		upperButtonPanel.add(interpolationChoice);
+//
+//		JPanel miniPanelZ = new JPanel();
+//		//miniPanelZ.setLayout(new GridLayout(1,2));
+//		zAspectLabel = new JLabel(zAspectString);
+//		zAspectLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+//		miniPanelZ.add(zAspectLabel);
+//
+//		tfZaspect = new JTextField();
+//		tfZaspect.setText("" + control.zAspect);
+//		tfZaspect.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				control.zAspect = Float.parseFloat(tfZaspect.getText());
+//				vv.setZAspect();
+//				vv.initializeTransformation();
+//				vv.buildFrame();
+//			}
+//		});
+//		miniPanelZ.add(tfZaspect);
+//		upperButtonPanel.add(miniPanelZ);
+//
+//		JPanel miniPanelSampling = new JPanel();
+//		//miniPanelSampling.setLayout(new GridLayout(1,2));
+//
+//		samplingLabel = new JLabel(samplingString);
+//		samplingLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+//		miniPanelSampling.add(samplingLabel);
+//
+//		tfSampling = new JTextField();
+//		tfSampling.setText("" + control.sampling);
+//		tfSampling.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				control.sampling = Float.parseFloat(tfSampling.getText());
+//				if (control.sampling <= 0) 
+//					control.sampling = 1;
+//				if (control.sampling > 20) 
+//					control.sampling = 20;
+//
+//				tfSampling.setText("" + control.sampling);	
+//				newDisplayMode();
+//			}
+//		});
+//		miniPanelSampling.add(tfSampling);
+//		upperButtonPanel.add(miniPanelSampling);
+//
+//		JButton buttonBackgroundColor = new JButton("Background");
+//		buttonBackgroundColor.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Color bgColor = JColorChooser.showDialog(null, "Choose background color", null);
+//				if (bgColor != null){
+//					control.backgroundColor = bgColor;
+//					imageRegion.setPlaneColor(bgColor);
+//					newDisplayMode();
+//				}
+//			}
+//		});
+//		upperButtonPanel.add(buttonBackgroundColor); 
+//
+//		JButton buttonSaveView = new JButton("Snapshot");
+//		buttonSaveView.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				imageRegion.saveToImage();
+//			}
+//		});
+//		upperButtonPanel.add(buttonSaveView); 
+//		
+//		
+//		JButton buttonReset = new JButton("Reset");
+//		buttonReset.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				vv.reset();
+//			}
+//		});
+//		upperButtonPanel.add(buttonReset); 
+//
+//
+//		// slider panel (dist & scale) ===========================================
+//		JPanel sliderPanel = new JPanel();
+//		sliderPanel.setPreferredSize(new Dimension(control.windowWidthSliderRegion, control.windowHeight));
+//		sliderPanel.setMaximumSize(new Dimension(control.windowWidthSliderRegion, control.windowHeight));
+//		sliderPanel.setLayout(new GridLayout(0,1));
+//				
+//		control.maxDist = (int)(Math.sqrt(vv.vol.zOffa*vv.vol.zOffa*control.zAspect*control.zAspect + vv.vol.yOffa*vv.vol.yOffa +vv.vol.xOffa*vv.vol.xOffa));
+//		if (!control.distWasSet && control.renderMode >= Control.PROJECTION_MAX)
+//			control.dist = -control.maxDist;
+//		control.dist = Math.min(Math.max(control.dist, -control.maxDist), control.maxDist);
+//
+//		JPanel panelDist = new JPanel();	
+//		
+//		picLED = new Pic(control, vv, 15, 15);
+//		imageLEDRegion = new ImageRegion(control);	
+//		imageLEDRegion.setPlaneColor(UIManager.getColor ( "Panel.background" ));
+//		imageLEDRegion.setPic(picLED);
+//		panelDist.add(imageLEDRegion);
+//		picLED.render_LED(true);
+//		imageLEDRegion.setImage(picLED.image);
+//		imageLEDRegion.repaint();
+//		
+//		String textOnButton = (control.showTF) ?"<html><body><center>Hide<br>TF</center></body></html>" :
+//			"<html><body><center>Show<br>TF</center></body></html>";
+//		JButton tfButton = new JButton(textOnButton);
+//		tfButton.setMargin(new Insets(0,-30, 0,-30));
+//		tfButton.setPreferredSize(new Dimension(50,40));
+//		panelDist.add(tfButton);
+//		tfButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				control.showTF = !control.showTF;
+//				vv.buildFrame();
+//			}
+//		});
+//
+//		panelDist.setPreferredSize(new Dimension(control.windowWidthSliderRegion, (control.windowHeight-20)/2));
+//		distSlider = new JSlider(JSlider.VERTICAL, -control.maxDist*2, control.maxDist*2, (int)(2*control.dist) );
+//		distSlider.setPreferredSize(new Dimension(20,(control.windowHeight-220)/2));
+//		distSlider.addChangeListener( this );
+//		distSlider.addMouseListener(this);
+//
+//		distLabel1 = new JLabel(""+ control.dist);
+//		distLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+//		distLabel1.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
+//		distLabel2 = new JLabel("Distance");
+//		distLabel2.setFont(new Font("Sans", Font.PLAIN, 11));
+//		distLabel2.setHorizontalAlignment(SwingConstants.CENTER);
+//		distLabel2.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
+//
+//		panelDist.add(distSlider); 
+//		panelDist.add(distLabel1);
+//		panelDist.add(distLabel2);
+//		sliderPanel.add(panelDist); 
+//
+//		String scaleString = "" + ((int) (control.scale*100 + 0.5f))/100f;
+//		int scaleVal = (int) (Math.log(control.scale)/Math.log(1.0717734) + 20);
+//
+//		JPanel panelScale = new JPanel();
+//		panelScale.setPreferredSize(new Dimension(control.windowWidthSliderRegion,(control.windowHeight-20)/2));
+//		scaleSlider = new JSlider(JSlider.VERTICAL, 0, 90, scaleVal); 
+//		scaleSlider.setPreferredSize(new Dimension(20, (control.windowHeight-90)/2));
+//		scaleSlider.addChangeListener( this );
+//		scaleSlider.addMouseListener(this);
+//
+//		scaleLabel1 = new JLabel(scaleString);
+//		scaleLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+//		scaleLabel1.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
+//		scaleLabel2 = new JLabel("Scale");
+//		scaleLabel2.setHorizontalAlignment(SwingConstants.CENTER);
+//		scaleLabel2.setPreferredSize(new Dimension(control.windowWidthSliderRegion, 15));
+//
+//
+//		panelScale.add(scaleSlider); 
+//		panelScale.add(scaleLabel1);
+//		panelScale.add(scaleLabel2);		
+//		sliderPanel.add(panelScale); 
+//
+//		
+//		// lower button panel (south) ===========================================
+//		lowerButtonPanel = new JPanel();
+//		lowerButtonPanel.setPreferredSize(new Dimension(900, 40));
+//
+//		JPanel panelCheck = new JPanel();
+//		//panelCheck.setLayout(new GridLayout(1,3));
+//
+//		checkAxes = new JCheckBox("Show:  Axes");
+//		checkAxes.setSelected(control.showAxes);
+//		checkAxes.setHorizontalAlignment(JCheckBox.CENTER);
+//		checkAxes.setHorizontalTextPosition(SwingConstants.LEADING);
+//		checkAxes.addItemListener (this);
+//		panelCheck.add(checkAxes);
+//
+//		checkClipLines = new JCheckBox("Clipping");
+//		checkClipLines.setSelected(control.showClipLines);
+//		checkClipLines.setHorizontalAlignment(JCheckBox.CENTER);
+//		checkClipLines.setHorizontalTextPosition(SwingConstants.LEADING);
+//		checkClipLines.addItemListener (this);
+//		panelCheck.add(checkClipLines);
+//
+//		checkSlices = new JCheckBox("Slice positions");
+//		checkSlices.setSelected(control.showSlices);
+//		checkSlices.setHorizontalAlignment(JCheckBox.CENTER);
+//		checkSlices.setHorizontalTextPosition(SwingConstants.LEADING);
+//		checkSlices.addItemListener (this);
+//		panelCheck.add(checkSlices);
+//		
+//		JPanel panelSpinners = new JPanel();
+//		JLabel labelX = new JLabel("Rotation: x:");
+//		panelSpinners.add(labelX);
+//		spinnerX = makeSpinner(Math.round(control.degreeX));
+//		panelSpinners.add(spinnerX);
+//
+//		JLabel labelY = new JLabel(" y:");
+//		panelSpinners.add(labelY);
+//		spinnerY = makeSpinner(Math.round(control.degreeY));
+//		panelSpinners.add(spinnerY);
+//
+//		JLabel labelZ = new JLabel(" z:");
+//		panelSpinners.add(labelZ);
+//		spinnerZ = makeSpinner(Math.round(control.degreeZ));
+//		panelSpinners.add(spinnerZ);
+//		
+//		JPanel panelOrientationButtons = new JPanel();
+//		panelOrientationButtons.setLayout(new GridLayout(1,3));
+//
+//		JButton buttonXY = new JButton("xy");
+//		buttonXY.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				enableSpinnerChangeListener = false;
+//				control.degreeX = 0; control.degreeY = 0; control.degreeZ = 0;
+//				vv.setRotation(control.degreeX, control.degreeY, control.degreeZ);
+//				newDisplayMode();
+//				enableSpinnerChangeListener = true;
+//			}
+//		});
+//		panelOrientationButtons.add(buttonXY); 
+//
+//		JButton buttonYZ = new JButton("yz");
+//		buttonYZ.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				enableSpinnerChangeListener = false;
+//				control.degreeX = 0; control.degreeY = 90; control.degreeZ = -90;
+//				vv.setRotation(control.degreeX, control.degreeY, control.degreeZ);
+//				newDisplayMode();
+//				enableSpinnerChangeListener = true;
+//			}
+//		});
+//		panelOrientationButtons.add(buttonYZ); 
+//
+//		JButton buttonXZ = new JButton("xz");
+//		buttonXZ.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				enableSpinnerChangeListener = false;
+//				control.degreeX = 90; control.degreeY = 0; control.degreeZ = 0;
+//				vv.setRotation(control.degreeX, control.degreeY, control.degreeZ);
+//				newDisplayMode();
+//				enableSpinnerChangeListener = true;
+//			}
+//		});
+//		panelOrientationButtons.add(buttonXZ); 
+//
+//		lowerButtonPanel.add(panelSpinners);
+//		JLabel spaceLabel2 = new JLabel("   ");
+//		lowerButtonPanel.add(spaceLabel2);
+//		lowerButtonPanel.add(panelOrientationButtons);
+//		JLabel spaceLabel1 = new JLabel("   ");
+//		lowerButtonPanel.add(spaceLabel1);
+//		lowerButtonPanel.add(panelCheck);
 
 
 
@@ -935,13 +937,13 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 		
 		if (control.renderMode >= Control.PROJECTION_MAX) {
 			transferFunctionTabbedPane.setVisible(true);
-			samplingLabel.setVisible(true);
-			tfSampling.setVisible(true);
+//			samplingLabel.setVisible(true);
+//			tfSampling.setVisible(true);
 		}
 		else {
 			transferFunctionTabbedPane.setVisible(false);
-			samplingLabel.setVisible(false);
-			tfSampling.setVisible(false);
+//			samplingLabel.setVisible(false);
+//			tfSampling.setVisible(false);
 		}
 		
 		if (control.renderMode == Control.VOLUME) 
@@ -953,11 +955,11 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 		// put all together
 		setLayout(new BorderLayout());
 		add(centerPanel, BorderLayout.WEST);
-		add(sliderPanel,BorderLayout.CENTER);
+//		add(sliderPanel,BorderLayout.CENTER);
 		if (control.showTF)
 			add(transferFunctionPanel, BorderLayout.EAST);
-		add(upperButtonPanel, BorderLayout.NORTH);
-		add(lowerButtonPanel, BorderLayout.SOUTH);
+//		add(upperButtonPanel, BorderLayout.NORTH);
+//		add(lowerButtonPanel, BorderLayout.SOUTH);
 		validate();
 		control.scaledDist = control.scale*control.dist;
 	}
@@ -1180,14 +1182,14 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 
 				if (control.renderMode >= Control.PROJECTION_MAX) {
 					transferFunctionTabbedPane.setVisible(true);
-					samplingLabel.setVisible(true);
-					tfSampling.setVisible(true);
+//					samplingLabel.setVisible(true);
+//					tfSampling.setVisible(true);
 					control.dist = -2*control.maxDist;
 				}
 				else { 
 					transferFunctionTabbedPane.setVisible(false);
-					samplingLabel.setVisible(false);
-					tfSampling.setVisible(false);
+//					samplingLabel.setVisible(false);
+//					tfSampling.setVisible(false);
 					control.dist = 0;
 				}
 				
@@ -1455,10 +1457,10 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 			signalReady();
 		} 
 
-		picSlice.updateImage();
-		sliceImageRegion.findLines(vv.cube, control.scaledDist, vv.vol.depthV); 
-		sliceImageRegion.setImage(picSlice.image);
-		sliceImageRegion.repaint();		
+//		picSlice.updateImage();
+//		sliceImageRegion.findLines(vv.cube, control.scaledDist, vv.vol.depthV); 
+//		sliceImageRegion.setImage(picSlice.image);
+//		sliceImageRegion.repaint();		
 	}
 	
 	void signalReady() {
@@ -1467,9 +1469,9 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 			System.out.println("Render time " + (end-startR)+" ms.");
 		}
 		control.isReady = true;
-		picLED.render_LED(true);
-		imageLEDRegion.setImage(picLED.image);
-		imageLEDRegion.paintImmediately(0, 0, imageLEDRegion.getWidth(), imageLEDRegion.getHeight());
+//		picLED.render_LED(true);
+//		imageLEDRegion.setImage(picLED.image);
+//		imageLEDRegion.paintImmediately(0, 0, imageLEDRegion.getWidth(), imageLEDRegion.getHeight());
 	}
 	
 	long startR=0;
@@ -1480,9 +1482,9 @@ MouseListener, MouseMotionListener, ChangeListener, ActionListener, ItemListener
 			if (control.LOG) startR = System.currentTimeMillis();
 		}
 		control.isReady = false;
-		picLED.render_LED(false);
-		imageLEDRegion.setImage(picLED.image);
-		imageLEDRegion.paintImmediately(0, 0, imageLEDRegion.getWidth(), imageLEDRegion.getHeight());
+//		picLED.render_LED(false);
+//		imageLEDRegion.setImage(picLED.image);
+//		imageLEDRegion.paintImmediately(0, 0, imageLEDRegion.getWidth(), imageLEDRegion.getHeight());
 	}
 	
 

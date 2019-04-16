@@ -135,7 +135,9 @@ public final class Volume_Viewer{
 		control.degreeY = angleY;
 		control.degreeZ = angleZ;
 		control.alphaMode = alphaMode;
-		control.windowWidthImageRegion = windowWidthImageRegion;
+		if(windowWidthImageRegion > 480){
+			control.windowWidthImageRegion = windowWidthImageRegion;	
+		}		
 //		control.windowWidthSlices = windowWidthSlices;
 		control.windowHeight = windowHeight;
 		control.useLight = useLight;
@@ -157,7 +159,7 @@ public final class Volume_Viewer{
 //		}
 		if(imp.getType()==ImagePlus.COLOR_RGB) 	// Check for RGB stack.
 			control.isRGB = true;
-
+		
 		vol = new Volume(control, this);
 		
 		lookupTable = new LookupTable(control, this);
@@ -177,7 +179,7 @@ public final class Volume_Viewer{
 		trLight.initializeTransformation();
 		
 		gradientLUT = new Gradient(control, this, 256, 18);
-
+				
 		gui = new Gui(control, this);
 		gui.makeGui();
 		tf_a1.setAlphaOffset(alphaOffset1);

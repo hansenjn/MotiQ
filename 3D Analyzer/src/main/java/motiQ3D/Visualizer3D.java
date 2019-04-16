@@ -3,8 +3,8 @@
  * MotiQ_3D Version plugin for ImageJ, Version v0.1.3
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
- * First version: July 28, 2014 
- * This Version: December 1, 2017
+ * First version: July 28, 2014  
+ * This Version: April 15, 2019
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -79,7 +79,7 @@ public class Visualizer3D{
 	 * */	
 	public void setImage(ImagePlus imp){
 		this.imp = imp;
-		this.setScale(scale);
+		setScale(scale);
 	}
 	
 	/**

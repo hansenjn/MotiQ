@@ -1,0 +1,6 @@
+The files in the package skeleton_analysis represent an unmodified copy from: https://github.com/fiji/AnalyzeSkeleton/releases/tag/v3.1.1
+They are used to stably integrate the skeleton_analysis plugin into the MotiQ3D plugin. 
+The plguins Skeletonize and AnalyzeSkeleton have been developed by I. Arganda-Carreras, see:
+Ignacio Arganda-Carreras, Rodrigo Fernandez-Gonzalez, Arrate Munoz-Barrutia, Carlos Ortiz-De-Solorzano, 
+'3D reconstruction of histological sections: Application to mammary gland tissue', Microscopy Research and Technique,
+Volume 73, Issue 11, pages 1019-1029, October 2010.

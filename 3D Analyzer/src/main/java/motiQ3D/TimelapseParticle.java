@@ -3,8 +3,8 @@
  * MotiQ_3D Version plugin for ImageJ, Version v0.1.3
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
- * First version: July 28, 2014 
- * This Version: December 1, 2017
+ * First version: July 28, 2014  
+ * This Version: April 15, 2019
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,12 +38,12 @@ import ij.ImageStack;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.measure.Calibration;
+import ij.plugin.HyperStackConverter;
 import ij.plugin.RGBStackConverter;
 import ij.process.ImageProcessor;
 import ij.text.TextPanel;
-import Skeletonize3D_.Skeletonize3D_;
-import skeleton_analysis.AnalyzeSkeleton_;
-import skeleton_analysis.SkeletonResult;
+import motiQ3D.skeletonize3D.*;
+import motiQ3D.skeleton_analysis.*;
 
 public class TimelapseParticle{
 	public boolean initialized = false;
@@ -1843,6 +1843,18 @@ public class TimelapseParticle{
 		//add bar
 		int pxNrX, pxNrY, pxNrZ;
 		float calBarLength = 100000.0f;
+//		float calBarLength = (float) particleImp.getCalibration().pixelWidth * particleImp.getWidth();
+//		if((float) particleImp.getCalibration().pixelHeight * particleImp.getHeight() < calBarLength){
+//			calBarLength = (float) particleImp.getCalibration().pixelHeight * particleImp.getHeight();
+//		}
+//		if((float) particleImp.getCalibration().pixelDepth * particleImp.getNSlices() < calBarLength){
+//			calBarLength = (float) particleImp.getCalibration().pixelDepth * particleImp.getNSlices();
+//		}
+//		if(calBarLength > 10.0){
+//			calBarLength = (int) calBarLength;
+//			calBarLength = 10.0f * (int) (calBarLength/10.0f);
+//		}
+		
 		boolean two = false;
 		selecting: while(true){
 			pxNrX = (int)Math.round(calBarLength / particleImp.getCalibration().pixelWidth);
@@ -1864,7 +1876,7 @@ public class TimelapseParticle{
 		}
 		
 		ImagePlus impCal, imp3D, impOut;
-		ImageStack stackOut;
+		ImageStack stackOut = new ImageStack(width,height);
 		
 		v3D.setImage(getTimePointFor3D(particleImp, 1));
 		int width =  v3D.getWidth(),
@@ -1878,7 +1890,6 @@ public class TimelapseParticle{
 		
 		//save 3D visualization of the particle imp
 		{
-			stackOut = new ImageStack(width,height);
 			v3D.setObjectLightValue(1.2f);
 			v3D.setLightPosX(-0.25f);
 			v3D.setAlphaOffset1(0);
@@ -1889,13 +1900,16 @@ public class TimelapseParticle{
 				convertToRGB(impCal);
 				
 //				if(impCal == null) impCal = particleImp.duplicate();
-				
+
 				v3D.setImage(impCal);
 				imp3D = v3D.get3DVisualization();
 				
 				impCal.changes = false;
 				impCal.close();
 				
+				if(i == 0){
+					stackOut = new ImageStack(imp3D.getWidth(),imp3D.getHeight());
+				}
 				stackOut.addSlice(imp3D.getProcessor());
 				
 				imp3D.changes = false;
@@ -1912,7 +1926,6 @@ public class TimelapseParticle{
 		
 		//save 3D visualization of the convex hull imp
 		{
-			stackOut = new ImageStack(width,height);
 			v3D.setObjectLightValue(1.2f);
 			v3D.setLightPosX(0.0f);
 			v3D.setAlphaOffset1(-45);
@@ -1929,6 +1942,9 @@ public class TimelapseParticle{
 				impCal.changes = false;
 				impCal.close();
 				
+				if(i == 0){
+					stackOut = new ImageStack(imp3D.getWidth(),imp3D.getHeight());
+				}
 				stackOut.addSlice(imp3D.getProcessor());
 				
 				imp3D.changes = false;
@@ -1946,7 +1962,6 @@ public class TimelapseParticle{
 		
 		//save 3D visualization of the particle imp
 		if(skeletonImp!=null){
-			stackOut = new ImageStack(width,height);
 			v3D.setObjectLightValue(2.0f);
 			v3D.setLightPosX(-0.25f);
 			v3D.setAlphaOffset1(0);
@@ -1961,6 +1976,9 @@ public class TimelapseParticle{
 				impCal.changes = false;
 				impCal.close();
 				
+				if(i == 0){
+					stackOut = new ImageStack(imp3D.getWidth(),imp3D.getHeight());
+				}
 				stackOut.addSlice(imp3D.getProcessor());
 				
 				imp3D.changes = false;
@@ -1991,13 +2009,16 @@ public class TimelapseParticle{
 //			ImageConverter iCv = new ImageConverter(imp);
 //			iCv.convertToRGB();
 //			
-			int nSlices = imp.getStackSize();
+			int nSlices = imp.getNSlices();
+			int nFrames = imp.getNFrames();
+			
+			int nImages = imp.getStackSize();
 			ImageStack stack1 = imp.getStack(),
 					stack2 = new ImageStack(imp.getWidth(), imp.getHeight());
 	        String label;
 	        ImageProcessor ip1, ip2;
 	        Calibration cal = imp.getCalibration();
-	        for(int i = 1; i <= nSlices; i++) {
+	        for(int i = 1; i <= nImages; i++) {
 	            label = stack1.getSliceLabel(i);
 	            ip1 = stack1.getProcessor(i);
 	            ip2 = ip1.convertToRGB();
@@ -2005,6 +2026,7 @@ public class TimelapseParticle{
 	        }
 	        imp.setStack(stack2);
 	        imp.setCalibration(cal);
+	        HyperStackConverter.toHyperStack(imp, 3, nSlices, nFrames);
 		}	        
 	}
 	
@@ -2015,7 +2037,7 @@ public class TimelapseParticle{
 	 * */
 	private static ImagePlus getTimePointFor3D(ImagePlus imp, int t){
 		ImagePlus impOut = IJ.createHyperStack(imp.getTitle() + " t" + t, 
-				imp.getWidth(), imp.getHeight(), 3, imp.getNSlices()+2, 1, 8);
+				imp.getWidth()+10, imp.getHeight()+10, 3, imp.getNSlices()+2, 1, 8);
 		int iMax = MotiQ_3D.getMaxIntensity(impOut);
 		impOut.setCalibration(imp.getCalibration());
 		for(int c = 0; c < 3; c++){
@@ -2023,7 +2045,7 @@ public class TimelapseParticle{
 				for(int x = 0; x < imp.getWidth(); x++){
 					for(int y = 0; y < imp.getHeight(); y++){
 						if(imp.getStack().getVoxel(x, y, imp.getStackIndex(1, s+1, t)-1)>0.0){
-							impOut.getStack().setVoxel(x, y, impOut.getStackIndex(c+1,s+2,1)-1, iMax);
+							impOut.getStack().setVoxel(x+5, y+5, impOut.getStackIndex(c+1,s+2,1)-1, iMax);
 						}						
 					}
 				}
@@ -2037,7 +2059,7 @@ public class TimelapseParticle{
 	 * */
 	private ImagePlus getTimePointFor3DHull(int t){
 		ImagePlus impOut = IJ.createHyperStack(particleImp.getTitle() + " t" + t, 
-				particleImp.getWidth(), particleImp.getHeight(), 3, particleImp.getNSlices()+2, 1, 8);
+				particleImp.getWidth()+10, particleImp.getHeight()+10, 3, particleImp.getNSlices()+2, 1, 8);
 		impOut.setCalibration(particleImp.getCalibration());
 		int iMax = MotiQ_3D.getMaxIntensity(impOut);
 		{
@@ -2046,11 +2068,11 @@ public class TimelapseParticle{
 					for(int y = 0; y < particleImp.getHeight(); y++){
 						if(convexHullImp.getStack().getVoxel(x, y, convexHullImp.getStackIndex(1, s+1, t)-1)>0.0){
 							if(particleImp.getStack().getVoxel(x, y, particleImp.getStackIndex(1, s+1, t)-1)>0.0){
-								impOut.getStack().setVoxel(x, y, impOut.getStackIndex(2,s+2,1)-1, iMax/4.0);
+								impOut.getStack().setVoxel(x+5, y+5, impOut.getStackIndex(2,s+2,1)-1, iMax/4.0);
 							}
-							impOut.getStack().setVoxel(x, y, impOut.getStackIndex(3,s+2,1)-1, iMax/3.0);							
+							impOut.getStack().setVoxel(x+5, y+5, impOut.getStackIndex(3,s+2,1)-1, iMax/3.0);							
 						}else if(particleImp.getStack().getVoxel(x, y, particleImp.getStackIndex(1, s+1, t)-1)>0.0){
-							impOut.getStack().setVoxel(x, y, impOut.getStackIndex(2,s+2,1)-1, iMax);
+							impOut.getStack().setVoxel(x+5, y+5, impOut.getStackIndex(2,s+2,1)-1, iMax);
 						}
 									
 					}
@@ -2076,7 +2098,7 @@ public class TimelapseParticle{
 	 * */
 	private ImagePlus getTimePointFor3DSkl(int t){
 		ImagePlus impOut = IJ.createHyperStack(skeletonImp.getTitle() + " t" + t, 
-				skeletonImp.getWidth(), skeletonImp.getHeight(), 3, skeletonImp.getNSlices()+2, 1, 
+				skeletonImp.getWidth()+10, skeletonImp.getHeight()+10, 3, skeletonImp.getNSlices()+2, 1, 
 				8);
 		impOut.setCalibration(skeletonImp.getCalibration());
 		int iMax = MotiQ_3D.getMaxIntensity(impOut);
@@ -2087,19 +2109,19 @@ public class TimelapseParticle{
 						if(skeletonImp.getStack().getVoxel(x, y, skeletonImp.getStackIndex(1, s+1, t)-1)>0.0){
 							if(skeletonImp.getStack().getVoxel(x, y, skeletonImp.getStackIndex(1, s+1, t)-1)<60.0){
 								//tip = blue
-								impOut.getStack().setVoxel(x,y,impOut.getStackIndex(3,s+2,1)-1,
+								impOut.getStack().setVoxel(x+5,y+5,impOut.getStackIndex(3,s+2,1)-1,
 										iMax);
 							}else if(skeletonImp.getStack().getVoxel(x, y, skeletonImp.getStackIndex(1, s+1, t)-1)<100.0){
 								//crossing = purple
-								impOut.getStack().setVoxel(x,y,impOut.getStackIndex(1,s+2,1)-1,
+								impOut.getStack().setVoxel(x+5,y+5,impOut.getStackIndex(1,s+2,1)-1,
 										iMax);
-								impOut.getStack().setVoxel(x,y,impOut.getStackIndex(3,s+2,1)-1,
+								impOut.getStack().setVoxel(x+5,y+5,impOut.getStackIndex(3,s+2,1)-1,
 										iMax);
 							}else{
 								//branch = orange
-								impOut.getStack().setVoxel(x,y,impOut.getStackIndex(1,s+2,1)-1,
+								impOut.getStack().setVoxel(x+5,y+5,impOut.getStackIndex(1,s+2,1)-1,
 										iMax);
-								impOut.getStack().setVoxel(x,y,impOut.getStackIndex(2,s+2,1)-1,
+								impOut.getStack().setVoxel(x+5,y+5,impOut.getStackIndex(2,s+2,1)-1,
 										iMax/2.0);								
 							}
 						}			

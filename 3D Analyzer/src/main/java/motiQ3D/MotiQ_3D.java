@@ -1,10 +1,10 @@
 /***===============================================================================
  * 
- * MotiQ_3D Version plugin for ImageJ, Version v0.1.3
+ * MotiQ_3D Version plugin for ImageJ, Version v0.1.5
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: July 28, 2014 
- * This Version: January 15, 2018
+ * This Version: April 15, 2019
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ import java.text.*;
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String pluginName = "MotiQ 3D Analyzer";
-	static final String pluginVersion = "v0.1.4";
+	static final String pluginVersion = "v0.1.5";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -1375,8 +1375,15 @@ public void run(String arg) {
 					if(skeletonize){
 						IJ.saveAs(allParticles.skeletonImp, "tif", subfolderPrefix + "_Skl.tif");
 					}
-					
-					allParticles.save3DVisualizations(subfolderPrefix, RPSuffix, v3D);
+					try{
+						allParticles.save3DVisualizations(subfolderPrefix, RPSuffix, v3D);
+					}catch(Exception e){
+						String out = "";
+						for(int err = 0; err < e.getStackTrace().length; err++){
+							out += " \n " + e.getStackTrace()[err].toString();
+						}
+						progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": No 3D visualization generated - an error occured: " + out,ProgressDialog.NOTIFICATION);						
+					}					
 					allParticles.closeImps();
 					System.gc();
 				}else if(mergeSelection.equals(mergeOrNotMerge[1])){
@@ -1386,7 +1393,15 @@ public void run(String arg) {
 						if(skeletonize){
 							IJ.saveAs(particleCollection.get(i).skeletonImp, "tif", subfolderPrefix + "_P" + dformat0.format(i+1) + "_Skl.tif");
 						}
-						particleCollection.get(i).save3DVisualizations(subfolderPrefix + "_P" + dformat0.format(i+1), RPSuffix, v3D);
+						try{
+							particleCollection.get(i).save3DVisualizations(subfolderPrefix + "_P" + dformat0.format(i+1), RPSuffix, v3D);
+						}catch(Exception e){
+							String out = "";
+							for(int err = 0; err < e.getStackTrace().length; err++){
+								out += " \n " + e.getStackTrace()[err].toString();
+							}
+							progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": No 3D visualization generated - an error occured: " + out,ProgressDialog.NOTIFICATION);		
+						}	
 						particleCollection.get(i).closeImps();
 						System.gc();
 					}				
