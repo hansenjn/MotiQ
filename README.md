@@ -19,6 +19,6 @@ Jan N. Hansen, Matthias Brückner, Marie J. Pietrowski, Jan F. Jikeli, Monika Pl
 (The publication is currently in press and available ahead of print at https://www.molbiolcell.org/doi/10.1091/mbc.E21-11-0585)
 
 ## Copyright notice and contacts
-Copyright (C) 2014-2021: Jan N. Hansen. 
+Copyright (C) 2014-2022: Jan N. Hansen. 
 
 Contact: jan.hansen (at) uni-bonn.de
