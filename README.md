@@ -12,7 +12,11 @@ Donwload a manual from this repository [here](https://github.com/hansenjn/MotiQ/
 To download the MotiQ tools, see [release page](https://github.com/hansenjn/MotiQ/releases).
 
 ## How to cite?
-When using any of the MotiQ plugins, please cite MotiQ by referencing its publication. *The publication is currently submitted for peer review*. Updated information will be available here soon. Please contact Jan Hansen (jan.hansen (at) uni-bonn.de) for more information, in case you need to cite *MotiQ* now.
+When using any of the MotiQ plugins, please cite MotiQ by referencing its publication:
+
+Jan N. Hansen, Matthias Brückner, Marie J. Pietrowski, Jan F. Jikeli, Monika Plescher, Hannes Beckert, Mareike Schnaars, Lorenz Fülle, Katharina Reitmeier, Thomas Langmann, Irmgard Förster, Delphine Boche, Gabor C. Petzold, and Annett Halle. MotiQ: an open-source toolbox to quantify the cell motility and morphology of microglia. Molecular biology of the cell, in press (2022). https://doi.org/10.1091/mbc.E21-11-0585
+
+(The publication is currently in press and available ahead of print at https://www.molbiolcell.org/doi/10.1091/mbc.E21-11-0585)
 
 ## Copyright notice and contacts
 Copyright (C) 2014-2021: Jan N. Hansen. 
