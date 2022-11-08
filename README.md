@@ -16,8 +16,6 @@ When using any of the MotiQ plugins, please cite MotiQ by referencing its public
 
 Jan N. Hansen, Matthias Brückner, Marie J. Pietrowski, Jan F. Jikeli, Monika Plescher, Hannes Beckert, Mareike Schnaars, Lorenz Fülle, Katharina Reitmeier, Thomas Langmann, Irmgard Förster, Delphine Boche, Gabor C. Petzold, and Annett Halle. MotiQ: an open-source toolbox to quantify the cell motility and morphology of microglia. *Molecular biology of the cell*, 33:11 (**2022**). https://doi.org/10.1091/mbc.E21-11-0585
 
-(The publication is currently in press and available ahead of print at https://www.molbiolcell.org/doi/10.1091/mbc.E21-11-0585)
-
 ## Copyright notice and contacts
 Copyright (C) 2014-2022: Jan N. Hansen. 
 
