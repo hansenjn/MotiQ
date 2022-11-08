@@ -1,5 +1,5 @@
 # MotiQ
-An set of ImageJ plugins to quantify dynamics, morphology, and fluorescence of microglial cells (or other branched cells).
+An set of ImageJ plugins to quantify dynamics, morphology, and fluorescence of microglial (or other) cells.
 
 ## Included tools
 - **MotiQ_Cropper**: An ImageJ plugin to efficiently select individual cells from single images, time-lapse images, static 3D images, or time-lapse 3D images.
