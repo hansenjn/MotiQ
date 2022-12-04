@@ -34,7 +34,7 @@ Since December 2022, MotiQ can be simply installed through FIJIs update manager.
    <img src="https://user-images.githubusercontent.com/27991883/205484622-704c0546-ae06-4858-8b0d-89be969f5770.png" width=300>
 </p>
 
-- When it completed it will automatically close and open the following dialog (note that if you haven't updated your FIJI for a long time here may be a lot of updates listed - this is no problem you can just update everything along with installing CiliaQ so just continue with the following descriptions).
+- When it completed it will automatically close and open the following dialog (note that if you haven't updated your FIJI for a long time here may be a lot of updates listed - this is no problem you can just update everything along with installing MotiQ so just continue with the following descriptions).
 
 <p align="center">
    <img src="https://user-images.githubusercontent.com/27991883/205484704-8786306c-7ce0-41d0-8967-167a7c461cbc.png" width=500>
