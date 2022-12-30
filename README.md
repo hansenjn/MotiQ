@@ -22,4 +22,4 @@ Contact: jan.hansen (at) uni-bonn.de
 MotiQ is a set of ImageJ plugins that can be run in ImageJ or the extended ImageJ version FIJI. Please follow our [installation guide in the MotiQ wiki](https://github.com/hansenjn/MotiQ/wiki/Installation) to install FIJI / ImageJ and MotiQ to your computer.
 
 ### Applying MotiQ
-Donwload a manual from this repository [here](https://github.com/hansenjn/MotiQ/blob/master/Manual/MotiQ_Manual_v2021-1.pdf). Example settings can also be found in the original MotiQ publication. Note that MotiQ settings may require to be optimized for your data set before MotiQ can deliver perfect results.
+Donwload a manual from this repository [here](https://github.com/hansenjn/MotiQ/blob/master/Manual/MotiQ_Manual_v2021-1.pdf). Example settings can also be found in the original MotiQ publication. Note that MotiQ settings may require to be optimized for your data set before MotiQ can deliver perfect results. Visit the [MotiQ wiki](https://github.com/hansenjn/MotiQ/wiki) for more advice.
