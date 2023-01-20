@@ -1,10 +1,10 @@
 /***===============================================================================
  *  
- * MotiQ_thresholder plugin for ImageJ, Version v0.1.1
+ * MotiQ_thresholder plugin for ImageJ, Version v0.1.3
  * 
- * Copyright (C) 2015-2017 Jan Niklas Hansen
+ * Copyright (C) 2015-2023 Jan Niklas Hansen
  * First version: January 05, 2015
- * This version: May 03, 2017
+ * This version: January 20, 2023
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +19,7 @@
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * 
- * For any questions please feel free to contact me (jan.hansen@caesar.de).
+ * For any questions please feel free to contact me (jan.hansen@uni-bonn.de).
  * 
  * =============================================================================**/
 
@@ -27,6 +27,7 @@ package motiQ_thr;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.*;
 import javax.swing.UIManager;
 
@@ -39,13 +40,10 @@ import ij.plugin.*;
 import ij.text.*;
 import java.text.*;
 
-//import fiji.threshold.*;
-//import ij.plugin.Thresholder;
-
 public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Name variables
 	final static String PLUGINNAME = "MotiQ_thresholder";
-	final static String PLUGINVERSION = "v0.1.2";
+	final static String PLUGINVERSION = "v0.1.3";
 	
 	//Fonts
 	static final Font SuperHeadingFont = new Font("Sansserif", Font.BOLD, 16);
@@ -312,13 +310,13 @@ public void run(String arg) {
 			if(getImageByName){
 				String parentname = name[task];
 				if(parentname.contains(nameSuffix)){
-					parentname = name[task].substring(0,name[task].indexOf(nameSuffix));	//Remove Datatype-Ending from name
+					parentname = name[task].substring(0,name[task].lastIndexOf(nameSuffix));	//Remove Datatype-Ending from name
 					parentname += parentEnding;
 	//				IJ.log("Task " + (task+1) + "/" + tasks + ": Parentname: " + parentname);
 					parName = parentname;
 					parDir = dir [task];
 				}else{
-					progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": no parent image found! Image cannot be processed!", ProgressDialog.ERROR);
+					progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": no parent image name could be determined - suffix could not be found! Image cannot be processed since parent image cannot be determined!", ProgressDialog.ERROR);
 					progressDialog.moveTask(task);	
 					break running;
 				}			
@@ -329,15 +327,13 @@ public void run(String arg) {
 			   	ImagePlus imp;
 			   	try{
 			   		if(selectedTaskVariant.equals(taskVariant[1])){
-			   			imp = IJ.openImage(""+dir[task]+name[task]+"");			   			
-						imp.deleteRoi();
+			   			imp = IJ.openImage(""+dir[task]+name[task]+"");
 			   		}else if(selectedTaskVariant.equals(taskVariant[0])){
 			   			imp = WindowManager.getCurrentImage();
-			   			imp.deleteRoi();
 			   		}else{
 			   			imp = allImps[task];
-			   			imp.deleteRoi();
-			   		}
+			   		}			   			
+					imp.deleteRoi();
 			   	}catch (Exception e) {
 			   		progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": file is no image - could not be processed!", ProgressDialog.ERROR);
 					progressDialog.moveTask(task);	
@@ -384,6 +380,11 @@ public void run(String arg) {
 			//open reference Image and scale it
 			   	ImagePlus primaryParImp;
 			 	if(useAlternateRef){
+			 		if(!new File(parDir+parName).exists()) {
+			 			progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": Could not find the parent image in the same folder. Make sure that the file <" + parName + "> is in the same folder as <" + name[task] + "> (so in folder " + dir[task] + ")!", ProgressDialog.ERROR);
+			 			progressDialog.moveTask(task);	
+						break running;
+			 		}
 			   		primaryParImp = IJ.openImage(""+parDir+parName+"");
 			   	}else{
 			   		parDir = dir[task];
@@ -416,6 +417,7 @@ public void run(String arg) {
 				//reorder hyperstack
 				if(parImp.getStackSize()>1)	parImp = HyperStackConverter.toHyperStack(parImp, 1, primaryParImp.getNSlices(), primaryParImp.getNFrames(), "default", "Color");
 				primaryParImp.close();	
+				System.gc();
 			//open reference Image and scale it
 			
 				/**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -514,6 +516,7 @@ public void run(String arg) {
 							selectedImp.close();
 							selectedParImp.changes = false;
 							selectedParImp.close();
+							System.gc();
 							
 							for(int t = startGroup-1; t < endGroup; t++){
 								for(int s = 0; s < imp.getNSlices(); s++){
@@ -521,7 +524,6 @@ public void run(String arg) {
 								}								
 								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
-							System.gc();
 						}
 					}
 					
@@ -568,8 +570,8 @@ public void run(String arg) {
 							selectedImp.changes = false;
 							selectedImp.close();
 							selectedParImp.changes = false;
-							selectedParImp.close();
-							System.gc();							
+							selectedParImp.close();	
+							System.gc();
 						}
 					}
 					
@@ -626,7 +628,7 @@ public void run(String arg) {
 							selectedImp.close();
 							selectedParImp.changes = false;
 							selectedParImp.close();
-							System.gc();							
+							System.gc();
 						}
 					}
 					
@@ -644,7 +646,7 @@ public void run(String arg) {
 						selectedImp.close();
 						selectedParImp.changes = false;
 						selectedParImp.close();
-						System.gc();		
+						System.gc();
 						
 						progressDialog.setBar(0.5);
 					}
@@ -857,7 +859,7 @@ public void run(String arg) {
 														
 							selectedParImp.changes = false;
 							selectedParImp.close();
-							System.gc();							
+							System.gc();
 						}
 					}
 					
@@ -881,7 +883,7 @@ public void run(String arg) {
 						
 						selectedParImp.changes = false;
 						selectedParImp.close();
-						System.gc();		
+						System.gc();
 					}
 					
 					//generate local thresholded binary image
@@ -889,7 +891,6 @@ public void run(String arg) {
 				}
 				parImp.changes = false;
 				parImp.close();
-				System.gc();
 				
 				if(keepIntensities == false){
 					IJ.run(imp, "Grays", "");
