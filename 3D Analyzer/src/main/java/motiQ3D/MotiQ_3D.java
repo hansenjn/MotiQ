@@ -242,7 +242,7 @@ public void run(String arg) {
 				name [0] = info.fileName;	//get name
 				dir [0] = info.directory;	//get directory		
 			}catch(Exception e) {
-				IJ.error(PLUGINNAME + " cannot retrieve information on where the image is saved. Save the image to be analyzed and relaunch " + PLUGINNAME + " to process it.");
+				IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + "is saved. Save the image and relaunch " + PLUGINNAME + ".");
 				return;
 			}
 			
@@ -257,8 +257,13 @@ public void run(String arg) {
 			if(tasks == 1){
 				selectedTaskVariant=taskVariant[0];
 				FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
-				name [0] = info.fileName;	//get name
-				dir [0] = info.directory;	//get directory
+				try {
+					name [0] = info.fileName;	//get name
+					dir [0] = info.directory;	//get directory
+				}catch(Exception e) {
+					IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + "is saved. Save the image and relaunch " + PLUGINNAME + ".");
+					return;
+				}
 			}else{
 				name = new String [tasks];
 				dir = new String [tasks];
@@ -266,8 +271,13 @@ public void run(String arg) {
 				for(int i = 0; i < tasks; i++){
 					allImps[i] = WindowManager.getImage(IDlist[i]); 
 					FileInfo info = allImps[i].getOriginalFileInfo();
-					name [i] = info.fileName;	//get name
-					dir [i] = info.directory;	//get directory
+					try {
+						name [i] = info.fileName;	//get name
+						dir [i] = info.directory;	//get directory
+					}catch(Exception e) {
+						IJ.error(PLUGINNAME + " cannot retrieve where the image " + allImps[i].getTitle() + "is saved. Save the image and relaunch " + PLUGINNAME + ".");
+						return;
+					}
 				}		
 			}
 					
