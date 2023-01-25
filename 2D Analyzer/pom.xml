@@ -2,23 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
    
-<!-- 	<parent> -->
-<!-- 		<groupId>org.scijava</groupId> -->
-<!-- 		<artifactId>pom-scijava</artifactId> -->
-<!-- 		<version>14.0.0</version> -->
-<!-- 		<relativePath /> -->
-<!-- 	</parent> -->
-
     <parent>
-		<groupId>sc.fiji</groupId>
-		<artifactId>pom-fiji</artifactId>
-		<version>17.0.0</version>
-		<relativePath />
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>17.1.1</version>
+		<relativePath/>
 	</parent>
  
  	<artifactId>MotiQ_2D</artifactId>
  	<groupId>JNH</groupId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.4-SNAPSHOT</version>
  
 <!-- Plugin Information -->
     <name>MotiQ 2D Analyzer</name>
@@ -42,10 +35,10 @@
         <developer>
             <id></id>
             <name>Jan N Hansen</name>
-            <email>jan.hansen@caesar.de</email>
-            <url>r</url>
-            <organization></organization>
-            <organizationUrl></organizationUrl>
+            <email>jan.hansen@uni-bonn.de</email>
+            <url>https://github.com/hansenjn</url>
+            <organization>JNH</organization>
+            <organizationUrl>https://github.com/hansenjn</organizationUrl>
             <roles>
                 <role>founder</role>
                 <role>lead</role>
@@ -74,12 +67,12 @@
 		</mailingList>
 	</mailingLists>
  	
-<!--  	<scm> -->
-<!-- 		<connection>scm:git:git://github.com/hansenjn/MotiQ/2D Analyzer</connection> -->
-<!-- 		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ/2D Analyzer</developerConnection> -->
-<!-- 		<tag>HEAD</tag> -->
-<!-- 		<url>https://github.com/hansenjn/MotiQ/2D Analyzer</url> -->
-<!-- 	</scm> -->
+ 	<scm>
+		<connection>scm:git:git://github.com/hansenjn/MotiQ/2D Analyzer/</connection>
+		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ/2D Analyzer/</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/hansenjn/MotiQ/2D Analyzer/</url>
+	</scm>
  	
  	<issueManagement>
 		<system>GitHub Issues</system>
@@ -95,15 +88,8 @@
 		<package-name>motiQ2D</package-name>
 		<license.licenseName>gpl_v3</license.licenseName>
 		<license.copyrightOwners>Jan Niklas Hansen.</license.copyrightOwners>
-		<license.projectName>MotiQ_3D_analyzer plugin for ImageJ.</license.projectName>
+		<license.projectName>MotiQ_2D_analyzer plugin for ImageJ.</license.projectName>
 	</properties>
- 	
- 	<repositories>
-        <repository>
-            <id>imagej.public</id>
-            <url>http://maven.imagej.net/content/groups/public</url>
-        </repository>
-    </repositories>
  
 <!-- TODO: See Optional Dependencies section -->
     <dependencies>
@@ -111,15 +97,7 @@
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
-        </dependency>        
-                <dependency>
-            <groupId>sc.fiji</groupId>
-  			<artifactId>AnalyzeSkeleton_</artifactId>
-        </dependency>	
-         <dependency>
-            <groupId>sc.fiji</groupId>
-  			<artifactId>Skeletonize3D_</artifactId>
-        </dependency>	
+        </dependency>
     </dependencies>  
     
     <build>
@@ -127,11 +105,20 @@
     	<outputDirectory>target/classes</outputDirectory>
     	<finalName>${artifactId}-${version}</finalName>
 		<plugins>
+			<!--         avoid errors in java doc creation -->			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+			
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<projectName>MotiQ 2D analyzer for ImageJ.</projectName>
-					<organizationName>Jan Niklas Hansen</organizationName>
+					<organizationName>Jan N. Hansen</organizationName>
 					<archive>
 						<manifest>
 							<mainClass>${main-class}</mainClass>
