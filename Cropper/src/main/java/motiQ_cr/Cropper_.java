@@ -2,7 +2,7 @@
  * 
  * MotiQ_cropper plugin for ImageJ, Version v0.1.2
  * 
- * Copyright (C) 2014-2017 Jan Niklas Hansen
+ * Copyright (C) 2014-2023 Jan N. Hansen
  * First version: December 01, 2014 
  * This Version: January 25, 2023
  * 
@@ -19,7 +19,7 @@
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  *    
- * For any questions please feel free to contact me (jan.hansen@caesar.de).
+ * For any questions please feel free to contact me (jan.hansen@uni-bonn.de).
  * 
  * ==============================================================================*/
 
