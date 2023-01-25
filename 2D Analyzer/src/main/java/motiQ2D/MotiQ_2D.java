@@ -233,9 +233,13 @@ public void run(String arg) {
 				name [0] = info.fileName;	//get name
 				dir [0] = info.directory;	//get directory
 			}catch(Exception e) {
-				IJ.error(PLUGINNAME + " cannot retrieve where the image is saved. Save the image and relaunch " + PLUGINNAME + ".");
+				IJ.error(PLUGINNAME + " cannot retrieve where the image "  + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
 				return;
-			}	
+			}
+			if(!new File(dir[0] + name[0]).exists()){
+				IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+				return;
+			}
 			tasks = 1;
 		}else if(selectedTaskVariant.equals(taskVariant[2])){	// all open images
 			if(WindowManager.getIDList()==null){
@@ -253,7 +257,11 @@ public void run(String arg) {
 					name [0] = info.fileName;	//get name
 					dir [0] = info.directory;	//get directory
 				}catch(Exception e) {
-					IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + "is saved. Save the image and relaunch " + PLUGINNAME + ".");
+					IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+					return;
+				}
+				if(!new File(dir[0] + name[0]).exists()){
+					IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
 					return;
 				}
 			}else{
@@ -267,7 +275,11 @@ public void run(String arg) {
 						name [i] = info.fileName;	//get name
 						dir [i] = info.directory;	//get directory
 					}catch(Exception e) {
-						IJ.error(PLUGINNAME + " cannot retrieve where the image " + allImps[i].getTitle() + "is saved. Save the image and relaunch " + PLUGINNAME + ".");
+						IJ.error(PLUGINNAME + " cannot retrieve where the image " + allImps[i].getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+						return;
+					}
+					if(!new File(dir[i] + name[i]).exists()){
+						IJ.error(PLUGINNAME + " cannot retrieve where the image " + allImps[i].getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
 						return;
 					}
 				}		
