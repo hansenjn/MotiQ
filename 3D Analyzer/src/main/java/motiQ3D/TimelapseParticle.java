@@ -230,8 +230,7 @@ public class TimelapseParticle{
 			if(pointList[i][3]/timePerFrame<tMin)	tMin = (int)Math.round(pointList[i][3]/timePerFrame);
 		}
 		points.clear();
-		System.gc();
-		
+
 		times = 1+tMax-tMin;
 		slices = 1+zMax-zMin;
 		width = 1+xMax-xMin;
@@ -803,7 +802,6 @@ public class TimelapseParticle{
 			tempImp.close();
 			particleImpGaussed.changes = false;
 			particleImpGaussed.close();
-			System.gc();			
 		}
 				
 //		progressDialog.notifyMessage("Step 3 TIMEDEP " + df.format(new Date()),ProgressDialog.NOTIFICATION);
@@ -882,8 +880,7 @@ public class TimelapseParticle{
 			}
 			int[][] floodNodes = new int[maxExtRetr][4];
 			int extensionsCounter, retractionsCounter;
-			for(int t = 1; t < times; t++){				
-				System.gc();
+			for(int t = 1; t < times; t++){
 				for(int z = 0; z < slices; z++){
 					for(int x = 0; x < width; x++){
 						for(int y = 0; y < height; y++){
@@ -1447,7 +1444,6 @@ public class TimelapseParticle{
 		particleImp.close();
 		convexHullImp.changes = false;
 		convexHullImp.close();
-		System.gc();
 	}
 	
 	/**
@@ -1519,7 +1515,6 @@ public class TimelapseParticle{
 					}	
 				}				
 			}
-			System.gc();
 		//First 2D Hull -> point detection
 		
 //		hulling: while(true){		
@@ -1545,8 +1540,7 @@ public class TimelapseParticle{
 					if(itNewStCount[slice]>0){
 						//generate lists to connect to	
 						connectList1 = new ArrayList <Point3D> (itNewStCount[slice]);	//String connectStackPointString = "";
-						connectList2 = new ArrayList <Point3D> (iterativeNewSPCount+iterativeOldSPCount);	
-						System.gc();
+						connectList2 = new ArrayList <Point3D> (iterativeNewSPCount+iterativeOldSPCount);
 						
 							//String connectStackPointString = "";
 						for(int l = 0; l < pList.size(); l++){
@@ -1993,7 +1987,6 @@ public class TimelapseParticle{
 			impOut.changes = false;
 			impOut.close();
 		}
-		System.gc();
 	}
 	
 	/**
