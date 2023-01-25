@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
- 
- 	<parent>
+
+	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>14.0.0</version>
+		<version>17.1.1</version>
 		<relativePath />
 	</parent>
- 
-	<!-- <parent>
-		<groupId>sc.fiji</groupId>
-		<artifactId>pom-fiji</artifactId>
-		<version>17.0.0</version>
-		<relativePath />
-	</parent> -->    
- 
+  
  	<artifactId>MotiQ_Cropper</artifactId>
  	<groupId>JNH</groupId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
  
 <!-- Plugin Information -->
     <name>MotiQ Cropper</name>
@@ -42,10 +35,10 @@
         <developer>
             <id></id>
             <name>Jan N Hansen</name>
-            <email>jan.hansen@caesar.de</email>
-            <url>r</url>
-            <organization></organization>
-            <organizationUrl></organizationUrl>
+            <email>jan.hansen@uni-bonn.de</email>
+            <url>https://github.com/hansenjn</url>
+            <organization>JNH</organization>
+            <organizationUrl>https://github.com/hansenjn/</organizationUrl>
             <roles>
                 <role>founder</role>
                 <role>lead</role>
@@ -96,14 +89,7 @@
 		<license.copyrightOwners>Jan Niklas Hansen.</license.copyrightOwners>
 		<license.projectName>MotiQ_cropper plugin for ImageJ.</license.projectName>
 	</properties>
- 	
-<!--  	<repositories> -->
-<!--         <repository> -->
-<!--             <id>imagej.public</id> -->
-<!--             <url>http://maven.imagej.net/content/groups/public</url> -->
-<!--         </repository> -->
-<!--     </repositories> -->
- 
+	
     <dependencies>
         <!-- ImageJ dependencies -->
         <dependency>

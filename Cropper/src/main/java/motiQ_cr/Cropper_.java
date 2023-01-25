@@ -1,10 +1,10 @@
 /**===============================================================================
  * 
- * MotiQ_cropper plugin for ImageJ, Version v0.1.1
+ * MotiQ_cropper plugin for ImageJ, Version v0.1.2
  * 
  * Copyright (C) 2014-2017 Jan Niklas Hansen
  * First version: December 01, 2014 
- * This Version: May 03, 2017
+ * This Version: January 25, 2023
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@ import java.text.*;
 
 public class Cropper_ implements PlugIn, Measurements {
 	static final String PLUGINNAME = "MotiQ_cropper";
-	static final String PLUGINVERSION = "v0.1.1";
+	static final String PLUGINVERSION = "v0.1.2";
 	static final SimpleDateFormat yearOnly = new SimpleDateFormat("yyyy");
 	
 	//Fonts
@@ -107,8 +107,13 @@ public void run(String arg) {
 	}else if (selectedTaskVariant.equals(taskVariant[0])){
 		imp = WindowManager.getCurrentImage();		
 		FileInfo info = imp.getOriginalFileInfo();
-		name = info.fileName;	//get name
-		dir = info.directory;	//get directory
+		try {
+			name = info.fileName;	//get name
+			dir = info.directory;	//get directory			
+		}catch(Exception e) {
+			IJ.error("MotiQ Cropper can only process an image that is saved. Save the image and relaunch MotiQ Cropper to process it.");
+			return;
+		}
 	}
 	  
 	final ImagePlus impSave = imp.duplicate();
