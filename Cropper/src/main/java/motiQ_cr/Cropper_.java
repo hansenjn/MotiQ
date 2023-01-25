@@ -27,6 +27,7 @@ package motiQ_cr;
 
 import java.awt.*;
 import java.awt.Font;
+import java.io.File;
 import java.util.*;
 import ij.*;
 import ij.gui.*;
@@ -111,7 +112,11 @@ public void run(String arg) {
 			name = info.fileName;	//get name
 			dir = info.directory;	//get directory			
 		}catch(Exception e) {
-			IJ.error("MotiQ Cropper can only process an image that is saved. Save the image and relaunch MotiQ Cropper to process it.");
+			IJ.error(PLUGINNAME + " cannot retrieve where the image " + imp.getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+			return;
+		}
+		if(!new File(dir + name).exists()){
+			IJ.error(PLUGINNAME + " cannot retrieve where the image " + imp.getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
 			return;
 		}
 	}

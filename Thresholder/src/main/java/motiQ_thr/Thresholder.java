@@ -1,8 +1,8 @@
 /***===============================================================================
  *  
- * MotiQ_thresholder plugin for ImageJ, Version v0.1.3
+ * MotiQ_thresholder plugin for ImageJ
  * 
- * Copyright (C) 2015-2023 Jan Niklas Hansen
+ * Copyright (C) 2015-2023 Jan N. Hansen
  * First version: January 05, 2015
  * This version: January 20, 2023
  * 
@@ -239,8 +239,17 @@ public void run(String arg) {
 				return;
 			}
 			FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
-			name [0] = info.fileName;	//get name
-			dir [0] = info.directory;	//get directory
+			try {
+				name [0] = info.fileName;	//get name
+				dir [0] = info.directory;	//get directory
+			}catch(Exception e) {
+				IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+				return;
+			}
+			if(!new File(dir[0] + name[0]).exists()){
+				IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+				return;
+			}
 			tasks = 1;
 		}else if(selectedTaskVariant.equals(taskVariant[2])){	// all open images
 			if(WindowManager.getIDList()==null){
@@ -252,8 +261,17 @@ public void run(String arg) {
 			if(tasks == 1){
 				selectedTaskVariant=taskVariant[0];
 				FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
-				name [0] = info.fileName;	//get name
-				dir [0] = info.directory;	//get directory
+				try {
+					name [0] = info.fileName;	//get name
+					dir [0] = info.directory;	//get directory
+				}catch(Exception e) {
+					IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+					return;
+				}
+				if(!new File(dir[0] + name[0]).exists()){
+					IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+					return;
+				}
 			}else{
 				name = new String [tasks];
 				dir = new String [tasks];
@@ -261,8 +279,17 @@ public void run(String arg) {
 				for(int i = 0; i < tasks; i++){
 					allImps[i] = WindowManager.getImage(IDlist[i]); 
 					FileInfo info = allImps[i].getOriginalFileInfo();
-					name [i] = info.fileName;	//get name
-					dir [i] = info.directory;	//get directory
+					try {
+						name [i] = info.fileName;	//get name
+						dir [i] = info.directory;	//get directory
+					}catch(Exception e) {
+						IJ.error(PLUGINNAME + " cannot retrieve where the image " + allImps[i].getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+						return;
+					}
+					if(!new File(dir[i] + name[i]).exists()){
+						IJ.error(PLUGINNAME + " cannot retrieve where the image " + allImps[i].getTitle() + " is saved. \nSave the image and relaunch " + PLUGINNAME + ".");
+						return;
+					}
 				}		
 			}
 					
