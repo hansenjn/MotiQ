@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
   	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
@@ -33,10 +34,10 @@
 	<developers>
         <developer>
             <id></id>
-            <name>Jan Niklas Hansen</name>
+            <name>Jan N. Hansen</name>
             <email>jan.hansen@uni-bonn.de</email>
-            <url>r</url>
-            <organization></organization>
+            <url>https://github.com/hansenjn</url>
+            <organization>JNH</organization>
             <organizationUrl>https://github.com/hansenjn</organizationUrl>
             <roles>
                 <role>founder</role>
@@ -124,7 +125,7 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<projectName>MotiQ 3D analyzer for ImageJ.</projectName>
-					<organizationName>Jan Niklas Hansen</organizationName>
+					<organizationName>Jan N. Hansen</organizationName>
 					<archive>
 						<manifest>
 							<mainClass>${main-class}</mainClass>
