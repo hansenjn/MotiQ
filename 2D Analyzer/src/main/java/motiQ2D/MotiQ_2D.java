@@ -1,10 +1,10 @@
 /***===============================================================================
  *  
- * MotiQ_2D plugin for imageJ, Version v0.1.3
+ * MotiQ_2D plugin for imageJ
  * 
- * Copyright (C) 2014-2017 Jan Niklas Hansen
+ * Copyright (C) 2014-2023 Jan N. Hansen
  * First version: November 07, 2014  
- * This Version: April 15, 2019
+ * This Version: January 25, 2023
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import java.text.*;
 public class MotiQ_2D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 2D Analyzer";
-	static final String PLUGINVERSION = "v0.1.3";
+	static final String PLUGINVERSION = "v0.1.4";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -229,8 +229,13 @@ public void run(String arg) {
 				return;
 			}
 			FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
-			name [0] = info.fileName;	//get name
-			dir [0] = info.directory;	//get directory
+			try {
+				name [0] = info.fileName;	//get name
+				dir [0] = info.directory;	//get directory
+			}catch(Exception e) {
+				IJ.error(PLUGINNAME + " cannot retrieve where the image is saved. Save the image and relaunch " + PLUGINNAME + ".");
+				return;
+			}	
 			tasks = 1;
 		}else if(selectedTaskVariant.equals(taskVariant[2])){	// all open images
 			if(WindowManager.getIDList()==null){
@@ -244,15 +249,27 @@ public void run(String arg) {
 				FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
 				name [0] = info.fileName;	//get name
 				dir [0] = info.directory;	//get directory
+				try {
+					name [0] = info.fileName;	//get name
+					dir [0] = info.directory;	//get directory
+				}catch(Exception e) {
+					IJ.error(PLUGINNAME + " cannot retrieve where the image " + WindowManager.getCurrentImage().getTitle() + "is saved. Save the image and relaunch " + PLUGINNAME + ".");
+					return;
+				}
 			}else{
 				name = new String [tasks];
 				dir = new String [tasks];
 				allImps = new ImagePlus [tasks];
 				for(int i = 0; i < tasks; i++){
 					allImps[i] = WindowManager.getImage(IDlist[i]); 
-					FileInfo info = allImps[i].getOriginalFileInfo();
-					name [i] = info.fileName;	//get name
-					dir [i] = info.directory;	//get directory
+					FileInfo info = allImps[i].getOriginalFileInfo();					
+					try {
+						name [i] = info.fileName;	//get name
+						dir [i] = info.directory;	//get directory
+					}catch(Exception e) {
+						IJ.error(PLUGINNAME + " cannot retrieve where the image " + allImps[i].getTitle() + "is saved. Save the image and relaunch " + PLUGINNAME + ".");
+						return;
+					}
 				}		
 			}
 					
