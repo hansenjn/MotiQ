@@ -2,9 +2,9 @@
  * 
  * MotiQ_3D Version plugin for ImageJ
  * 
- * Copyright (C) 2014-2023 Jan N. Hansen
+ * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: July 28, 2014 
- * This Version: January 25, 2023
+ * This Version: July 25, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,7 +42,7 @@ import java.text.*;
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 3D Analyzer";
-	static final String PLUGINVERSION = "v0.2.0";
+	static final String PLUGINVERSION = "v0.3.0";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -113,88 +113,263 @@ public void run(String arg) {
 	//-------------------------GenericDialog--------------------------------------
 	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	
-	GenericDialog gd = new GenericDialog(PLUGINNAME + " - settings");
-	//show Dialog-----------------------------------------------------------------
-//	gd.setInsets(0,0,0); (top, left, bottom)
-	gd.setInsets(0,0,0);	gd.addMessage(PLUGINNAME + ", version " + PLUGINVERSION 
-			+ " (\u00a9 2014 - " + yearOnly.format(new Date()) + ", Jan N. Hansen)", SuperHeadingFont);
-//	gd.setInsets(-5,0,0);	gd.addMessage("WARNING: This version is not compatible with versions of Jan 2016 or earlier!", InstructionsFont);
-	
-//	gd.setInsets(5,0,0);	gd.addMessage("Input image location", SubHeadingFont);
-	gd.setInsets(5,0,0);	gd.addChoice("Process ", taskVariant, selectedTaskVariant);
-	
-	gd.setInsets(5,0,0);	gd.addMessage("Calibration", SubHeadingFont);
-	gd.setInsets(5,0,0);	gd.addCheckbox("Re-calibrate image:", recalibrate);
-	gd.setInsets(0,0,0);	gd.addNumericField("Length calibration [calibration unit/px]: ", calibration, 4);
-	gd.setInsets(0,0,0);	gd.addNumericField("Voxel depth [calibration unit/voxel]: ", voxelDepth, 4);
-	gd.setInsets(0,0,0);	gd.addStringField("Calibration unit: ", calibrationDimension);
-	gd.setInsets(5,0,0);	gd.addNumericField("Time interval: [time unit]: ", timePerFrame, 2);
-	gd.setInsets(0,0,0);	gd.addChoice("Time unit: ", timeFormats, timeUnit);
-		
-	gd.setInsets(5,0,0);	gd.addMessage("Particle filtering", SubHeadingFont);
-	gd.setInsets(0,0,0);	gd.addNumericField("Minimum particle volume [voxel]: ",  minParticleVolume, 0);
-	gd.setInsets(0,0,0);	gd.addCheckbox("In each time-step, remove all particles but the largest one.", onlyLargest);
-	
-	gd.setInsets(5,0,0);	gd.addMessage("Calculation", SubHeadingFont);
-	gd.setInsets(5,0,0);	gd.addNumericField("# time-steps grouped for long-term analysis: ", totalGroupSize, 0);
-	gd.setInsets(0,0,0);	gd.addChoice("Calculate results for", mergeOrNotMerge, mergeSelection);
-	gd.setInsets(5,0,0);	gd.addChoice("SKELETON options: ", sklOptions, sklOptionSelection);
-	gd.setInsets(5,0,0);	gd.addNumericField("Gauss filter prior to skeletonization - sigma XY and Z: ", gSigmaXY, 1);
-	gd.setInsets(-23,60,0);	gd.addNumericField("", gSigmaZ, 1);
-	
-	gd.setInsets(5,0,0);	gd.addMessage("Output", SubHeadingFont);
-	gd.setInsets(5,0,0);	gd.addChoice("Number format", nrFormats, ChosenNumberFormat);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Include date/time of analysis in output file-names", saveDate);
-	
-	gd.showDialog();
-	//show Dialog-----------------------------------------------------------------
+	//Check whether called by macro and if so do not show dialog.
+	boolean showDialog = true;
+//	IJ.log("Macro running? " + IJ.macroRunning() );
+//	IJ.log(Macro.getOptions());	
+    if (IJ.macroRunning()) {
+    	String macroOptions = Macro.getOptions().toLowerCase();
+    	
+//    	IJ.log("Macro Options: " + macroOptions);
+    	
+    	String temp;	
+    	selectedTaskVariant = taskVariant[0];
 
-	//show Dialog-----------------------------------------------------------------
-	
-	selectedTaskVariant = gd.getNextChoice();
-	
-	recalibrate = gd.getNextBoolean();
-	calibration = (double) gd.getNextNumber();
-	voxelDepth = (double) gd.getNextNumber();
-	calibrationDimension = gd.getNextString();
-	timePerFrame = (double) gd.getNextNumber();
-	if(timePerFrame==0.0){
-		timePerFrame=1.0;
-	}
-	timeUnit = gd.getNextChoice();
+		temp = "";
+    	if(macroOptions.contains("re-calibrate") || macroOptions.contains("recalibrate")) {
+    		recalibrate = true;
+    		
+    		temp = "";
+    		if(macroOptions.contains("length=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("length="));
+        		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+        		calibration = Double.parseDouble(temp);
+//    			IJ.log("detected calibration: " + calibration);
+    		}else if(macroOptions.contains("length-calibration=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("length-calibration=")); 
+    			temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    			calibration = Double.parseDouble(temp);
+//    			IJ.log("detected calibration: " + calibration);
+    		}
+    		
+    		if(macroOptions.contains("depth=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("depth="));
+        		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+        		voxelDepth = Double.parseDouble(temp);
+//        		IJ.log("detected voxelDepth: " + voxelDepth);
+    		}else if(macroOptions.contains("depth-calibration=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("depth-calibration=")); 
+    			temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    			voxelDepth = Double.parseDouble(temp);
+//    			IJ.log("detected voxelDepth: " + voxelDepth);
+    		}
+    		
+    		if(macroOptions.contains("alibration-unit=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("alibration-unit="));
+        		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+        		calibrationDimension = temp;
+//        		IJ.log("detected calibrationDimensions: " + calibrationDimension);
+    		}
+    		
+    		if(macroOptions.contains("ime-interval=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("ime-interval="));
+        		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+        		timePerFrame = Double.parseDouble(temp);
+        		if(timePerFrame==0.0){
+            		timePerFrame=1.0;
+            	}
+//        		IJ.log("detected timePerFrame: " + timePerFrame);
+    		}
+    		
+    		if(macroOptions.contains("ime-unit=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("ime-unit="));
+        		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+        		timeUnit = temp;
+//    			IJ.log("detected timeUnit: " + timeUnit);
+    		}
+    	}else {
+    		recalibrate = false;
+    	}
+    	
+    	if(macroOptions.contains("minimum-particle-volume=")){
+			temp = macroOptions.substring(macroOptions.indexOf("minimum-particle-volume="));
+    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    		minParticleVolume = Integer.parseInt(temp);
+//    		IJ.log("detected minParticleVolume: " + minParticleVolume);
+		}
+    	
+    	if(macroOptions.contains("remove-all-but-largest")){
+    		onlyLargest = true;
+		}else {
+			onlyLargest = false;
+		}
+//    	IJ.log("detect only largest: " + onlyLargest);
+    	
+    	if(macroOptions.contains("time-steps-grouped=")){
+			temp = macroOptions.substring(macroOptions.indexOf("time-steps-grouped="));
+    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    		totalGroupSize = Integer.parseInt(temp);
+//    		IJ.log("detected totalGroupSize: " + totalGroupSize);
+		}
+    	
+    	if(macroOptions.contains("calculate=")){
+			temp = macroOptions.substring(macroOptions.indexOf("calculate="));
+    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    		mergeSelection = temp;
+    		if(mergeSelection.contains("all")){
+    			mergeSelection = mergeOrNotMerge [0];
+    		}else {
+    			mergeSelection = mergeOrNotMerge [1];
+    		}
+//    		IJ.log("detected calculate: " + mergeSelection);
+		}
+    	    	
+    	if(macroOptions.contains("skeleton=")){
+			temp = macroOptions.substring(macroOptions.indexOf("skeleton="));
+    		temp = temp.substring(temp.indexOf("=")+1);
+    		
+    		if(temp.contains(sklOptions [0])){
+    			sklOptionSelection = sklOptions [0];
+        	}else if(temp.contains(sklOptions [1])){
+    			sklOptionSelection = sklOptions [1];
+        	}else if(temp.contains(sklOptions [2])){
+    			sklOptionSelection = sklOptions [2];
+        	}else {
+        		IJ.error("Could not interpret skeletonize option");
+        	}
+    		
+//    		IJ.log("detected skeleton: " + sklOptionSelection);
+		}   	
+    	if(sklOptionSelection.equals(sklOptions [0])){
+    		skeletonize = false;
+    	}else if(sklOptionSelection.equals(sklOptions [1])){
+    		skeletonize = true;
+    		binarizeBeforeSkl = false;		
+    	}else if(sklOptionSelection.equals(sklOptions [2])){
+    		skeletonize = true;
+    		binarizeBeforeSkl = true;
+    	}else {
+    		IJ.error("Could not interpret skeletonize option");
+    	}
+    	
+		if(macroOptions.contains("gauss-xy=")){
+			temp = macroOptions.substring(macroOptions.indexOf("gauss-xy="));
+    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    		gSigmaXY = Double.parseDouble(temp);
+//    		IJ.log("detected gSigmaXY: " + gSigmaXY);
+		}
+    	
+		if(macroOptions.contains("gauss-z=")){
+			temp = macroOptions.substring(macroOptions.indexOf("gauss-z="));
+    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    		gSigmaZ = Double.parseDouble(temp);
+//    		IJ.log("detected gSigmaZ: " + gSigmaZ);
+		}
 		
-	minParticleVolume = (int) gd.getNextNumber();
-	onlyLargest = gd.getNextBoolean();
-	
-	totalGroupSize = (int) gd.getNextNumber();
-	mergeSelection = gd.getNextChoice();
-	
-	sklOptionSelection = gd.getNextChoice();
-	if(sklOptionSelection.equals(sklOptions [0])){
-		skeletonize = false;
-	}else if(sklOptionSelection.equals(sklOptions [1])){
-		skeletonize = true;
-		binarizeBeforeSkl = false;		
-	}else if(sklOptionSelection.equals(sklOptions [2])){
-		skeletonize = true;
-		binarizeBeforeSkl = true;
-	}
-	gSigmaXY = (double) gd.getNextNumber();
-	gSigmaZ = (double) gd.getNextNumber();
+		if(macroOptions.contains("number-format=")){
+			temp = macroOptions.substring(macroOptions.indexOf("number-format="));
+			temp = temp.substring(temp.indexOf("=")+1);
+			temp = temp.substring(0,temp.indexOf(" "));
+			if(temp.contains("us")) {
+				ChosenNumberFormat = nrFormats[0];
+			}else {
+				ChosenNumberFormat = nrFormats[1];				
+			}
+//    		IJ.log("detected numberFormat: " + ChosenNumberFormat);
+		}
+		if(ChosenNumberFormat.equals(nrFormats[0])){
+    		dformat0.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    		dformat3.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    		dformat6.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    	}else if (ChosenNumberFormat.equals(nrFormats[1])){
+    		dformat0.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
+    		dformat3.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
+    		dformat6.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
+    	}
 		
-	ChosenNumberFormat = gd.getNextChoice();
-	if(ChosenNumberFormat.equals(nrFormats[0])){
-		dformat0.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-		dformat3.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-		dformat6.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-	}else if (ChosenNumberFormat.equals(nrFormats[1])){
-		dformat0.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
-		dformat3.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
-		dformat6.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
-	}
-	saveDate = gd.getNextBoolean();
+		if(macroOptions.contains("include-date")){
+			saveDate = true;
+//			IJ.log("detected saveDate: " + saveDate);
+		}
+		
+        showDialog = false;
+    }    
+
+    if(showDialog) {
+    	GenericDialog gd = new GenericDialog(PLUGINNAME + " - settings");
+    	//show Dialog-----------------------------------------------------------------
+//    	gd.setInsets(0,0,0); (top, left, bottom)
+    	gd.setInsets(0,0,0);	gd.addMessage(PLUGINNAME + ", version " + PLUGINVERSION 
+    			+ " (\u00a9 2014 - " + yearOnly.format(new Date()) + ", Jan N. Hansen)", SuperHeadingFont);
+//    	gd.setInsets(-5,0,0);	gd.addMessage("WARNING: This version is not compatible with versions of Jan 2016 or earlier!", InstructionsFont);
+    	
+//    	gd.setInsets(5,0,0);	gd.addMessage("Input image location", SubHeadingFont);
+    	gd.setInsets(5,0,0);	gd.addChoice("Process ", taskVariant, selectedTaskVariant);
+    	
+    	gd.setInsets(5,0,0);	gd.addMessage("Calibration", SubHeadingFont);
+    	gd.setInsets(5,0,0);	gd.addCheckbox("Re-calibrate image:", recalibrate);
+    	gd.setInsets(0,0,0);	gd.addNumericField("Length calibration [calibration unit/px]: ", calibration, 4);
+    	gd.setInsets(0,0,0);	gd.addNumericField("Voxel depth [calibration unit/voxel]: ", voxelDepth, 4);
+    	gd.setInsets(0,0,0);	gd.addStringField("Calibration unit: ", calibrationDimension);
+    	gd.setInsets(5,0,0);	gd.addNumericField("Time interval: [time unit]: ", timePerFrame, 2);
+    	gd.setInsets(0,0,0);	gd.addChoice("Time unit: ", timeFormats, timeUnit);
+    		
+    	gd.setInsets(5,0,0);	gd.addMessage("Particle filtering", SubHeadingFont);
+    	gd.setInsets(0,0,0);	gd.addNumericField("Minimum particle volume [voxel]: ",  minParticleVolume, 0);
+    	gd.setInsets(0,0,0);	gd.addCheckbox("In each time-step, remove all particles but the largest one.", onlyLargest);
+    	
+    	gd.setInsets(5,0,0);	gd.addMessage("Calculation", SubHeadingFont);
+    	gd.setInsets(5,0,0);	gd.addNumericField("# time-steps grouped for long-term analysis: ", totalGroupSize, 0);
+    	gd.setInsets(0,0,0);	gd.addChoice("Calculate results for", mergeOrNotMerge, mergeSelection);
+    	gd.setInsets(5,0,0);	gd.addChoice("SKELETON options: ", sklOptions, sklOptionSelection);
+    	gd.setInsets(5,0,0);	gd.addNumericField("Gauss filter prior to skeletonization - sigma XY and Z: ", gSigmaXY, 1);
+    	gd.setInsets(-23,60,0);	gd.addNumericField("", gSigmaZ, 1);
+    	
+    	gd.setInsets(5,0,0);	gd.addMessage("Output", SubHeadingFont);
+    	gd.setInsets(5,0,0);	gd.addChoice("Number format", nrFormats, ChosenNumberFormat);
+    	gd.setInsets(0,0,0);	gd.addCheckbox("Include date/time of analysis in output file-names", saveDate);
+    	
+    	gd.showDialog();
+    	//show Dialog-----------------------------------------------------------------
+
+    	//show Dialog-----------------------------------------------------------------
+    	
+    	selectedTaskVariant = gd.getNextChoice();
+    	
+    	recalibrate = gd.getNextBoolean();
+    	calibration = (double) gd.getNextNumber();
+    	voxelDepth = (double) gd.getNextNumber();
+    	calibrationDimension = gd.getNextString();
+    	timePerFrame = (double) gd.getNextNumber();
+    	if(timePerFrame==0.0){
+    		timePerFrame=1.0;
+    	}
+    	timeUnit = gd.getNextChoice();
+    		
+    	minParticleVolume = (int) gd.getNextNumber();
+    	onlyLargest = gd.getNextBoolean();
+    	
+    	totalGroupSize = (int) gd.getNextNumber();
+    	mergeSelection = gd.getNextChoice();
+    	
+    	sklOptionSelection = gd.getNextChoice();
+    	if(sklOptionSelection.equals(sklOptions [0])){
+    		skeletonize = false;
+    	}else if(sklOptionSelection.equals(sklOptions [1])){
+    		skeletonize = true;
+    		binarizeBeforeSkl = false;		
+    	}else if(sklOptionSelection.equals(sklOptions [2])){
+    		skeletonize = true;
+    		binarizeBeforeSkl = true;
+    	}
+    	gSigmaXY = (double) gd.getNextNumber();
+    	gSigmaZ = (double) gd.getNextNumber();
+    		
+    	ChosenNumberFormat = gd.getNextChoice();
+    	if(ChosenNumberFormat.equals(nrFormats[0])){
+    		dformat0.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    		dformat3.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    		dformat6.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    	}else if (ChosenNumberFormat.equals(nrFormats[1])){
+    		dformat0.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
+    		dformat3.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
+    		dformat6.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
+    	}
+    	saveDate = gd.getNextBoolean();
+    	
+    	if (gd.wasCanceled()) return;	
+    }
 	
-	if (gd.wasCanceled()) return;	
 	
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 							load image tasks

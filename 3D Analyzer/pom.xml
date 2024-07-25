@@ -11,7 +11,7 @@
  
  	<artifactId>MotiQ_3D</artifactId>
  	<groupId>JNH</groupId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
  
 <!-- Plugin Information -->
     <name>MotiQ 3D Analyzer</name>
@@ -68,10 +68,10 @@
 	</mailingLists>
  	
  	<scm>
-		<connection>scm:git:git://github.com/hansenjn/MotiQ/3D Analyzer/</connection>
-		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ/3D Analyzer/</developerConnection>
+		<connection>scm:git:git://github.com/hansenjn/MotiQ</connection>
+		<developerConnection>scm:git:git@github.com:hansenjn/MotiQ</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/hansenjn/MotiQ/3D Analyzer/</url>
+		<url>https://github.com/hansenjn/MotiQ</url>
 	</scm>
  	
  	<issueManagement>
@@ -96,21 +96,13 @@
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>ij</artifactId>
-        </dependency>        
-<!--         <dependency> -->
-<!--             <groupId>sc.fiji</groupId> -->
-<!--   			<artifactId>AnalyzeSkeleton_</artifactId> -->
-<!--         </dependency>	 -->
-<!--         <dependency> -->
-<!--             <groupId>sc.fiji</groupId> -->
-<!--   			<artifactId>Skeletonize3D_</artifactId> -->
-<!--         </dependency>	 -->
+        </dependency>
     </dependencies>  
     
     <build>
-        <directory>target</directory>
-    	<outputDirectory>target/classes</outputDirectory>
-    	<finalName>${project.artifactId}-${project.version}</finalName>
+<!--        <directory>target</directory>-->
+<!--    	<outputDirectory>target/classes</outputDirectory>-->
+<!--    	<finalName>${project.artifactId}-${project.version}</finalName>-->
 		<plugins>
 			<!--         avoid errors in java doc creation -->			
 			<plugin>
@@ -126,6 +118,9 @@
 				<configuration>
 					<projectName>MotiQ 3D analyzer for ImageJ.</projectName>
 					<organizationName>Jan N. Hansen</organizationName>
+					<descriptorRefs>
+            			<descriptorRef>jar-with-dependencies</descriptorRef>
+          			</descriptorRefs>
 					<archive>
 						<manifest>
 							<mainClass>${main-class}</mainClass>
