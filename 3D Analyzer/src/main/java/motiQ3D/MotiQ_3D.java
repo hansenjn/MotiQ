@@ -109,11 +109,11 @@ public class MotiQ_3D implements PlugIn, Measurements{
 	
 public void run(String arg) {
 	dformatdialog.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+	
 	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-	//-------------------------GenericDialog--------------------------------------
+	//-----------Eventually read settings from macro input------------------------
 	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	
-	//Check whether called by macro and if so do not show dialog.
 	boolean showDialog = true;
 //	IJ.log("Macro running? " + IJ.macroRunning() );
 //	IJ.log(Macro.getOptions());	
@@ -286,6 +286,10 @@ public void run(String arg) {
     }    
 
     if(showDialog) {
+    	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    	//-------------------------GenericDialog--------------------------------------
+    	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    	    	
     	GenericDialog gd = new GenericDialog(PLUGINNAME + " - settings");
     	//show Dialog-----------------------------------------------------------------
 //    	gd.setInsets(0,0,0); (top, left, bottom)
