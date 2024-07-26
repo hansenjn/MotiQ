@@ -126,8 +126,10 @@ public void run(String arg) {
     		
     		if(macroOptions.contains("automatically-find")) {
     			getImageByName = true;
-//    			IJ.log("detected getImageByName: " + getImageByName);
+    		}else {
+    			getImageByName = false;
     		}
+//			IJ.log("detected getImageByName: " + getImageByName);
     		
     		temp = "";
     		if(macroOptions.contains("begin-of-suffix=")){
@@ -156,8 +158,10 @@ public void run(String arg) {
     		
     		if(macroOptions.contains("restrict")) {
     			restrictToPos = true;
-//    			IJ.log("detected restrictToPos: " + restrictToPos);
+    		}else {
+    			restrictToPos = false;    			
     		}
+//			IJ.log("detected restrictToPos: " + restrictToPos);
     	}else {
     		useAlternateRef = false;
    			getImageByName = false;
@@ -173,8 +177,10 @@ public void run(String arg) {
     	
     	if(macroOptions.contains("convert")) {
 			conv8Bit = true;
-//			IJ.log("detected conv8Bit: " + conv8Bit);
+		}else {
+			conv8Bit = false;
 		}
+//		IJ.log("detected conv8Bit: " + conv8Bit);
     	    	
     	if(macroOptions.contains("threshold=")){
 			temp = macroOptions.substring(macroOptions.indexOf("threshold="));
@@ -213,12 +219,13 @@ public void run(String arg) {
 
     	if(macroOptions.contains("threshold-every-time-step")) {
 			separateFrames = true;
-//			IJ.log("detected separateFrames: " + separateFrames);
+		}else {
+			separateFrames = false;
 		}
+//		IJ.log("detected separateFrames: " + separateFrames);
     	
     	if(macroOptions.contains("threshold-only-distinct-times")) {
 			onlyTimeGroup = true;
-//			IJ.log("detected onlyTimeGroup: " + onlyTimeGroup);
 			
 			if(macroOptions.contains("start-time=")){
 				temp = macroOptions.substring(macroOptions.indexOf("start-time="));
@@ -233,7 +240,10 @@ public void run(String arg) {
 	    		endGroup = Integer.parseInt(temp);
 //	    		IJ.log("detected endGroup: " + endGroup);
 			}
+		}else {
+			onlyTimeGroup = false;
 		}
+//		IJ.log("detected onlyTimeGroup: " + onlyTimeGroup);
     	
     	if(macroOptions.contains("local-threshold")) {
 			localThreshold = true;
@@ -245,27 +255,38 @@ public void run(String arg) {
 	    		locThrRadius = Integer.parseInt(temp);
 //	    		IJ.log("detected locThrRadius: " + locThrRadius);
 			}
+		}else {
+			localThreshold = false;
 		}
+//		IJ.log("detected localThreshold: " + localThreshold);
     	
     	if(macroOptions.contains("fill-holes")) {
 			fillHoles = true;
-//			IJ.log("detected fillHoles: " + fillHoles);
+    	}else {
+    		fillHoles = false;
     	}
+//		IJ.log("detected fillHoles: " + fillHoles);
 
     	if(macroOptions.contains("keep-intensities")) {
     		keepIntensities = true;
-//			IJ.log("detected keepIntensities: " + keepIntensities);
-    	}    	
+    	}else {
+    		keepIntensities = false;
+    	}
+//		IJ.log("detected keepIntensities: " + keepIntensities);
 
     	if(macroOptions.contains("automatically-save")) {
     		autoSaveImage = true;
-//			IJ.log("detected autoSaveImage: " + autoSaveImage);
+    	}else {
+    		autoSaveImage = false;    		
     	}
+//		IJ.log("detected autoSaveImage: " + autoSaveImage);
 
 		if(macroOptions.contains("include-date")){
 			saveDate = true;
-//			IJ.log("detected saveDate: " + saveDate);
-		}    	
+		}else {
+			saveDate = false;
+		}
+//		IJ.log("detected saveDate: " + saveDate);
     	
         showDialog = false;
     }    

@@ -256,6 +256,8 @@ public void run(String arg) {
 		if(macroOptions.contains("include-date")){
 			saveDate = true;
 //			IJ.log("detected saveDate: " + saveDate);
+		}else {
+			saveDate = false;
 		}
 		
         showDialog = false;
