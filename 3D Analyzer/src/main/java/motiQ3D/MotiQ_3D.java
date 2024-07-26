@@ -417,8 +417,7 @@ public void run(String arg) {
 
 		Recorder.record = true;
 		
-    	Recorder.recordString("run(\"" + PLUGINNAME + " (" + PLUGINVERSION + ")\",\"" + recordString + "\");\n");
-    	
+    	Recorder.recordString("run(\"" + PLUGINNAME + " (" + PLUGINVERSION + ")\",\"" + recordString + "\");\n");    	
     }
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 							load image tasks
