@@ -104,6 +104,8 @@ public class MotiQ_2D implements PlugIn, Measurements{
 	boolean continueProcessing = true; 
 	boolean allTasksDone = false;
 	
+    boolean record = false;
+	
 public void run(String arg) {
 	dformatdialog.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
 	
@@ -264,7 +266,7 @@ public void run(String arg) {
         showDialog = false;
     }    
     
-    boolean record = false;
+    record = false;
     
     if(showDialog) {
     	if(Recorder.record) {
@@ -351,7 +353,11 @@ public void run(String arg) {
     	}
     	saveDate = gd.getNextBoolean();
     	
-    	if (gd.wasCanceled()) return;	
+    	if (gd.wasCanceled()) return;
+
+    	if(record) {
+    		Recorder.record = true;
+    	}
     }
     
     //Create macro recording string if macro recording activated:
@@ -495,6 +501,9 @@ public void run(String arg) {
 		progressDialog.setVisible(true);
 		progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
 	        public void windowClosing(WindowEvent winEvt) {
+	        	if(record) {
+	        		Recorder.record = true;
+	        	}
 	        	if(allTasksDone==false){
 	        		IJ.error("Script stopped...");
 	        	}
