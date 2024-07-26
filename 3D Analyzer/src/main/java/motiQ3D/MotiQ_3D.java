@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: July 28, 2014 
- * This Version: July 25, 2024
+ * This Version: July 26, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,13 +36,14 @@ import ij.gui.*;
 import ij.io.*;
 import ij.measure.*;
 import ij.plugin.*;
+import ij.plugin.frame.Recorder;
 import ij.text.*;
 import java.text.*;
 
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 3D Analyzer";
-	static final String PLUGINVERSION = "v0.3.0";
+	static final String PLUGINVERSION = "v0.3.1";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -287,7 +288,14 @@ public void run(String arg) {
         showDialog = false;
     }    
 
+    boolean record = false;
+    
     if(showDialog) {
+    	if(Recorder.record) {
+    		record = true;
+    		Recorder.record = false;
+    	}
+    	
     	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     	//-------------------------GenericDialog--------------------------------------
     	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -372,11 +380,46 @@ public void run(String arg) {
     		dformat6.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.GERMANY));
     	}
     	saveDate = gd.getNextBoolean();
-    	
-    	if (gd.wasCanceled()) return;	
+    	    	
+    	if (gd.wasCanceled()) return;
     }
-	
-	
+    
+    //Create macro recording string if macro recording activated:
+    if (record) {  
+    	String recordString = "";
+    	if(recalibrate) {
+    		recordString += "re-calibrate"
+    				+ " length=" + dformatdialog.format(calibration) 
+    				+ " depth=" + dformatdialog.format(voxelDepth)
+    				+ " calibration-unit=" + calibrationDimension
+    				+ " time-interval=" + dformatdialog.format(timePerFrame)
+    				+ " time-unit=" + timeUnit 
+    				+ " ";
+    	}
+    	recordString += "minimum-particle-volume=" + minParticleVolume + " ";
+    	if(onlyLargest) {
+        	recordString += "remove-all-but-largest ";    		
+    	}
+    	recordString += "time-steps-grouped=" + totalGroupSize + " ";
+    	recordString += "calculate=[" + mergeSelection + "] ";
+    	recordString += "skeleton=[" + sklOptionSelection + "] ";
+    	
+    	recordString += "gauss-xy=" + dformatdialog.format(gSigmaXY) + " ";
+    	recordString += "gauss-z=" + dformatdialog.format(gSigmaZ) + " ";
+
+    	recordString += "number-format=[" + ChosenNumberFormat + "] ";
+    	
+    	if(saveDate) {
+        	recordString += "include-date ";    		
+    	}
+    	
+    	recordString = recordString.substring(0,recordString.length()-1);
+
+		Recorder.record = true;
+		
+    	Recorder.recordString("run(\"" + PLUGINNAME + " (" + PLUGINVERSION + ")\",\"" + recordString + "\");\n");
+    	
+    }
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 							load image tasks
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
@@ -494,6 +537,9 @@ public void run(String arg) {
 							Open image
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 	continueAll: while (continueProcessing){
+    if (record) {
+    	Recorder.record = false;    	
+    }
 	for(int task = 0; task < tasks; task++){
 		if(continueProcessing == false){
 			break continueAll;
@@ -1622,9 +1668,12 @@ public void run(String arg) {
 			progress.moveTask(task);			
 			break running;			
 		}	
-		}
+		}	
 		allTasksDone = true;
 		break continueAll;
+		}
+		if (record) {	
+			Recorder.record = true;
 		}
 	}
 
