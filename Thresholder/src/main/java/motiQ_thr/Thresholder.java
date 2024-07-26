@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2015-2024 Jan N. Hansen
  * First version: January 05, 2015
- * This version: July 25, 2024
+ * This version: July 26, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,13 +37,14 @@ import ij.io.*;
 import ij.measure.*;
 import ij.process.*;
 import ij.plugin.*;
+import ij.plugin.frame.Recorder;
 import ij.text.*;
 import java.text.*;
 
 public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Name variables
 	final static String PLUGINNAME = "MotiQ_thresholder";
-	final static String PLUGINVERSION = "v0.2.0";
+	final static String PLUGINVERSION = "v0.2.1";
 	
 	//Fonts
 	static final Font SuperHeadingFont = new Font("Sansserif", Font.BOLD, 16);
@@ -56,6 +57,7 @@ public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	static final DecimalFormat dformat0 = new DecimalFormat("#0",new DecimalFormatSymbols(Locale.US));
 	static final DecimalFormat dformat1 = new DecimalFormat("#0.000000",new DecimalFormatSymbols(Locale.US));
 	static final DecimalFormat dformat2 = new DecimalFormat("#0.00",new DecimalFormatSymbols(Locale.US));
+	DecimalFormat dformatdialog = new DecimalFormat("#0.000000");
 	
 //	final static String[] DSLItems = {"3D Analysis (CLSM, 2PM)", "2D in vivo / acute slices (live 2PM)", "2D in vitro (epiFM)"};
 	
@@ -102,9 +104,12 @@ public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Multi-task management
 	ProgressDialog progressDialog;
 	boolean processingDone = false;	
-	boolean continueProcessing = true;	
+	boolean continueProcessing = true;
+
+	boolean record = false;
 	
 public void run(String arg) {
+	dformatdialog.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
 
 	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	//-----------Eventually read settings from macro input------------------------
@@ -291,7 +296,13 @@ public void run(String arg) {
         showDialog = false;
     }    
 
+    record = false;
+    
     if(showDialog) {
+    	if(Recorder.record) {
+    		record = true;
+    		Recorder.record = false;
+    	}
 		/**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& *
 		 *									display dialog
 		 * &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& */
@@ -365,9 +376,78 @@ public void run(String arg) {
 		autoSaveImage = gd.getNextBoolean();
 		saveDate = gd.getNextBoolean();
 		
-		if (gd.wasCanceled()) return;	
+		if (gd.wasCanceled()) return;
 		
+    	if(record) {
+    		Recorder.record = true;
+    	}
+    }
+    
+    //Create macro recording string if macro recording activated:
+    if (record) {  
+    	String recordString = "";
+    	if(useAlternateRef) {
+    		recordString += "use-alternate ";
+    		
+    		if(getImageByName) {
+        		recordString += "automatically-find ";
+    		}
+    		
+    		recordString += "begin-of-suffix=[" + nameSuffix + "] ";
+    		
+    		recordString += "additional-suffix=[" + parentEnding + "] ";
+    		
+    		if(restrictToPos) {
+        		recordString += "restrict ";
+    		}
+    	}
 
+    	recordString += "scale=" + dformatdialog.format(scalingFactor) + " ";
+    	
+    	if(conv8Bit) {
+    		recordString += "convert ";
+		} 
+
+		recordString += "threshold=" + selectedAlgorithm + " ";
+    	
+		recordString += "stack-handling=[" + chosenStackMethod + "] ";
+    	
+		if(separateFrames) {
+    		recordString += "threshold-every-time-step ";
+		}
+		
+		if(onlyTimeGroup) {
+    		recordString += "threshold-only-distinct-times ";
+        	recordString += "start-time=" + startGroup + " ";
+        	recordString += "end-time=" + endGroup + " ";
+		}
+
+		if(localThreshold) {
+    		recordString += "local-threshold ";
+        	recordString += "local-threshold-radius=" + locThrRadius + " ";
+		}
+
+		if(fillHoles) {
+    		recordString += "fill-holes ";
+		}
+
+		if(keepIntensities) {
+    		recordString += "keep-intensities ";
+		}
+		
+		if(autoSaveImage) {
+    		recordString += "automatically-save ";
+		}
+    	
+    	if(saveDate) {
+        	recordString += "include-date ";    		
+    	}
+    	
+    	recordString = recordString.substring(0,recordString.length()-1);
+
+		Recorder.record = true;
+		
+    	Recorder.recordString("run(\"" + PLUGINNAME + " (" + PLUGINVERSION + ")\",\"" + recordString + "\");\n");
     }
 	
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -492,6 +572,9 @@ public void run(String arg) {
 //		progressDialog.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 		progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
 	        public void windowClosing(WindowEvent winEvt) {
+	        	if (record) {	
+	        		Recorder.record = true;
+	        	}
 	        	if(processingDone==false){
 	        		IJ.error("Script stopped...");
 	        	}
@@ -1109,8 +1192,14 @@ public void run(String arg) {
 				parImp.close();
 				
 				if(keepIntensities == false){
+					if (record) {	
+						Recorder.record = false;
+					}
 					IJ.run(imp, "Grays", "");
 					if(imp.getBitDepth() != 8)	IJ.run(imp, "8-bit", "");
+					if (record) {	
+						Recorder.record = true;
+					}
 				}
 				
 				/***************************************************************************
@@ -1193,7 +1282,13 @@ public void run(String arg) {
 							+ " but WITHOUT ANY WARRANTY; without even the implied warranty of"
 							+ " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
 					tw1.append("Plugin version:	"+PLUGINVERSION);
+					if (record) {	
+						Recorder.record = false;
+					}
 					tw1.saveAs(outputPath + "_log.txt");
+					if (record) {	
+						Recorder.record = true;
+					}
 				}
 				//Save Image Treatment
 				
@@ -1204,7 +1299,7 @@ public void run(String arg) {
 		}
 		System.gc();
 	}
-	processingDone = true;
+	processingDone = true;	
 }
 
 
@@ -1506,12 +1601,19 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 			}
 		}
 		imp.setPosition(z+1);
+		
+		if (record) {	
+			Recorder.record = false;
+		}
 		if(!Prefs.blackBackground) {
 			IJ.run(maskImp, "Invert", "slice");
 		}
 		IJ.run(maskImp, "Fill Holes", "slice");
 		if(!Prefs.blackBackground) {
 			IJ.run(maskImp, "Invert", "slice");
+		}
+		if (record) {	
+			Recorder.record = true;
 		}
 		
 		progressDialog.updateBarText("segment image...");
@@ -1563,7 +1665,9 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 			}
 		}
 		
-		
+		if (record) {	
+			Recorder.record = false;
+		}
 		if(!Prefs.blackBackground) {
 			IJ.run(transImp, "Invert", "stack");
 		}	
@@ -1572,6 +1676,9 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 				
 		if(!Prefs.blackBackground) {
 			IJ.run(transImp, "Invert", "stack");
+		}
+		if (record) {	
+			Recorder.record = true;
 		}
 		
 		progressDialog.updateBarText("segment image...");
