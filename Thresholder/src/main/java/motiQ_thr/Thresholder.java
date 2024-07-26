@@ -2,9 +2,9 @@
  *  
  * MotiQ_thresholder plugin for ImageJ
  * 
- * Copyright (C) 2015-2023 Jan N. Hansen
+ * Copyright (C) 2015-2024 Jan N. Hansen
  * First version: January 05, 2015
- * This version: January 20, 2023
+ * This version: July 25, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import java.text.*;
 public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Name variables
 	final static String PLUGINNAME = "MotiQ_thresholder";
-	final static String PLUGINVERSION = "v0.1.3";
+	final static String PLUGINVERSION = "v0.2.0";
 	
 	//Fonts
 	static final Font SuperHeadingFont = new Font("Sansserif", Font.BOLD, 16);
@@ -105,81 +105,249 @@ public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	boolean continueProcessing = true;	
 	
 public void run(String arg) {
-/**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& *
- *									display dialog
- * &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& */
-	
-	GenericDialog gd = new GenericDialog(PLUGINNAME + " - Settings");
-//	gd.setInsets(0,0,0); (top, left, bottom)
-	
-	gd.setInsets(0,0,0);	gd.addMessage(PLUGINNAME + ", version " + PLUGINVERSION 
-			+ " (\u00a9 2015 - " + yearOnly.format(new Date()) + ", Jan Niklas Hansen)", SuperHeadingFont);
 
-	gd.setInsets(5,0,0);	gd.addChoice("Process ", taskVariant, selectedTaskVariant);
+	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+	//-----------Eventually read settings from macro input------------------------
+	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	
-	gd.setInsets(5,0,0);	gd.addMessage("Reference image", SubHeadingFont);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Use alternate reference image",useAlternateRef);
-	gd.setInsets(0,20,0);	gd.addCheckbox("-> Automatically find alternate reference image in origin directory (via file name)",getImageByName);
-	gd.setInsets(0,50,0);	gd.addStringField("-> Begin of suffix in file name of input image",nameSuffix);
-	gd.setInsets(0,50,0);	gd.addStringField("-> Additional suffix in file name of alternate reference image",parentEnding);
-	gd.setInsets(0,20,0);	gd.addCheckbox("-> Restrict threshold calculation to size and position of input image",restrictToPos);
-	
-	gd.setInsets(5,0,0);	gd.addMessage("Pre-processing", SubHeadingFont);
-	gd.setInsets(0,0,0);	gd.addNumericField("Scale down reference image for calculation - factor: ", scalingFactor, 1);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Convert input and reference image into 8-bit before processing.",conv8Bit);	//TODO save into metadata
+	boolean showDialog = true;
+//	IJ.log("Macro running? " + IJ.macroRunning() );
+//	IJ.log(Macro.getOptions());	
+    if (IJ.macroRunning()) {
+    	String macroOptions = Macro.getOptions();    	
+//    	IJ.log("Macro Options: " + macroOptions);
+    	
+    	String temp;	
+    	selectedTaskVariant = taskVariant[0];
+
+		temp = "";
+    	if(macroOptions.contains("use-alternate")) {
+    		useAlternateRef = true;
+    		
+    		if(macroOptions.contains("automatically-find")) {
+    			getImageByName = true;
+//    			IJ.log("detected getImageByName: " + getImageByName);
+    		}
+    		
+    		temp = "";
+    		if(macroOptions.contains("begin-of-suffix=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("begin-of-suffix="));
+    			temp = temp.substring(temp.indexOf("=")+1);
+    			if(temp.startsWith("[") || temp.startsWith("//[")) {
+        			temp = temp.substring(1,temp.indexOf("]"));    				
+    			}else {
+        			temp = temp.substring(0,temp.indexOf(" "));
+    			}    			
+        		nameSuffix = temp;
+//    			IJ.log("detected suffixbegin: " + nameSuffix);
+    		}
+
+    		if(macroOptions.contains("additional-suffix=")){
+    			temp = macroOptions.substring(macroOptions.indexOf("additional-suffix="));
+    			temp = temp.substring(temp.indexOf("=")+1);
+    			if(temp.startsWith("[") || temp.startsWith("//[")) {
+        			temp = temp.substring(1,temp.indexOf("]"));    				
+    			}else {
+        			temp = temp.substring(0,temp.indexOf(" "));
+    			}    			
+        		parentEnding = temp;
+//    			IJ.log("detected parentEnding: " + parentEnding);
+    		}
+    		
+    		if(macroOptions.contains("restrict")) {
+    			restrictToPos = true;
+//    			IJ.log("detected restrictToPos: " + restrictToPos);
+    		}
+    	}else {
+    		useAlternateRef = false;
+   			getImageByName = false;
+   			restrictToPos = false;
+    	}
+    	
+    	if(macroOptions.contains("scale=")){
+			temp = macroOptions.substring(macroOptions.indexOf("scale="));
+    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    		scalingFactor = Double.parseDouble(temp);
+//    		IJ.log("detected scalingFactor: " + scalingFactor);
+		}
+    	
+    	if(macroOptions.contains("convert")) {
+			conv8Bit = true;
+//			IJ.log("detected conv8Bit: " + conv8Bit);
+		}
+    	    	
+    	if(macroOptions.contains("threshold=")){
+			temp = macroOptions.substring(macroOptions.indexOf("threshold="));
+    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+    		selectedAlgorithm = temp;
+    		
+    		boolean thresholdFits = false;
+    		for(int i = 0; i < algorithm.length; i++) {
+    			if(selectedAlgorithm.equals(algorithm[i])) {
+    				thresholdFits = true;
+    				break;
+    			}
+    		}
+    		if(thresholdFits == false) {
+    			IJ.error("Unknown threshold algorithm specified!\nSelect a threshold algorithm available in MotiQ Thresholder!");
+    		}
+    		
+//    		IJ.log("detected selectedAlgorithm: " + selectedAlgorithm);    		
+		}
+    	
+    	if(macroOptions.contains("stack-handling=")){
+			temp = macroOptions.substring(macroOptions.indexOf("stack-handling="));
+    		temp = temp.substring(temp.indexOf("=")+1);
+    		   		
+    		for(int i = 0; i < algorithm.length; i++) {
+    			if(temp.contains(stackMethod[i])) {
+    				chosenStackMethod = stackMethod[i];
+    				break;
+    			}
+    			if(i == algorithm.length-1) {
+    				IJ.error("Stack handling method was not correctly specified!");
+    			}
+    		}    		
+//    		IJ.log("detected chosenStackMethod: " + chosenStackMethod);
+		}
+
+    	if(macroOptions.contains("threshold-every-time-step")) {
+			separateFrames = true;
+//			IJ.log("detected separateFrames: " + separateFrames);
+		}
+    	
+    	if(macroOptions.contains("threshold-only-distinct-times")) {
+			onlyTimeGroup = true;
+//			IJ.log("detected onlyTimeGroup: " + onlyTimeGroup);
+			
+			if(macroOptions.contains("start-time=")){
+				temp = macroOptions.substring(macroOptions.indexOf("start-time="));
+	    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+	    		startGroup = Integer.parseInt(temp);
+//	    		IJ.log("detected startGroup: " + startGroup);
+			}
+			
+			if(macroOptions.contains("end-time=")){
+				temp = macroOptions.substring(macroOptions.indexOf("end-time="));
+	    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+	    		endGroup = Integer.parseInt(temp);
+//	    		IJ.log("detected endGroup: " + endGroup);
+			}
+		}
+    	
+    	if(macroOptions.contains("local-threshold")) {
+			localThreshold = true;
+//			IJ.log("detected localThreshold: " + localThreshold);
+			
+			if(macroOptions.contains("local-threshold-radius=")){
+				temp = macroOptions.substring(macroOptions.indexOf("local-threshold-radius="));
+	    		temp = temp.substring(temp.indexOf("=")+1,temp.indexOf(" "));
+	    		locThrRadius = Integer.parseInt(temp);
+//	    		IJ.log("detected locThrRadius: " + locThrRadius);
+			}
+		}
+    	
+    	if(macroOptions.contains("fill-holes")) {
+			fillHoles = true;
+//			IJ.log("detected fillHoles: " + fillHoles);
+    	}
+
+    	if(macroOptions.contains("keep-intensities")) {
+    		keepIntensities = true;
+//			IJ.log("detected keepIntensities: " + keepIntensities);
+    	}    	
+
+    	if(macroOptions.contains("automatically-save")) {
+    		autoSaveImage = true;
+//			IJ.log("detected autoSaveImage: " + autoSaveImage);
+    	}
+
+		if(macroOptions.contains("include-date")){
+			saveDate = true;
+//			IJ.log("detected saveDate: " + saveDate);
+		}    	
+    	
+        showDialog = false;
+    }    
+
+    if(showDialog) {
+		/**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& *
+		 *									display dialog
+		 * &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& */
+			
+		GenericDialog gd = new GenericDialog(PLUGINNAME + " - Settings");
+		//	gd.setInsets(0,0,0); (top, left, bottom)
 		
-	gd.setInsets(5,0,0);	gd.addMessage("Threshold determination", SubHeadingFont);
-	gd.setInsets(0,0,0);	gd.addChoice("Threshold algorithm", algorithm, selectedAlgorithm);
-	gd.setInsets(10,0,0);	gd.addChoice("Stack handling: ", stackMethod, chosenStackMethod);	
-	gd.setInsets(5,0,0);	gd.addCheckbox("Threshold every time-step separately.", separateFrames);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Threshold only distinct time series. Start / end time-step: ",onlyTimeGroup);
-	gd.setInsets(-23,0,0);	gd.addNumericField("", startGroup, 0);
-	gd.setInsets(-23,55,0);	gd.addNumericField("", endGroup, 0);	
-	gd.setInsets(0,0,0);	gd.addCheckbox("Calculate an individual threshold for each pixel - local threshold radius [px]: ",localThreshold);
-	gd.setInsets(-21,45,0);	gd.addNumericField("", locThrRadius, 0);		
+		gd.setInsets(0,0,0);	gd.addMessage(PLUGINNAME + ", version " + PLUGINVERSION 
+				+ " (\u00a9 2015 - " + yearOnly.format(new Date()) + ", Jan Niklas Hansen)", SuperHeadingFont);
 		
-	gd.setInsets(5,0,0);	gd.addMessage("Image segmentation and output", SubHeadingFont);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Fill holes in mask (independent for every stack image)",fillHoles);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Keep original intensities in pixels above threshold",keepIntensities);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Automatically save image/metadata into origin directory and close image", autoSaveImage);
-	gd.setInsets(0,0,0);	gd.addCheckbox("Include date in output file names", saveDate);
-	
-	gd.showDialog();
-	
-	//get variables
-	selectedTaskVariant = gd.getNextChoice();
-	
-	useAlternateRef = gd.getNextBoolean();
-	getImageByName = gd.getNextBoolean();
-	nameSuffix = gd.getNextString();
-	parentEnding = gd.getNextString();
-	restrictToPos = gd.getNextBoolean();
-	
-	if(useAlternateRef == false){
-		getImageByName = false;
-		restrictToPos = false;
-	}
-	
-	scalingFactor = (double)gd.getNextNumber();
-	conv8Bit = gd.getNextBoolean();	
-	
-	selectedAlgorithm = gd.getNextChoice();
-	chosenStackMethod = gd.getNextChoice();
-	separateFrames = gd.getNextBoolean();
-	onlyTimeGroup = gd.getNextBoolean();
-	startGroup = (int)gd.getNextNumber();
-	endGroup = (int)gd.getNextNumber();	
-				
-	localThreshold = gd.getNextBoolean();
-	locThrRadius = (int)gd.getNextNumber();
-	
-	fillHoles = gd.getNextBoolean();
-	keepIntensities = gd.getNextBoolean();
-	autoSaveImage = gd.getNextBoolean();
-	saveDate = gd.getNextBoolean();
-	
-	if (gd.wasCanceled()) return;	
-	
+		gd.setInsets(5,0,0);	gd.addChoice("Process ", taskVariant, selectedTaskVariant);
+		
+		gd.setInsets(5,0,0);	gd.addMessage("Reference image", SubHeadingFont);
+		gd.setInsets(0,0,0);	gd.addCheckbox("Use alternate reference image",useAlternateRef);
+		gd.setInsets(0,20,0);	gd.addCheckbox("-> Automatically find alternate reference image in origin directory (via file name)",getImageByName);
+		gd.setInsets(0,50,0);	gd.addStringField("-> Begin of suffix in file name of input image",nameSuffix);
+		gd.setInsets(0,50,0);	gd.addStringField("-> Additional suffix in file name of alternate reference image",parentEnding);
+		gd.setInsets(0,20,0);	gd.addCheckbox("-> Restrict threshold calculation to size and position of input image",restrictToPos);
+		
+		gd.setInsets(5,0,0);	gd.addMessage("Pre-processing", SubHeadingFont);
+		gd.setInsets(0,0,0);	gd.addNumericField("Scale down reference image for calculation - factor: ", scalingFactor, 1);
+		gd.setInsets(0,0,0);	gd.addCheckbox("Convert input and reference image into 8-bit before processing.",conv8Bit);	//TODO save into metadata
+			
+		gd.setInsets(5,0,0);	gd.addMessage("Threshold determination", SubHeadingFont);
+		gd.setInsets(0,0,0);	gd.addChoice("Threshold algorithm", algorithm, selectedAlgorithm);
+		gd.setInsets(10,0,0);	gd.addChoice("Stack handling: ", stackMethod, chosenStackMethod);	
+		gd.setInsets(5,0,0);	gd.addCheckbox("Threshold every time-step separately.", separateFrames);
+		gd.setInsets(0,0,0);	gd.addCheckbox("Threshold only distinct time series. Start / end time-step: ",onlyTimeGroup);
+		gd.setInsets(-23,0,0);	gd.addNumericField("", startGroup, 0);
+		gd.setInsets(-23,55,0);	gd.addNumericField("", endGroup, 0);	
+		gd.setInsets(0,0,0);	gd.addCheckbox("Calculate an individual threshold for each pixel - local threshold radius [px]: ",localThreshold);
+		gd.setInsets(-21,45,0);	gd.addNumericField("", locThrRadius, 0);		
+			
+		gd.setInsets(5,0,0);	gd.addMessage("Image segmentation and output", SubHeadingFont);
+		gd.setInsets(0,0,0);	gd.addCheckbox("Fill holes in mask (independent for every stack image)",fillHoles);
+		gd.setInsets(0,0,0);	gd.addCheckbox("Keep original intensities in pixels above threshold",keepIntensities);
+		gd.setInsets(0,0,0);	gd.addCheckbox("Automatically save image/metadata into origin directory and close image", autoSaveImage);
+		gd.setInsets(0,0,0);	gd.addCheckbox("Include date in output file names", saveDate);
+		
+		gd.showDialog();
+		
+		//get variables
+		selectedTaskVariant = gd.getNextChoice();
+		
+		useAlternateRef = gd.getNextBoolean();
+		getImageByName = gd.getNextBoolean();
+		nameSuffix = gd.getNextString();
+		parentEnding = gd.getNextString();
+		restrictToPos = gd.getNextBoolean();
+		
+		if(useAlternateRef == false){
+			getImageByName = false;
+			restrictToPos = false;
+		}
+		
+		scalingFactor = (double)gd.getNextNumber();
+		conv8Bit = gd.getNextBoolean();	
+		
+		selectedAlgorithm = gd.getNextChoice();
+		chosenStackMethod = gd.getNextChoice();
+		separateFrames = gd.getNextBoolean();
+		onlyTimeGroup = gd.getNextBoolean();
+		startGroup = (int)gd.getNextNumber();
+		endGroup = (int)gd.getNextNumber();	
+					
+		localThreshold = gd.getNextBoolean();
+		locThrRadius = (int)gd.getNextNumber();
+		
+		fillHoles = gd.getNextBoolean();
+		keepIntensities = gd.getNextBoolean();
+		autoSaveImage = gd.getNextBoolean();
+		saveDate = gd.getNextBoolean();
+		
+		if (gd.wasCanceled()) return;	
+		
+
+    }
 	
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
  *							load image tasks
@@ -1316,9 +1484,14 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 				}
 			}
 		}
-		IJ.run(maskImp, "Invert", "");
+		imp.setPosition(z+1);
+		if(!Prefs.blackBackground) {
+			IJ.run(maskImp, "Invert", "slice");
+		}
 		IJ.run(maskImp, "Fill Holes", "slice");
-		IJ.run(maskImp, "Invert", "");
+		if(!Prefs.blackBackground) {
+			IJ.run(maskImp, "Invert", "slice");
+		}
 		
 		progressDialog.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
@@ -1369,9 +1542,16 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 			}
 		}
 		
-		IJ.run(transImp, "Invert", "");
-		IJ.run(transImp, "Fill Holes", "slice");
-		IJ.run(transImp, "Invert", "");
+		
+		if(!Prefs.blackBackground) {
+			IJ.run(transImp, "Invert", "stack");
+		}	
+		
+		IJ.run(transImp, "Fill Holes", "stack");
+				
+		if(!Prefs.blackBackground) {
+			IJ.run(transImp, "Invert", "stack");
+		}
 		
 		progressDialog.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
