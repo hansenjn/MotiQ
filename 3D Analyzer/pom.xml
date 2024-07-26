@@ -100,9 +100,6 @@
     </dependencies>  
     
     <build>
-<!--        <directory>target</directory>-->
-<!--    	<outputDirectory>target/classes</outputDirectory>-->
-<!--    	<finalName>${project.artifactId}-${project.version}</finalName>-->
 		<plugins>
 			<!--         avoid errors in java doc creation -->			
 			<plugin>
