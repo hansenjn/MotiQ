@@ -117,8 +117,8 @@ public void run(String arg) {
 	boolean showDialog = true;
 	
     if (IJ.macroRunning() 
-    		|| (Macro.getOptions() != null
-    		&& Macro.getOptions().length()>0)) {
+    		&& Macro.getOptions() != null
+    		&& Macro.getOptions().length()>0) {
     	String macroOptions = Macro.getOptions().toLowerCase();
     	
     	String temp;	
