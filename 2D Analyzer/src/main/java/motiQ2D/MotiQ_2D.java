@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: November 7, 2014  
- * This Version: July 26, 2024
+ * This Version: July 29, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ import java.text.*;
 public class MotiQ_2D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 2D Analyzer";
-	static final String PLUGINVERSION = "v0.2.1";
+	static final String PLUGINVERSION = "v0.2.2";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -105,6 +105,7 @@ public class MotiQ_2D implements PlugIn, Measurements{
 	boolean allTasksDone = false;
 	
     boolean record = false;
+    boolean noGUIs = false;
 	
 public void run(String arg) {
 	dformatdialog.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
@@ -114,11 +115,11 @@ public void run(String arg) {
 	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	
 	boolean showDialog = true;
-//	IJ.log("Macro running? " + IJ.macroRunning() );
-//	IJ.log(Macro.getOptions());	
-    if (IJ.macroRunning()) {
-    	String macroOptions = Macro.getOptions().toLowerCase();    	
-//    	IJ.log("Macro Options: " + macroOptions);
+	
+    if (IJ.macroRunning() 
+    		|| (Macro.getOptions() != null
+    		&& Macro.getOptions().length()>0)) {
+    	String macroOptions = Macro.getOptions().toLowerCase();
     	
     	String temp;	
     	selectedTaskVariant = taskVariant[0];
@@ -263,12 +264,19 @@ public void run(String arg) {
 			saveDate = false;
 		}
 		
+		if(macroOptions.contains("nogui") || macroOptions.contains("noGUI") || macroOptions.contains("NOGUI")){
+    		noGUIs = true;
+//			IJ.log("detected noGUIs: " + noGUIs);
+		}else {
+			noGUIs = false;
+		}
+		
         showDialog = false;
     }    
     
     record = false;
     
-    if(showDialog) {
+    if(showDialog && !noGUIs) {
     	if(Recorder.record) {
     		record = true;
     		Recorder.record = false;
@@ -371,7 +379,7 @@ public void run(String arg) {
     				+ " time-unit=" + timeUnit 
     				+ " ";
     	}
-    	recordString += "minimum-particle-area=" + minParticleArea + " ";
+    	recordString += "minimum-particle-area=" + (int)(minParticleArea) + " ";
     	if(onlyLargest) {
         	recordString += "remove-all-but-largest ";    		
     	}
@@ -433,7 +441,7 @@ public void run(String arg) {
 			}		
 		}else if(selectedTaskVariant.equals(taskVariant[0])){
 			if(WindowManager.getIDList()==null){
-				new WaitForUserDialog("Plugin canceled - no image open in FIJI!").show();
+				IJ.error("Plugin canceled - no image open in FIJI!");
 				return;
 			}
 			FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
@@ -451,7 +459,7 @@ public void run(String arg) {
 			tasks = 1;
 		}else if(selectedTaskVariant.equals(taskVariant[2])){	// all open images
 			if(WindowManager.getIDList()==null){
-				new WaitForUserDialog("Plugin canceled - no image open in FIJI!").show();
+				IJ.error("Plugin canceled - no image open in FIJI!");
 				return;
 			}
 			int IDlist [] = WindowManager.getIDList();
@@ -497,20 +505,22 @@ public void run(String arg) {
 		
 		//add progressDialog
 		progressDialog = new ProgressDialog(name,tasks);
-		progressDialog.setLocation(0,0);
-		progressDialog.setVisible(true);
-		progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-	        public void windowClosing(WindowEvent winEvt) {
-	        	if(record) {
-	        		Recorder.record = true;
-	        	}
-	        	if(allTasksDone==false){
-	        		IJ.error("Script stopped...");
-	        	}
-	        	continueProcessing = false;
-	        	return;
-	        }
-		});
+		if(!noGUIs) {
+			progressDialog.setLocation(0,0);
+			progressDialog.setVisible(true);
+			progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+		        public void windowClosing(WindowEvent winEvt) {
+		        	if(record) {
+		        		Recorder.record = true;
+		        	}
+		        	if(allTasksDone==false){
+		        		IJ.error("Script stopped...");
+		        	}
+		        	continueProcessing = false;
+		        	return;
+		        }
+			});			
+		}
 		
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 							Open image

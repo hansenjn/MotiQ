@@ -48,10 +48,12 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 	static final int ERROR = 0, NOTIFICATION = 1;
 	JPanel bgPanel;
 	JScrollPane jScrollPaneLeft, jScrollPaneRight, jScrollPaneBottom;
-	JList ListeLeft, ListeRight, ListeBottom;
+	JList <String> ListeLeft, ListeRight, ListeBottom;
 	
 	private JProgressBar progressBar = new JProgressBar();
 	private double taskFraction = 0.0;
+	
+	boolean noGUI = false;
 	
 	public ProgressDialog(String [] taskList, int newTasks) {
 		super();
@@ -64,6 +66,29 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 			}			
 		}
 		ListeLeft.setListData(dataLeft);
+		taskFraction = 0.0;
+		task = 1;
+	}
+	
+	public ProgressDialog(String [] taskList, int newTasks, boolean dontShowGUI) {
+		super();
+		noGUI = dontShowGUI;
+		if(!noGUI) {
+			initGUI();
+		}
+		
+		dataLeft = taskList.clone();
+		tasks = newTasks;
+		for(int i = 0; i < tasks; i++){
+			if(dataLeft[i]!=""){
+				dataLeft [i] = (i+1) + ": " + dataLeft [i]; 
+			}			
+		}
+		
+		if(!noGUI) {
+			ListeLeft.setListData(dataLeft);
+		}
+		
 		taskFraction = 0.0;
 		task = 1;
 	}
@@ -103,8 +128,8 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 						jScrollPaneLeft.setPreferredSize(new java.awt.Dimension((int)((double)(subXSize/2.0)-10), subYSize-60));
 						imPanel.add(jScrollPaneLeft,BorderLayout.CENTER); 
 						{
-							ListModel ListeModel = new DefaultComboBoxModel(new String[] { "" });
-							ListeLeft = new JList();
+							ListModel <String> ListeModel = new DefaultComboBoxModel <String>(new String[] { "" });
+							ListeLeft = new JList <String> ();
 							jScrollPaneLeft.setViewportView(ListeLeft);
 							ListeLeft.setModel(ListeModel);
 						}
@@ -129,8 +154,8 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 						jScrollPaneRight.setPreferredSize(new java.awt.Dimension((int)((double)(subXSize/2.0)-10), subYSize-60));
 						imPanel.add(jScrollPaneRight,BorderLayout.CENTER); 
 						{
-							ListModel ListeModel = new DefaultComboBoxModel(new String[] { "" });
-							ListeRight = new JList();
+							ListModel <String> ListeModel = new DefaultComboBoxModel <String>(new String[] { "" });
+							ListeRight = new JList <String>();
 							jScrollPaneRight.setViewportView(ListeRight);
 							ListeRight.setModel(ListeModel);
 						}
@@ -178,8 +203,8 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 					jScrollPaneBottom.setPreferredSize(new java.awt.Dimension(prefXSize, 100));
 					imPanel.add(jScrollPaneBottom, BorderLayout.CENTER);
 					{
-						ListModel ListeModel = new DefaultComboBoxModel(new String[] { "" });
-						ListeBottom = new JList();
+						ListModel <String> ListeModel = new DefaultComboBoxModel <String>(new String[] { "" });
+						ListeBottom = new JList <String> ();
 						jScrollPaneBottom.setViewportView(ListeBottom);
 						ListeBottom.setModel(ListeModel);
 					}
@@ -191,7 +216,7 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 	
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		Object eventQuelle = ae.getSource();
+//		Object eventQuelle = ae.getSource();
 //		if (eventQuelle == abortButton){
 //			abort = true;
 ////			updateDisplay();
@@ -229,30 +254,36 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 			for(int j = 1; j < dataLeftCopy.length; j++){
 				dataLeft[j-1] = dataLeftCopy[j];
 			}			
-		}	
-		ListeLeft.setListData(dataLeft);
-		ListeRight.setListData(dataRight);
-		jScrollPaneLeft.updateUI();
-		jScrollPaneRight.updateUI();
-		bgPanel.updateUI();
+		}
+		
+		if(!noGUI) {
+			ListeLeft.setListData(dataLeft);
+			ListeRight.setListData(dataRight);
+			
+			jScrollPaneLeft.updateUI();
+			jScrollPaneRight.updateUI();
+			bgPanel.updateUI();
+		}
 		
 		if(task == tasks){
-			if(errorsAvailable){
-				replaceBarText("processing done but some tasks failed (see notifications)!");
-				progressBar.setValue(100); 		
-				progressBar.setStringPainted(true);
-				progressBar.setForeground(Color.red);
-			}else if(notificationsAvailable){
-				replaceBarText("processing done, but some notifications are available!");
-				progressBar.setValue(100); 
-				progressBar.setStringPainted(true);
-				progressBar.setForeground(new Color(255,130,0));
-			}else{
-				replaceBarText("analysis done!");
-				progressBar.setStringPainted(true);
-				progressBar.setForeground(new Color(0,140,0));
-			}
-			progressBar.setValue(100);
+			if(!noGUI) {
+				if(errorsAvailable){
+					replaceBarText("processing done but some tasks failed (see notifications)!");
+					progressBar.setValue(100); 		
+					progressBar.setStringPainted(true);
+					progressBar.setForeground(Color.red);
+				}else if(notificationsAvailable){
+					replaceBarText("processing done, but some notifications are available!");
+					progressBar.setValue(100); 
+					progressBar.setStringPainted(true);
+					progressBar.setForeground(new Color(255,130,0));
+				}else{
+					replaceBarText("analysis done!");
+					progressBar.setStringPainted(true);
+					progressBar.setForeground(new Color(0,140,0));
+				}
+				progressBar.setValue(100);
+			}			
 		}else{
 			taskFraction = 0.0;
 			task++;
@@ -277,9 +308,11 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 			}
 			notifications [0] = message;
 		}
-		ListeBottom.setListData(notifications);
-		jScrollPaneBottom.updateUI();
-		bgPanel.updateUI();
+		if(!noGUI) {
+			ListeBottom.setListData(notifications);
+			jScrollPaneBottom.updateUI();
+			bgPanel.updateUI();			
+		}
 	}
 	
 	public void addToBar(double addFractionOfTask){
@@ -287,8 +320,10 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 		if(taskFraction >= 1.0){
 			taskFraction = 0.9;
 		}
-		progressBar.setValue((int)Math.round(((double)(task-1)/tasks)*100.0+taskFraction*(100/tasks)));
-		bgPanel.updateUI();
+		if(!noGUI) {
+			progressBar.setValue((int)Math.round(((double)(task-1)/tasks)*100.0+taskFraction*(100/tasks)));
+			bgPanel.updateUI();
+		}
 	}
 	
 	public void setBar(double fractionOfTask){
@@ -296,16 +331,20 @@ public class ProgressDialog extends javax.swing.JFrame implements ActionListener
 		if(taskFraction > 1.0){
 			taskFraction = 0.9;
 		}
-		progressBar.setValue((int)Math.round(((double)(task-1)/tasks)*100.0+taskFraction*(100/tasks)));
-		bgPanel.updateUI();
+		if(!noGUI) {
+			progressBar.setValue((int)Math.round(((double)(task-1)/tasks)*100.0+taskFraction*(100/tasks)));
+			bgPanel.updateUI();			
+		}
 	}
 	
 	public void updateBarText(String text){
+		if(noGUI) return;
 		progressBar.setString("Task " + task + "/" + tasks + ": " + text);
 		bgPanel.updateUI();
 	}
 	
-	public void replaceBarText(String text){			
+	public void replaceBarText(String text){
+		if(noGUI) return;
 		progressBar.setString(text);
 		bgPanel.updateUI();
 	}
