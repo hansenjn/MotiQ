@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: July 28, 2014 
- * This Version: July 26, 2024
+ * This Version: July 29, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import java.text.*;
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 3D Analyzer";
-	static final String PLUGINVERSION = "v0.3.1";
+	static final String PLUGINVERSION = "v0.3.2";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -109,6 +109,7 @@ public class MotiQ_3D implements PlugIn, Measurements{
 	Visualizer3D v3D;
 	
     boolean record = false;
+    boolean noGUIs = false;
     
 public void run(String arg) {
 	dformatdialog.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
@@ -118,9 +119,11 @@ public void run(String arg) {
 	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	
 	boolean showDialog = true;
-//	IJ.log("Macro running? " + IJ.macroRunning() );
-//	IJ.log(Macro.getOptions());	
-    if (IJ.macroRunning()) {
+
+
+    if (IJ.macroRunning() 
+    		|| (Macro.getOptions() != null
+    		&& Macro.getOptions().length()>0)) {
     	String macroOptions = Macro.getOptions().toLowerCase();
     	
 //    	IJ.log("Macro Options: " + macroOptions);
@@ -287,12 +290,19 @@ public void run(String arg) {
 			saveDate = false;
 		}
 		
+		if(macroOptions.contains("nogui") || macroOptions.contains("noGUI") || macroOptions.contains("NOGUI")){
+    		noGUIs = true;
+//			IJ.log("detected noGUIs: " + noGUIs);
+		}else {
+			noGUIs = false;
+		}
+		
         showDialog = false;
     }    
 
     record = false;
     
-    if(showDialog) {
+    if(showDialog && !noGUIs) {
     	if(Recorder.record) {
     		record = true;
     		Recorder.record = false;
@@ -402,7 +412,7 @@ public void run(String arg) {
     				+ " time-unit=" + timeUnit 
     				+ " ";
     	}
-    	recordString += "minimum-particle-volume=" + minParticleVolume + " ";
+    	recordString += "minimum-particle-volume=" + (int)minParticleVolume + " ";
     	if(onlyLargest) {
         	recordString += "remove-all-but-largest ";    		
     	}
@@ -463,7 +473,7 @@ public void run(String arg) {
 			}		
 		}else if(selectedTaskVariant.equals(taskVariant[0])){
 			if(WindowManager.getIDList()==null){
-				new WaitForUserDialog("Plugin canceled - no image open in FIJI!").show();
+				IJ.error("Plugin canceled - no image open in FIJI!");
 				return;
 			}
 			FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
@@ -481,7 +491,7 @@ public void run(String arg) {
 			tasks = 1;
 		}else if(selectedTaskVariant.equals(taskVariant[2])){	// all open images
 			if(WindowManager.getIDList()==null){
-				new WaitForUserDialog("Plugin canceled - no image open in FIJI!").show();
+				IJ.error("Plugin canceled - no image open in FIJI!");
 				return;
 			}
 			int IDlist [] = WindowManager.getIDList();
@@ -524,22 +534,24 @@ public void run(String arg) {
 		}
 		
 		//add progressDialog
-		progress = new ProgressDialog(name, tasks);
-		progress.setLocation(0,0);
-		progress.setVisible(true);
-		progress.addWindowListener(new java.awt.event.WindowAdapter() {
-	        public void windowClosing(WindowEvent winEvt) {
-	        	if (record) {	
-	        		Recorder.record = true;
-	        	}
-	        	if(allTasksDone==false){
-	        		IJ.error("Script stopped...");
-	        	}
-	        	v3D = null;
-	        	continueProcessing = false;	        	
-	        	return;
-	        }
-		});
+		progress = new ProgressDialog(name, tasks, noGUIs);
+		if(!noGUIs) {
+			progress.setLocation(0,0);
+			progress.setVisible(true);
+			progress.addWindowListener(new java.awt.event.WindowAdapter() {
+		        public void windowClosing(WindowEvent winEvt) {
+		        	if (record) {	
+		        		Recorder.record = true;
+		        	}
+		        	if(allTasksDone==false){
+		        		IJ.error("Script stopped...");
+		        	}
+		        	v3D = null;
+		        	continueProcessing = false;	        	
+		        	return;
+		        }
+			});
+		}		
 		
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 							Open image
