@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2015-2024 Jan N. Hansen
  * First version: January 05, 2015
- * This version: July 26, 2024
+ * This version: July 29, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,8 +43,8 @@ import java.text.*;
 
 public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Name variables
-	final static String PLUGINNAME = "MotiQ_thresholder";
-	final static String PLUGINVERSION = "v0.2.1";
+	final static String PLUGINNAME = "MotiQ Thresholder";
+	final static String PLUGINVERSION = "v0.2.2";
 	
 	//Fonts
 	static final Font SuperHeadingFont = new Font("Sansserif", Font.BOLD, 16);
@@ -107,6 +107,7 @@ public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	boolean continueProcessing = true;
 
 	boolean record = false;
+	boolean noGUIs = false;
 	
 public void run(String arg) {
 	dformatdialog.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
@@ -116,9 +117,10 @@ public void run(String arg) {
 	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	
 	boolean showDialog = true;
-//	IJ.log("Macro running? " + IJ.macroRunning() );
-//	IJ.log(Macro.getOptions());	
-    if (IJ.macroRunning()) {
+
+if (IJ.macroRunning() 
+		|| (Macro.getOptions() != null
+		&& Macro.getOptions().length()>0)) {
     	String macroOptions = Macro.getOptions();    	
 //    	IJ.log("Macro Options: " + macroOptions);
     	
@@ -292,13 +294,20 @@ public void run(String arg) {
 			saveDate = false;
 		}
 //		IJ.log("detected saveDate: " + saveDate);
-    	
+
+		if(macroOptions.contains("nogui") || macroOptions.contains("noGUI") || macroOptions.contains("NOGUI")){
+    		noGUIs = true;
+//			IJ.log("detected noGUIs: " + noGUIs);
+		}else {
+			noGUIs = false;
+		}
+		
         showDialog = false;
     }    
 
     record = false;
-    
-    if(showDialog) {
+
+    if(showDialog && !noGUIs) {
     	if(Recorder.record) {
     		record = true;
     		Recorder.record = false;
@@ -504,7 +513,7 @@ public void run(String arg) {
 			}		
 		}else if(selectedTaskVariant.equals(taskVariant[0])){
 			if(WindowManager.getIDList()==null){
-				new WaitForUserDialog("Plugin canceled - no image open!").show();
+				IJ.error("Plugin canceled - no image open!");
 				return;
 			}
 			FileInfo info = WindowManager.getCurrentImage().getOriginalFileInfo();
@@ -522,7 +531,7 @@ public void run(String arg) {
 			tasks = 1;
 		}else if(selectedTaskVariant.equals(taskVariant[2])){	// all open images
 			if(WindowManager.getIDList()==null){
-				new WaitForUserDialog("Plugin canceled - no image open!").show();
+				IJ.error("Plugin canceled - no image open!");
 				return;
 			}
 			int IDlist [] = WindowManager.getIDList();
@@ -566,22 +575,24 @@ public void run(String arg) {
 		
 		//add progressDialog
 		progressDialog = new ProgressDialog(name, tasks);
-//		progressDialog.setLocation(0,0);
-		progressDialog.setVisible(true);
-//		progressDialog.setAlwaysOnTop(true);
-//		progressDialog.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-		progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-	        public void windowClosing(WindowEvent winEvt) {
-	        	if (record) {	
-	        		Recorder.record = true;
-	        	}
-	        	if(processingDone==false){
-	        		IJ.error("Script stopped...");
-	        	}
-	        	continueProcessing = false;
-	        	return;
-	        }
-	    });
+		if(!noGUIs) {
+//			progressDialog.setLocation(0,0);
+			progressDialog.setVisible(true);
+//			progressDialog.setAlwaysOnTop(true);
+//			progressDialog.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+			progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+		        public void windowClosing(WindowEvent winEvt) {
+		        	if (record) {	
+		        		Recorder.record = true;
+		        	}
+		        	if(processingDone==false){
+		        		IJ.error("Script stopped...");
+		        	}
+		        	continueProcessing = false;
+		        	return;
+		        }
+		    });
+		}
 		 	
 /**&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
  *							Prepare images
