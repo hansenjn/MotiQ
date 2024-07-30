@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: November 7, 2014  
- * This Version: July 29, 2024
+ * This Version: July 30, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ import java.text.*;
 public class MotiQ_2D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 2D Analyzer";
-	static final String PLUGINVERSION = "v0.2.2";
+	static final String PLUGINVERSION = "v0.2.3";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -98,7 +98,7 @@ public class MotiQ_2D implements PlugIn, Measurements{
 		String ChosenNumberFormat = nrFormats[0];
 	//choice   Number Format for Saving-------------------------------------------
 	
-	ProgressDialog progressDialog;		
+	ProgressDialog progress;		
 	//-----------------define numbers for Dialog-----------------
 
 	boolean continueProcessing = true; 
@@ -286,6 +286,7 @@ public void run(String arg) {
     	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     	
     	GenericDialog gd = new GenericDialog(PLUGINNAME + " - settings");
+    	gd.addHelp("https://github.com/hansenjn/MotiQ/wiki");
     	//show Dialog-----------------------------------------------------------------
 //    	gd.setInsets(0,0,0); (top, left, bottom)
     	    	
@@ -504,11 +505,11 @@ public void run(String arg) {
 		}
 		
 		//add progressDialog
-		progressDialog = new ProgressDialog(name,tasks);
 		if(!noGUIs) {
-			progressDialog.setLocation(0,0);
-			progressDialog.setVisible(true);
-			progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+			progress = new ProgressDialog(name,tasks);
+			progress.setLocation(0,0);
+			progress.setVisible(true);
+			progress.addWindowListener(new java.awt.event.WindowAdapter() {
 		        public void windowClosing(WindowEvent winEvt) {
 		        	if(record) {
 		        		Recorder.record = true;
@@ -534,17 +535,21 @@ public void run(String arg) {
 			break continueAll;
 		}
 		Date startDate = new Date();
-		progressDialog.updateBarText("in progress...");
+		if(!noGUIs) progress.updateBarText("in progress...");
 		running: while(true){
 		//Check for problems with image file
 			if(name[task].substring(name[task].lastIndexOf("."),name[task].length()).equals(".txt")){
-				progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
-				progressDialog.moveTask(task);	
+				if(!noGUIs) {
+					progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
+					progress.moveTask(task);
+				}	
 				break running;
 			}
-			if(name[task].substring(name[task].lastIndexOf("."),name[task].length()).equals(".zip")){	
-				progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
-				progressDialog.moveTask(task);	
+			if(name[task].substring(name[task].lastIndexOf("."),name[task].length()).equals(".zip")){
+				if(!noGUIs) {
+					progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
+					progress.moveTask(task);
+				}	
 				break running;
 			}
 		//Check for problems with image file
@@ -563,15 +568,17 @@ public void run(String arg) {
 		   			imp.deleteRoi();
 		   		}
 		   	}catch (Exception e) {
-		   		progressDialog.notifyMessage("file is no image - could not be processed!",ProgressDialog.ERROR);
-				progressDialog.moveTask(task);	
+		   		if(!noGUIs) {
+			   		progress.notifyMessage("file is no image - could not be processed!",ProgressDialog.ERROR);
+					progress.moveTask(task);		   			
+		   		}	
 				break running;
 			}
 			int width = imp.getWidth();
 			int height = imp.getHeight();
 			if(imp.getNSlices() > 1 && imp.getNFrames() == 1){
 				HyperStackConverter.toHyperStack(imp, 1, 1, imp.getNSlices());
-				progressDialog.notifyMessage("slices and frames swapped for processing.",ProgressDialog.NOTIFICATION);						
+				if(!noGUIs) progress.notifyMessage("slices and frames swapped for processing.",ProgressDialog.NOTIFICATION);						
 			}
 			
 			int frames = imp.getNFrames();
@@ -628,7 +635,7 @@ public void run(String arg) {
 					cal.fps = fps;
 					timeUnit = calTimeUnit;
 				}else{
-					progressDialog.notifyMessage("recalibration failed! Metadata calibration is used instead!!",ProgressDialog.NOTIFICATION);
+					if(!noGUIs) progress.notifyMessage("recalibration failed! Metadata calibration is used instead!!",ProgressDialog.NOTIFICATION);
 				}
 			}			
 			//Calibrate
@@ -758,7 +765,7 @@ public void run(String arg) {
 										floodNodes[index][2] = floodNodeT;
 									}
 									if(processedPxCount%(pxCount100)<pxCount1000){
-										progressDialog.setBar((progressFactor0)*((double)(processedPxCount)/(double)(pxCount)));
+										if(!noGUIs) progress.setBar((progressFactor0)*((double)(processedPxCount)/(double)(pxCount)));
 									}
 								}					
 								//Floodfiller
@@ -837,8 +844,10 @@ public void run(String arg) {
 					}
 				}
 				wholePointCollection.trimToSize();
-				progressDialog.setBar(progressFactor0+progressFactor1);
-				progressDialog.updateBarText("detecting particles ... " + dformat3.format(100.0) + "%");
+				if(!noGUIs) {
+					progress.setBar(progressFactor0+progressFactor1);
+					progress.updateBarText("detecting particles ... " + dformat3.format(100.0) + "%");
+				}
 
 				allParticles = new TimelapseParticle2D(wholePointCollection, cal, totalGroupSize, skeletonize, gSigma, width, height, frames, false, binarizeBeforeSkl);
 				wholePointCollection.clear();		//TODO		
@@ -956,8 +965,10 @@ public void run(String arg) {
 										floodNodes[index][2] = floodNodeT+1;
 									}
 									if(processedPxCount%(pxCount100)<pxCount1000){
-										progressDialog.setBar(progressFactor0+progressFactor1*((double)(processedPxCount)/(double)(pxCount)));
-										progressDialog.updateBarText("detecting particles ... " + dformat3.format(100.0*(double)(processedPxCount)/(double)(pxCount)) + "%");
+										if(!noGUIs) {
+											progress.setBar(progressFactor0+progressFactor1*((double)(processedPxCount)/(double)(pxCount)));
+											progress.updateBarText("detecting particles ... " + dformat3.format(100.0*(double)(processedPxCount)/(double)(pxCount)) + "%");
+										}
 									}
 								}					
 								//Floodfiller
@@ -979,9 +990,11 @@ public void run(String arg) {
 			}					
 			//Filter particles
 			
-			progressDialog.setBar(0.9);
-			progressDialog.bgPanel.updateUI();
-		
+			if(!noGUIs) {
+				progress.setBar(0.9);
+				progress.bgPanel.updateUI();
+			}
+			
 		/***************************************************************************
 		 *#########################################################################* 
 		 * 								SAVE RESULTS							   *
@@ -1003,7 +1016,7 @@ public void run(String arg) {
 			try{
 				new File(dir [task] + filePrefix).mkdirs();
 			}catch(Exception e){
-				progressDialog.notifyMessage("failed to create subfolder to save additional plots! Will save plots into origianl folder!",ProgressDialog.NOTIFICATION);
+				if(!noGUIs) progress.notifyMessage("failed to create subfolder to save additional plots! Will save plots into origianl folder!",ProgressDialog.NOTIFICATION);
 			}
 			
 			String RPSuffix = "_RP" + dformat0.format(minParticleArea);
@@ -1474,7 +1487,7 @@ public void run(String arg) {
 						}
 					}
 				}catch(Exception e){
-					progressDialog.notifyMessage("Task " + task + "/" + tasks + ": error - could not correctly write results...",ProgressDialog.NOTIFICATION);
+					if(!noGUIs) progress.notifyMessage("Task " + task + "/" + tasks + ": error - could not correctly write results...",ProgressDialog.NOTIFICATION);
 				}
 				tw1.append("");
 			}			
@@ -1510,7 +1523,7 @@ public void run(String arg) {
 		//Save results text files
 			
 		//Update Multi-Task-Manager
-		progressDialog.moveTask(task);			
+		if(!noGUIs) progress.moveTask(task);			
 		break running;			
 	}	
 	}
@@ -2923,7 +2936,7 @@ int getMaxIntensity(ImagePlus imp){
 	}else if(imp.getBitDepth()==32){
 		maxThreshold = 2147483647;
 	}else{
-		progressDialog.notifyMessage("Error! No gray scale image!",ProgressDialog.ERROR);
+		if(!noGUIs) progress.notifyMessage("Error! No gray scale image!",ProgressDialog.ERROR);
 	}
 	return maxThreshold;	
 }
