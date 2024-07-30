@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2015-2024 Jan N. Hansen
  * First version: January 05, 2015
- * This version: July 29, 2024
+ * This version: July 30, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,7 +44,7 @@ import java.text.*;
 public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Name variables
 	final static String PLUGINNAME = "MotiQ Thresholder";
-	final static String PLUGINVERSION = "v0.2.2";
+	final static String PLUGINVERSION = "v0.2.3";
 	
 	//Fonts
 	static final Font SuperHeadingFont = new Font("Sansserif", Font.BOLD, 16);
@@ -102,7 +102,7 @@ public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	String selectedAlgorithm = "MinError";
 	
 	//Multi-task management
-	ProgressDialog progressDialog;
+	ProgressDialog progress;
 	boolean processingDone = false;	
 	boolean continueProcessing = true;
 
@@ -317,6 +317,7 @@ if (IJ.macroRunning()
 		 * &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& */
 			
 		GenericDialog gd = new GenericDialog(PLUGINNAME + " - Settings");
+    	gd.addHelp("https://github.com/hansenjn/MotiQ/wiki");
 		//	gd.setInsets(0,0,0); (top, left, bottom)
 		
 		gd.setInsets(0,0,0);	gd.addMessage(PLUGINNAME + ", version " + PLUGINVERSION 
@@ -574,13 +575,13 @@ if (IJ.macroRunning()
 		}
 		
 		//add progressDialog
-		progressDialog = new ProgressDialog(name, tasks);
 		if(!noGUIs) {
-//			progressDialog.setLocation(0,0);
-			progressDialog.setVisible(true);
-//			progressDialog.setAlwaysOnTop(true);
-//			progressDialog.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-			progressDialog.addWindowListener(new java.awt.event.WindowAdapter() {
+			progress = new ProgressDialog(name, tasks);
+//			progress.setLocation(0,0);
+			progress.setVisible(true);
+//			progress.setAlwaysOnTop(true);
+//			progress.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+			progress.addWindowListener(new java.awt.event.WindowAdapter() {
 		        public void windowClosing(WindowEvent winEvt) {
 		        	if (record) {	
 		        		Recorder.record = true;
@@ -598,20 +599,24 @@ if (IJ.macroRunning()
  *							Prepare images
  **&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
 	for(int task = 0; task < tasks; task++){
-		progressDialog.updateBarText("in progress...");
+		if(!noGUIs) progress.updateBarText("in progress...");
 		Date startDate = new Date();
 		running: while(continueProcessing){
 			int width = 0, height = 0, stacksize = 0, frames = 0, slices = 0;
 			
 			//Check for problems with image file
 				if(name[task].substring(name[task].lastIndexOf("."),name[task].length()).equals(".txt")){
-					progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!", ProgressDialog.ERROR);
-					progressDialog.moveTask(task);	
+					if(!noGUIs) {
+						progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!", ProgressDialog.ERROR);
+						progress.moveTask(task);
+					}	
 					break running;
 				}
 				if(name[task].substring(name[task].lastIndexOf("."),name[task].length()).equals(".zip")){
-					progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!", ProgressDialog.ERROR);
-					progressDialog.moveTask(task);	
+					if(!noGUIs) {
+						progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!", ProgressDialog.ERROR);
+						progress.moveTask(task);
+					}	
 					break running;
 				}
 			//Check for problems with image file
@@ -626,8 +631,10 @@ if (IJ.macroRunning()
 					parName = parentname;
 					parDir = dir [task];
 				}else{
-					progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": no parent image name could be determined - suffix could not be found! Image cannot be processed since parent image cannot be determined!", ProgressDialog.ERROR);
-					progressDialog.moveTask(task);	
+					if(!noGUIs) {
+						progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": no parent image name could be determined - suffix could not be found! Image cannot be processed since parent image cannot be determined!", ProgressDialog.ERROR);
+						progress.moveTask(task);
+					}
 					break running;
 				}			
 			}
@@ -645,14 +652,18 @@ if (IJ.macroRunning()
 			   		}			   			
 					imp.deleteRoi();
 			   	}catch (Exception e) {
-			   		progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": file is no image - could not be processed!", ProgressDialog.ERROR);
-					progressDialog.moveTask(task);	
-					break running;
+			   		if(!noGUIs) {
+			   			progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": file is no image - could not be processed!", ProgressDialog.ERROR);
+						progress.moveTask(task);	
+			   		}					
+			   		break running;
 				}
 			   	
 			   	if(imp.getNChannels() != 1){
-			   		progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": cannot process multi-channel images!", ProgressDialog.ERROR);
-					progressDialog.moveTask(task);	
+			   		if(!noGUIs) {
+				   		progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": cannot process multi-channel images!", ProgressDialog.ERROR);
+						progress.moveTask(task);			   			
+			   		}	
 					break running;
 			   	}
 			   				   	
@@ -662,7 +673,7 @@ if (IJ.macroRunning()
 				if(stacksize == 1 && chosenStackMethod.equals(stackMethod[4])==false){
 					//if image is no stack, process as non-stack
 					chosenStackMethod = stackMethod[4];
-					progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": image is no stack - stack method was switched to <" + stackMethod[4] + ">!", ProgressDialog.NOTIFICATION);
+					if(!noGUIs) progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": image is no stack - stack method was switched to <" + stackMethod[4] + ">!", ProgressDialog.NOTIFICATION);
 				}
 				frames = imp.getNFrames();
 				if(!onlyTimeGroup){
@@ -691,8 +702,11 @@ if (IJ.macroRunning()
 			   	ImagePlus primaryParImp;
 			 	if(useAlternateRef){
 			 		if(!new File(parDir+parName).exists()) {
-			 			progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": Could not find the parent image in the same folder. Make sure that the file <" + parName + "> is in the same folder as <" + name[task] + "> (so in folder " + dir[task] + ")!", ProgressDialog.ERROR);
-			 			progressDialog.moveTask(task);	
+			 			if(!noGUIs) {
+			 				progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": Could not find the parent image in the same folder. Make sure that the file <" 
+			 						+ parName + "> is in the same folder as <" + name[task] + "> (so in folder " + dir[task] + ")!", ProgressDialog.ERROR);
+				 			progress.moveTask(task);
+			 			}	
 						break running;
 			 		}
 			   		primaryParImp = IJ.openImage(""+parDir+parName+"");
@@ -736,11 +750,13 @@ if (IJ.macroRunning()
 				
 				//eventually convert to 8bit
 				if(conv8Bit){
-					progressDialog.updateBarText("converting to 8-bit...");
+					if(!noGUIs) progress.updateBarText("converting to 8-bit...");
 			 		Thresholder.optimal8BitConversion(imp, parImp);
 			 		if(imp.getBitDepth() != 8 || parImp.getBitDepth() != 8){
-			 			progressDialog.notifyMessage("Task " + (task+1) + "/" + tasks + ": 8-bit conversion failed!", ProgressDialog.ERROR);
-						progressDialog.moveTask(task);	
+			 			if(!noGUIs) {
+			 				progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": 8-bit conversion failed!", ProgressDialog.ERROR);
+							progress.moveTask(task);
+			 			}	
 						break running;
 			 		}
 			 	}
@@ -773,7 +789,7 @@ if (IJ.macroRunning()
 							selectedParImp.close();
 							System.gc();
 							
-							progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+							if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 						}
 						
 						if(!separateFrames){	
@@ -809,7 +825,7 @@ if (IJ.macroRunning()
 								selectedParImp.close();
 								System.gc();
 								
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 						}else{
 							selectedImp = getSelectedTimepoints(imp, startGroup, endGroup);
@@ -832,7 +848,7 @@ if (IJ.macroRunning()
 								for(int s = 0; s < imp.getNSlices(); s++){
 									thresholds [impStackIndex[s][t]] = thresholds [0];
 								}								
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 						}
 					}
@@ -857,7 +873,7 @@ if (IJ.macroRunning()
 								selectedParImp.close();
 								System.gc();
 								
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 						}else{
 							selectedImp = getSelectedTimepoints(imp, startGroup, endGroup);
@@ -874,7 +890,7 @@ if (IJ.macroRunning()
 												selectedParImp.getStackIndex(1, s+1, t-(startGroup-1)+1));
 //									IJ.log("th " + t + "-" + s + ": " + thresholds [impStackIndex[s][t]]);
 								}
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 							
 							selectedImp.changes = false;
@@ -891,7 +907,7 @@ if (IJ.macroRunning()
 						 * */
 						if(separateFrames){
 							for(int t = startGroup-1; t < endGroup; t++){
-								progressDialog.updateBarText("generate maximum projection...");
+								if(!noGUIs) progress.updateBarText("generate maximum projection...");
 								selectedImp = getSelectedTimepoints(imp, t+1, t+1);
 								selectedImp = maximumProjection(selectedImp, 1, selectedImp.getStackSize());								
 								selectedParImp = getSelectedTimepoints(parImp, (int)((double)zCorr/imp.getNSlices()) + t + 1, (int)((double)zCorr/imp.getNSlices()) + t + 1);
@@ -910,7 +926,7 @@ if (IJ.macroRunning()
 								selectedParImp.close();
 								System.gc();
 								
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 						}else{
 							selectedImp = getSelectedTimepoints(imp, startGroup, endGroup);
@@ -931,7 +947,7 @@ if (IJ.macroRunning()
 									thresholds [impStackIndex[s][t]] = calculatedThreshold;
 								}
 								
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 							
 							selectedImp.changes = false;
@@ -958,7 +974,7 @@ if (IJ.macroRunning()
 						selectedParImp.close();
 						System.gc();
 						
-						progressDialog.setBar(0.5);
+						if(!noGUIs) progress.setBar(0.5);
 					}
 					
 					//generate binary image
@@ -966,7 +982,7 @@ if (IJ.macroRunning()
 						if(thresholds [z] >= 0.0){
 							this.segmentImage(imp, thresholds [z], z);
 						}
-						progressDialog.setBar(0.5 + 0.3 * (z) / imp.getStackSize());
+						if(!noGUIs) progress.setBar(0.5 + 0.3 * (z) / imp.getStackSize());
 					}
 				}
 				
@@ -1028,7 +1044,7 @@ if (IJ.macroRunning()
 							selectedParImp.close();
 							System.gc();
 							
-							progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+							if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 						}	
 						
 						if(chosenStackMethod.equals(stackMethod[0]) && !separateFrames){
@@ -1075,7 +1091,7 @@ if (IJ.macroRunning()
 								selectedParImp.close();
 								System.gc();
 								
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 						}else{
 							if(onlyTimeGroup){
@@ -1101,7 +1117,7 @@ if (IJ.macroRunning()
 									
 								}
 								
-								progressDialog.setBar(0.5 * (x + 1) / width);
+								if(!noGUIs) progress.setBar(0.5 * (x + 1) / width);
 							}
 							
 							selectedParImp.changes = false;
@@ -1137,7 +1153,7 @@ if (IJ.macroRunning()
 								selectedParImp.close();
 								System.gc();
 								
-								progressDialog.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
+								if(!noGUIs) progress.setBar(0.5 * (t - (startGroup-1)) /(endGroup-startGroup));
 							}
 						}else{
 							if(onlyTimeGroup){
@@ -1164,7 +1180,7 @@ if (IJ.macroRunning()
 									
 								}
 								
-								progressDialog.setBar(0.5 * (x + 1) /(width));
+								if(!noGUIs) progress.setBar(0.5 * (x + 1) /(width));
 							}
 														
 							selectedParImp.changes = false;
@@ -1188,7 +1204,7 @@ if (IJ.macroRunning()
 										= this.getThresholdOfSelection(selectedParImp, localRoi, 1);
 							}
 							
-							progressDialog.setBar(0.5 * (x + 1) /(width));
+							if(!noGUIs) progress.setBar(0.5 * (x + 1) /(width));
 						}
 						
 						selectedParImp.changes = false;
@@ -1304,8 +1320,10 @@ if (IJ.macroRunning()
 				//Save Image Treatment
 				
 				//Update Multi-Task Manager
-				progressDialog.setBar(1.0);
-				progressDialog.moveTask(task);
+				if(!noGUIs) {
+					progress.setBar(1.0);
+					progress.moveTask(task);
+				}
 				break running;
 		}
 		System.gc();
@@ -1499,7 +1517,7 @@ private static ImagePlus getSelectedTimepoints (ImagePlus imp, int firstTimepoin
  * sliceImage range: 1 <= sliceImage <= stacksize
  * */
 private double getAverageThreshold (ImagePlus imp, ImagePlus parImp, int startSliceImage, int endSliceImage){
-	progressDialog.updateBarText("get average threshold...");
+	if(!noGUIs) progress.updateBarText("get average threshold...");
 	
 	//initialize
 	double calculatedThreshold = 0.0;
@@ -1531,7 +1549,7 @@ private double getAverageThreshold (ImagePlus imp, ImagePlus parImp, int startSl
  * Only the slice images between the indicated <startSliceImage> and <endSliceImage> are included into calculation
  * */
 private double getHistogramThreshold (ImagePlus imp, ImagePlus parImp){
-	progressDialog.updateBarText("get histogram threshold...");
+	if(!noGUIs) progress.updateBarText("get histogram threshold...");
 	
 	parImp.deleteRoi();
 	if(restrictToPos){
@@ -1550,10 +1568,10 @@ private double getHistogramThreshold (ImagePlus imp, ImagePlus parImp){
  * range: 1 <= z <= stacksize
  * */
 private double getSingleSliceImageThreshold (ImagePlus imp, ImagePlus parImp, int s){
-	progressDialog.updateBarText("determine threshold...");
+	if(!noGUIs) progress.updateBarText("determine threshold...");
 	parImp.deleteRoi();
 	if(restrictToPos){
-		progressDialog.updateBarText("find position...");
+		if(!noGUIs) progress.updateBarText("find position...");
 		Roi selection = this.getPositionRoi(imp, 1, imp.getStackSize());
 		selection = scaleRoi(selection, scalingFactor);
 		parImp.setRoi(selection);		
@@ -1584,7 +1602,7 @@ private double getThresholdOfSelection(ImagePlus parImp, Roi selection, int z){
  * @return a threshold for the histogram of ImagePlus <parImp> within the <selection>
  * */
 private double getHistogramThresholdOfSelection (ImagePlus parImp, Roi selection){
-	progressDialog.updateBarText("determine histogram threshold...");
+	if(!noGUIs) progress.updateBarText("determine histogram threshold...");
 	parImp.deleteRoi();
 	parImp.setRoi(selection);
 	
@@ -1598,7 +1616,7 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 	//z=slicenr
 	int maxValue = getMaxPossibleIntensity(imp);	
 	if(fillHoles){
-		progressDialog.updateBarText("filling holes...");
+		if(!noGUIs) progress.updateBarText("filling holes...");
 		//generate a mask image
 		ImagePlus maskImp = IJ.createImage("Mask", "8-bit", imp.getWidth(), imp.getHeight(), 1);
 		double imageMax = getMaxPossibleIntensity(maskImp);
@@ -1627,7 +1645,7 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 			Recorder.record = true;
 		}
 		
-		progressDialog.updateBarText("segment image...");
+		if(!noGUIs) progress.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				if(maskImp.getStack().getVoxel(x,y,0) == 0.0){
@@ -1640,7 +1658,7 @@ private void segmentImage(ImagePlus imp, double threshold, int z){
 		maskImp.changes = false;
 		maskImp.close();
 	}else{
-		progressDialog.updateBarText("segment image...");
+		if(!noGUIs) progress.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				double pxintensity = imp.getStack().getVoxel(x,y,z);
@@ -1659,7 +1677,7 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 	int maxIntensity = getMaxPossibleIntensity(imp);
 	if(fillHoles){
 		//Include fill Holes mechanism
-		progressDialog.updateBarText("filling holes...");
+		if(!noGUIs) progress.updateBarText("filling holes...");
 		ImagePlus transImp = IJ.createHyperStack("Trans Imp", imp.getWidth(), imp.getHeight(), 1,
 				imp.getNSlices(), imp.getNFrames(), imp.getBitDepth());
 		
@@ -1692,7 +1710,7 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 			Recorder.record = true;
 		}
 		
-		progressDialog.updateBarText("segment image...");
+		if(!noGUIs) progress.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				for(int z = 0; z < imp.getStackSize(); z++){
@@ -1705,12 +1723,12 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 				}				
 			}
 			
-			progressDialog.setBar(0.5 + 0.3 * (x + 1) /(imp.getWidth()));
+			if(!noGUIs) progress.setBar(0.5 + 0.3 * (x + 1) /(imp.getWidth()));
 		}
 		transImp.changes = false;
 		transImp.close();
 	}else{
-		progressDialog.updateBarText("segment image...");
+		if(!noGUIs) progress.updateBarText("segment image...");
 		for(int x = 0; x < imp.getWidth(); x++){
 			for(int y = 0; y < imp.getHeight(); y++){
 				for(int z = 0; z < imp.getStackSize(); z++){
@@ -1723,7 +1741,7 @@ private void segmentImageLocally (ImagePlus imp, double thresholdMatrix [][][]){
 				}				
 			}
 			
-			progressDialog.setBar(0.5 + 0.3 * (x + 1) /(imp.getWidth()));
+			if(!noGUIs) progress.setBar(0.5 + 0.3 * (x + 1) /(imp.getWidth()));
 		}
 	}		
 }
@@ -1738,13 +1756,13 @@ private int getMaxPossibleIntensity(ImagePlus imp){
 	}else if(imp.getBitDepth()==32){
 		maxThreshold = 2147483647;
 	}else{
-		progressDialog.notifyMessage("Error! No gray scale image!", ProgressDialog.ERROR);
+		if(!noGUIs) progress.notifyMessage("Error! No gray scale image!", ProgressDialog.ERROR);
 	}
 	return maxThreshold;	
 }
 
 private String getOutputPath(String path, Date d){
-	progressDialog.updateBarText("determine output path...");
+	if(!noGUIs) progress.updateBarText("determine output path...");
 	SimpleDateFormat NameDateFormatter = new SimpleDateFormat("yyMMdd_HHmmss");
 
 	String name = path.substring(path.lastIndexOf(System.getProperty("file.separator"))+1);
