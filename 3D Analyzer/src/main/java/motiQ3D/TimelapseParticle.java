@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2023 Jan N. Hansen
  * First version: July 28, 2014  
- * This Version: April 15, 2019
+ * This Version: July 30, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -191,9 +191,9 @@ public class TimelapseParticle{
 	public TimelapseParticle(){}	
 	
 	public TimelapseParticle(ArrayList<ImPoint> points, Calibration cal, double projectedFrames, boolean skeletonize, double gaussSigmaXY, double gaussSigmaZ,
-			int orWidth, int orHeight, int orSlices, int orTimes, boolean minimizeImages, boolean binarizeBeforeSkeletonization, ProgressDialog progressDialog){		
+			int orWidth, int orHeight, int orSlices, int orTimes, boolean minimizeImages, boolean binarizeBeforeSkeletonization, ProgressDialog progressDialog, boolean noGUIs){		
 //		SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");		
-//		progressDialog.notifyMessage("Started particle generation " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//		if(!noGUIs) progressDialog.notifyMessage("Started particle generation " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 		
 		final double calibration = cal.pixelWidth;
 		final double voxelDepth = cal.pixelDepth;
@@ -237,7 +237,7 @@ public class TimelapseParticle{
 		height = 1+yMax-yMin;
 		data = new double [width][height][slices][times];
 		
-//		progressDialog.notifyMessage("Step 1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//		if(!noGUIs) progressDialog.notifyMessage("Step 1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 		
 		//Determine static variables
 		double maxIntensity = 0.0, maxPossibIntensity = 0.0;
@@ -308,7 +308,7 @@ public class TimelapseParticle{
 				}
 			}
 			
-//			progressDialog.notifyMessage("Step static 1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step static 1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			int xCal, yCal, zCal, tCal;
 			for(int i = 0; i < nPoints; i++){
@@ -345,7 +345,7 @@ public class TimelapseParticle{
 				volume [tCal] += vxVolume;
 			}
 			
-//			progressDialog.notifyMessage("Step static 2 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step static 2 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			for(int t = 0; t < times; t++){		
 				averageIntensity [t] /= (volume [t] / vxVolume);
@@ -384,7 +384,7 @@ public class TimelapseParticle{
 				surface [tCal] += transientSurface;
 			}
 			
-//			progressDialog.notifyMessage("Step static 3 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step static 3 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			double transientRadius;
 			for(int t = 0; t < times; t++){
@@ -410,7 +410,7 @@ public class TimelapseParticle{
 				RI [t] =  surface [t] / (Math.PI * Math.pow(transientRadius,2) * 4);	//RI
 			}			
 			
-//			progressDialog.notifyMessage("Step static 4 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step static 4 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			{
 				//convex hull calculation
@@ -431,7 +431,7 @@ public class TimelapseParticle{
 					}
 					
 					//calculate hull
-					transHullData = getConv3DHull(transHullData, progressDialog);
+					transHullData = getConv3DHull(transHullData, progressDialog, noGUIs);
 					
 					for(int z = 0; z < slices; z++){
 						for(int x = 0; x < width; x++){
@@ -443,7 +443,7 @@ public class TimelapseParticle{
 				}
 			}
 			
-//			progressDialog.notifyMessage("Step static 5 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step static 5 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			{
 				String bitDepth = "8-bit"; maxPossibIntensity = 255.0;
@@ -580,7 +580,7 @@ public class TimelapseParticle{
 				convexHullImp.setCalibration(cal);				
 			}			
 			
-//			progressDialog.notifyMessage("Step static 6 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step static 6 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			for(int t = 0; t < times; t++){
 				convexHullxC [t] /= (convexHullVolume [t]/vxVolume);
@@ -607,7 +607,7 @@ public class TimelapseParticle{
 			}
 		}
 		
-//		progressDialog.notifyMessage("Step 2 SKL " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//		if(!noGUIs) progressDialog.notifyMessage("Step 2 SKL " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 		
 		// SKELETON PARAMETERS
 		if(skeletonize){
@@ -804,7 +804,7 @@ public class TimelapseParticle{
 			particleImpGaussed.close();
 		}
 				
-//		progressDialog.notifyMessage("Step 3 TIMEDEP " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//		if(!noGUIs) progressDialog.notifyMessage("Step 3 TIMEDEP " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 		
 		//TIME DEPENDENT VARIABLES
 		if(times>1){
@@ -866,7 +866,7 @@ public class TimelapseParticle{
 				motility [t] = occupVolume [t] + lostVolume [t];
 			}	
 			
-//			progressDialog.notifyMessage("Step 3.1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step 3.1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			//FloodFiller to find #extensions and #retractions
 			int floodNodeX, floodNodeY, floodNodeZ, floodNodeT, index, maxExtRetr = 0;
@@ -1067,7 +1067,7 @@ public class TimelapseParticle{
 			}				
 		}
 		
-//		progressDialog.notifyMessage("Step 4 LTPs " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//		if(!noGUIs) progressDialog.notifyMessage("Step 4 LTPs " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 		
 		//timegroup variables
 		projectedTimes = (int)((double)times/(double)projectedFrames);
@@ -1137,7 +1137,7 @@ public class TimelapseParticle{
 				}
 			}
 			
-//			progressDialog.notifyMessage("Step 4 LTPs 1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step 4 LTPs 1 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			for(int i = 0; i < projectedTimes; i++){
 				projectedDynamicFraction [i] = (projectedVolume [i] - projectedStaticVolume [i]) / projectedVolume [i];
@@ -1192,7 +1192,7 @@ public class TimelapseParticle{
 			}
 		}
 		
-//		progressDialog.notifyMessage("Step 4 LTPs 2 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//		if(!noGUIs) progressDialog.notifyMessage("Step 4 LTPs 2 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 		
 		//LONG TERM AVERAGES OF PARAMETERS
 		if(times>=projectedFrames&&projectedFrames!=1){
@@ -1375,7 +1375,7 @@ public class TimelapseParticle{
 				}
 			}
 			
-//			progressDialog.notifyMessage("Step 4 LTPs 3 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//			if(!noGUIs) progressDialog.notifyMessage("Step 4 LTPs 3 " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 			
 			//Dynamic parameters
 			if(times>1){
@@ -1431,7 +1431,7 @@ public class TimelapseParticle{
 			}		
 		}
 		initialized = true;
-//		progressDialog.notifyMessage("Done " + df.format(new Date()),ProgressDialog.NOTIFICATION);
+//		if(!noGUIs) progressDialog.notifyMessage("Done " + df.format(new Date()),ProgressDialog.NOTIFICATION);
 	}
 	
 	/** Closes all ImagePlus belonging to the particle*/
@@ -1452,12 +1452,12 @@ public class TimelapseParticle{
 	 * @param image
 	 * @param progressDialog should reference to the current progressDialog that visualises analysis progress
 	 * */
-	private boolean [][][] getConv3DHull(boolean[][][] image, ProgressDialog progressDialog){	//TODO IMPROVE!
+	private boolean [][][] getConv3DHull(boolean[][][] image, ProgressDialog progressDialog, boolean noGUIs){	//TODO IMPROVE!
 		int width = image.length;
 		int height = image[0].length;
 		int slices = image[0][0].length;
 		
-		progressDialog.addToBar(0.01);
+		if(!noGUIs) progressDialog.addToBar(0.01);
 		
 		//initialize
 			ArrayList <Point3D> pList = new ArrayList <Point3D>();
@@ -1708,7 +1708,7 @@ public class TimelapseParticle{
 								}
 														
 								if((int)Math.round(100.0*doneConnectionsCount/(double)connectionsCount) % 10 == 0){
-									progressDialog.updateBarText("Get convex hull ... " + (int)Math.round(100.0*doneConnectionsCount/(double)connectionsCount) + "%");
+									if(!noGUIs) progressDialog.updateBarText("Get convex hull ... " + (int)Math.round(100.0*doneConnectionsCount/(double)connectionsCount) + "%");
 								}	
 							}
 						}
@@ -1716,7 +1716,7 @@ public class TimelapseParticle{
 					}
 				}
 			}			
-			progressDialog.updateBarText("Get convex hull ... 100%");
+			if(!noGUIs) progressDialog.updateBarText("Get convex hull ... 100%");
 									
 			//get 2D hull
 			{
@@ -1795,7 +1795,7 @@ public class TimelapseParticle{
 				pList2.clear();
 				oldPList2.clear();				
 			}
-			progressDialog.updateBarText("convex hull determined");
+			if(!noGUIs) progressDialog.updateBarText("convex hull determined");
 			oldPList.clear();
 			pList.clear();
 			return image;

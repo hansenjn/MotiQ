@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: July 28, 2014 
- * This Version: July 29, 2024
+ * This Version: July 30, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ import java.text.*;
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 3D Analyzer";
-	static final String PLUGINVERSION = "v0.3.2";
+	static final String PLUGINVERSION = "v0.3.3";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -313,6 +313,7 @@ public void run(String arg) {
     	//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     	    	
     	GenericDialog gd = new GenericDialog(PLUGINNAME + " - settings");
+    	gd.addHelp("https://github.com/hansenjn/MotiQ/wiki");
     	//show Dialog-----------------------------------------------------------------
 //    	gd.setInsets(0,0,0); (top, left, bottom)
     	gd.setInsets(0,0,0);	gd.addMessage(PLUGINNAME + ", version " + PLUGINVERSION 
@@ -534,8 +535,8 @@ public void run(String arg) {
 		}
 		
 		//add progressDialog
-		progress = new ProgressDialog(name, tasks, noGUIs);
 		if(!noGUIs) {
+			progress = new ProgressDialog(name, tasks, noGUIs);
 			progress.setLocation(0,0);
 			progress.setVisible(true);
 			progress.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -565,17 +566,21 @@ public void run(String arg) {
 			break continueAll;
 		}
 		Date startDate = new Date();
-		progress.updateBarText(" in progress...");
+		if(!noGUIs)	progress.updateBarText(" in progress...");
 		running: while(true){
 		//Check for problems with image file
 			if(name[task].substring(name[task].lastIndexOf("."),name[task].length()).equals(".txt")){
-				progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
-				progress.moveTask(task);	
+				if(!noGUIs) {
+					progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
+					progress.moveTask(task);
+				}	
 				break running;
 			}
 			if(name[task].substring(name[task].lastIndexOf("."),name[task].length()).equals(".zip")){	
-				progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
-				progress.moveTask(task);	
+				if(!noGUIs) {
+					progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": File is no image! Could not be processed!",ProgressDialog.ERROR);
+					progress.moveTask(task);
+				}
 				break running;
 			}
 		//Check for problems with image file
@@ -594,8 +599,10 @@ public void run(String arg) {
 		   			imp.deleteRoi();
 		   		}
 		   	}catch (Exception e) {
-		   		progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": file is no image - could not be processed!",ProgressDialog.ERROR);
-				progress.moveTask(task);	
+		   		if(!noGUIs) {
+		   			progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": file is no image - could not be processed!",ProgressDialog.ERROR);
+		   			progress.moveTask(task);
+		   		}		
 				break running;
 			}
 		   	
@@ -678,7 +685,7 @@ public void run(String arg) {
 					cal.fps = fps;
 					timeUnit = calTimeUnit;
 				}else{
-					progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": recalibration failed! Metadata calibration is used instead!!",ProgressDialog.ERROR);
+					if(!noGUIs)	progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": recalibration failed! Metadata calibration is used instead!!",ProgressDialog.ERROR);
 				}
 			}			
 			//Calibrate
@@ -845,8 +852,10 @@ public void run(String arg) {
 											floodNodes[index][3] = floodNodeT;
 										}
 										if(processedPxCount%(pxCount100)<pxCount1000){
-											progress.setBar(ProgressFactor0*((double)(processedPxCount)/(double)(pxCount)));
-											progress.updateBarText("filtering particles ... " + dformat3.format(100.0*(double)(processedPxCount)/(double)(pxCount)) + "%");
+											if(!noGUIs) {
+												progress.setBar(ProgressFactor0*((double)(processedPxCount)/(double)(pxCount)));
+												progress.updateBarText("filtering particles ... " + dformat3.format(100.0*(double)(processedPxCount)/(double)(pxCount)) + "%");
+											}											
 										}
 									}					
 									//Floodfiller
@@ -929,11 +938,12 @@ public void run(String arg) {
 					}
 				}
 				wholePointCollection.trimToSize();
-				progress.setBar(ProgressFactor0+ProgressFactor1);
-				progress.updateBarText("detecting particles ... " + dformat3.format(100.0) + "%");
-				
+				if(!noGUIs) {
+					progress.setBar(ProgressFactor0+ProgressFactor1);
+					progress.updateBarText("detecting particles ... " + dformat3.format(100.0) + "%");
+				}				
 				allParticles = new TimelapseParticle(wholePointCollection, cal, totalGroupSize, skeletonize, gSigmaXY, gSigmaZ, 
-						width, height, slices, frames, false, binarizeBeforeSkl, progress);
+						width, height, slices, frames, false, binarizeBeforeSkl, progress, noGUIs);
 				wholePointCollection.clear();
 			}else{
 				//separate objects over time
@@ -1080,19 +1090,18 @@ public void run(String arg) {
 											floodNodes[index][3] = floodNodeT+1;
 										}
 										if(processedPxCount%(pxCount100)<pxCount1000){
-											progress.setBar(ProgressFactor0+ProgressFactor1*((double)(processedPxCount)/(double)(pxCount)));
-											progress.updateBarText("detecting particles ... " + dformat3.format(100.0*(double)(processedPxCount)/(double)(pxCount)) + "%");
+											if(!noGUIs) {
+												progress.setBar(ProgressFactor0+ProgressFactor1*((double)(processedPxCount)/(double)(pxCount)));
+												progress.updateBarText("detecting particles ... " + dformat3.format(100.0*(double)(processedPxCount)/(double)(pxCount)) + "%");												
+											}
 										}
 									}					
 									//Floodfiller
 									
 									pointCollection.trimToSize();
-									//TimelapseParticle(ArrayList<imPoint> points, Calibration cal, double projectedFrames, boolean skeletonize, 
-									//double gaussSigmaXY, double gaussSigmaZ, int orWidth, int orHeight, int orSlices, int orTimes, boolean minimizeImages, 
-									//boolean binarizeBeforeSkeletonization, ProgressDialog progress)
 									particleCollection.add(new TimelapseParticle(pointCollection, cal, totalGroupSize, skeletonize, 
 											gSigmaXY, gSigmaZ, width, height, slices, frames, true, 
-											binarizeBeforeSkl, progress));												
+											binarizeBeforeSkl, progress, noGUIs));												
 								}				
 							}
 						}
@@ -1112,7 +1121,7 @@ public void run(String arg) {
 			}			
 			//Filter particles
 			
-			progress.setBar(0.8);
+			if(!noGUIs) progress.setBar(0.8);
 					
 			/***************************************************************************
 			 *#########################################################################* 
@@ -1135,7 +1144,7 @@ public void run(String arg) {
 				try{
 					new File(dir [task] + filePrefix).mkdirs();
 				}catch(Exception e){
-					progress.notifyMessage("failed to create subfolder to save additional plots! Will save plots into origianl folder!",ProgressDialog.NOTIFICATION);
+					if(!noGUIs) progress.notifyMessage("failed to create subfolder to save additional plots! Will save plots into origianl folder!",ProgressDialog.NOTIFICATION);
 				}
 				
 				String RPSuffix = "_RP" + dformat0.format(minParticleVolume);
@@ -1602,7 +1611,7 @@ public void run(String arg) {
 							}
 						}
 					}catch(Exception e){
-						progress.notifyMessage("Task " + task + "/" + tasks + ": error - could not correctly write results...",ProgressDialog.ERROR);
+						if(!noGUIs) progress.notifyMessage("Task " + task + "/" + tasks + ": error - could not correctly write results...",ProgressDialog.ERROR);
 					}
 					tw1.append("");
 				}			
@@ -1640,7 +1649,7 @@ public void run(String arg) {
 				v3D = new Visualizer3D(imp, 3.0f);
 				v3D.setAngle(10.0f, -10.0f, 0.0f);
 				
-				progress.updateBarText("generating visualizations...");
+				if(!noGUIs) progress.updateBarText("generating visualizations...");
 				if(mergeSelection.equals(mergeOrNotMerge[0])){				
 					IJ.saveAs(allParticles.particleImp, "tif", subfolderPrefix + RPSuffix + ".tif");
 					IJ.saveAs(allParticles.convexHullImp, "tif", subfolderPrefix + "_H.tif");
@@ -1654,7 +1663,7 @@ public void run(String arg) {
 						for(int err = 0; err < e.getStackTrace().length; err++){
 							out += " \n " + e.getStackTrace()[err].toString();
 						}
-						progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": No 3D visualization generated - an error occured: " + out,ProgressDialog.NOTIFICATION);						
+						if(!noGUIs) progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": No 3D visualization generated - an error occured: " + out,ProgressDialog.NOTIFICATION);						
 					}					
 					allParticles.closeImps();
 				}else if(mergeSelection.equals(mergeOrNotMerge[1])){
@@ -1671,21 +1680,23 @@ public void run(String arg) {
 							for(int err = 0; err < e.getStackTrace().length; err++){
 								out += " \n " + e.getStackTrace()[err].toString();
 							}
-							progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": An error occured when generating a 3D visualization - the analysis and all other output files than the missing 3D file are however unaffected and valid!"
+							if(!noGUIs) progress.notifyMessage("Task " + (task+1) + "/" + tasks + ": An error occured when generating a 3D visualization - the analysis and all other output files than the missing 3D file are however unaffected and valid!"
 									+ " Debuggin information: " + out + "",ProgressDialog.NOTIFICATION);		
 						}	
 						particleCollection.get(i).closeImps();
 					}				
 				}
-				progress.setBar(0.9);
+				if(!noGUIs) progress.setBar(0.9);
 				
 			//Save Images
 				
 			//Save results text files
 				
 			//Update Multi-Task-Manager
-			progress.setBar(1.0);
-			progress.moveTask(task);			
+			if(!noGUIs) {
+				progress.setBar(1.0);
+				progress.moveTask(task);					
+			}			
 			break running;			
 		}	
 		}	
