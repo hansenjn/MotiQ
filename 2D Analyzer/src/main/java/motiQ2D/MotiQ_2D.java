@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: November 7, 2014  
- * This Version: July 30, 2024
+ * This Version: July 31, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,13 +38,12 @@ import ij.io.*;
 import ij.measure.*;
 import ij.plugin.*;
 import ij.plugin.frame.Recorder;
-import ij.text.*;
 import java.text.*;
 
 public class MotiQ_2D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 2D Analyzer";
-	static final String PLUGINVERSION = "v0.2.3";
+	static final String PLUGINVERSION = "v0.2.4";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -1231,7 +1230,7 @@ public void run(String arg) {
 		//Generate legends
 		
 		//Save results text files
-			TextPanel tw1 =new TextPanel("Results");
+			outputTextFile tw1 = new outputTextFile(dir[task] + filePrefix + ".txt");
 			tw1.append("Saving date:	" + FullDateFormatter.format(currentDate) + "	Analysis started:	" + FullDateFormatter.format(startDate));
 			tw1.append("Image");
 			tw1.append("	name:	" + name [task]);
@@ -1496,8 +1495,8 @@ public void run(String arg) {
 			tw1.append("The plugin '"+PLUGINNAME+"' is distributed in the hope that it will be useful,"
 					+ " but WITHOUT ANY WARRANTY; without even the implied warranty of"
 					+ " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
-			tw1.append("Plugin version:	"+PLUGINVERSION);			
-			tw1.saveAs(dir[task] + filePrefix + ".txt");
+			tw1.append("Plugin version:	"+PLUGINVERSION);
+			tw1.finish();
 			
 			//save one row results text files
 				//save legend
@@ -1536,7 +1535,7 @@ public void run(String arg) {
 }
 
 void saveLegendST(int frames, String savePath){
-	TextPanel tw =new TextPanel("Legend P1");
+	outputTextFile tw =new outputTextFile(savePath);
 	
 	String legendTw2 = "		particle nr";
 	String legendTw2l2 = "			";
@@ -1627,8 +1626,8 @@ void saveLegendST(int frames, String savePath){
 				+ " '3D reconstruction of histological sections: Application to mammary gland tissue', Microscopy Research and Technique,"
 				+ " Volume 73, Issue 11, pages 1019-1029, October 2010.");
 		tw.append(legendTw2l2);
-	}	
-	tw.saveAs(savePath);	
+	}
+	tw.finish();
 }
 
 void saveLegendLT(int frames, String savePath){
@@ -1636,7 +1635,7 @@ void saveLegendLT(int frames, String savePath){
 	String spacer = "";
 	for(int g = 0; g < nrOfGroups; g++)spacer += "	";
 	
-	TextPanel tp = new TextPanel ("Long-term parameters legend");
+	outputTextFile tp = new outputTextFile (savePath);
 	String legendLTheader = "	";
 	legendLTheader += "		" + "Long-term scanning behaviour" + spacer;
 	for(int s = 0; s < 5; s++){
@@ -1768,11 +1767,11 @@ void saveLegendLT(int frames, String savePath){
 	
 	tp.append(legendLT);
 	tp.append(legendLTtime);
-	tp.saveAs(savePath);
+	tp.finish();
 }
 
 void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, double xCorr, double yCorr, String directory, String name, String savePath){
-	TextPanel tw3 =new TextPanel("One Row Results");
+	outputTextFile tw3 =new outputTextFile(savePath);
 	for(int p = 0; p < particles.size(); p++){
 		TimelapseParticle2D particle = particles.get(p);
 		String appendTxtTw3 = "" + directory;
@@ -2327,11 +2326,11 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 		+ "	" + "Plugin version: "+PLUGINVERSION);	
 		tw3.append(appendTxtTw3);				
 	}
-	tw3.saveAs(savePath);
+	tw3.finish();
 }
 
 void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, double xCorr, double yCorr, String directory, String name, String savePath){
-	TextPanel tw3 =new TextPanel("One Row Results");
+	outputTextFile tw3 =new outputTextFile(savePath);
 	for(int p = 0; p < particles.size(); p++){
 		TimelapseParticle2D particle = particles.get(p);
 		String appendTxtTw3 = "" + directory;
@@ -2924,7 +2923,7 @@ void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, d
 				+ "	" + "Plugin version: "+PLUGINVERSION);		
 		tw3.append(appendTxtTw3);
 	}
-	tw3.saveAs(savePath);
+	tw3.finish();
 }
 
 int getMaxIntensity(ImagePlus imp){
