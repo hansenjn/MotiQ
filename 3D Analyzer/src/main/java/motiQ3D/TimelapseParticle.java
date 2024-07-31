@@ -41,7 +41,6 @@ import ij.measure.Calibration;
 import ij.plugin.HyperStackConverter;
 import ij.plugin.RGBStackConverter;
 import ij.process.ImageProcessor;
-import ij.text.TextPanel;
 import motiQ3D.skeletonize3D.*;
 import motiQ3D.skeleton_analysis.*;
 
@@ -1876,11 +1875,10 @@ public class TimelapseParticle{
 		int width =  v3D.getWidth(),
 			height = v3D.getHeight();
 		
-		TextPanel tp;
-		tp = new TextPanel("Info");
+		OutputTextFile tp = new OutputTextFile(savePath + "_3Dinfo.txt");
 		tp.append("bars = " + calBarLength + " " + particleImp.getCalibration().getUnit());
 		tp.append("3D visualizations were generated via the ImageJ plugin <Volume Viewer 2.0> (27.11.2012, (C) Kai Uwe Barthel)");
-		tp.saveAs(savePath + "_3Dinfo.txt");
+		tp.finish();
 		
 		//save 3D visualization of the particle imp
 		{

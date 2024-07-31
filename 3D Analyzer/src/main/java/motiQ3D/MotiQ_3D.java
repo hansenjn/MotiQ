@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2014-2024 Jan N. Hansen
  * First version: July 28, 2014 
- * This Version: July 30, 2024
+ * This Version: July 31, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,13 +37,12 @@ import ij.io.*;
 import ij.measure.*;
 import ij.plugin.*;
 import ij.plugin.frame.Recorder;
-import ij.text.*;
 import java.text.*;
 
 public class MotiQ_3D implements PlugIn, Measurements{
 	//Name variables
 	static final String PLUGINNAME = "MotiQ 3D Analyzer";
-	static final String PLUGINVERSION = "v0.3.3";
+	static final String PLUGINVERSION = "v0.3.4";
 	
 	DecimalFormat dformat6 = new DecimalFormat("#0.000000");
 	DecimalFormat dformat3 = new DecimalFormat("#0.000");
@@ -1349,7 +1348,7 @@ public void run(String arg) {
 			//Generate legends
 			
 			//Save results text files
-				TextPanel tw1 =new TextPanel("Results");
+				OutputTextFile tw1 = new OutputTextFile(dir[task] + filePrefix + ".txt");
 				tw1.append("Saving date:	" + FullDateFormatter.format(currentDate) + "	Analysis started:	" + FullDateFormatter.format(startDate));
 				tw1.append("Image");
 				tw1.append("	name:	" + name [task]);
@@ -1621,7 +1620,7 @@ public void run(String arg) {
 						+ " but WITHOUT ANY WARRANTY; without even the implied warranty of"
 						+ " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
 				tw1.append("Plugin version:	"+PLUGINVERSION);			
-				tw1.saveAs(dir[task] + filePrefix + ".txt");
+				tw1.finish();
 				
 				//save one row results text files
 					//save legend
@@ -1712,7 +1711,7 @@ public void run(String arg) {
 	 * saves a legend file for the one-line files that save short-term parameters
 	 * */
 	void saveLegendST(int frames, String savePath){
-		TextPanel tw =new TextPanel("Legend P1");
+		OutputTextFile tw = new OutputTextFile(savePath);
 		
 		String legendTw2 = "		particle nr";
 		String legendTw2l2 = "			";
@@ -1810,7 +1809,7 @@ public void run(String arg) {
 					+ " Volume 73, Issue 11, pages 1019-1029, October 2010.");
 			tw.append(legendTw2l2);
 		}	
-		tw.saveAs(savePath);	
+		tw.finish();	
 	}
 
 	/**
@@ -1821,7 +1820,7 @@ public void run(String arg) {
 		String spacer = "";
 		for(int g = 0; g < nrOfGroups; g++)spacer += "	";
 		
-		TextPanel tp = new TextPanel ("Long-term parameters legend");
+		OutputTextFile tp = new OutputTextFile(savePath);
 		String legendLTheader = "	";
 		legendLTheader += "		" + "Long-term scanning behaviour" + spacer;
 		for(int s = 0; s < 5; s++){
@@ -1959,14 +1958,14 @@ public void run(String arg) {
 		
 		tp.append(legendLT);
 		tp.append(legendLTtime);
-		tp.saveAs(savePath);
+		tp.finish();
 	}
 
 	/**
 	 * saves one-line results file containing the results for the short-term parameters
 	 * */
 	void saveOneRowResultsST(ArrayList<TimelapseParticle> particles, int frames, double xCorr, double yCorr, double zCorr, String directory, String name, String savePath){
-		TextPanel tw3 =new TextPanel("One Row Results");
+		OutputTextFile tw3 = new OutputTextFile(savePath);
 		for(int p = 0; p < particles.size(); p++){
 			TimelapseParticle particle = particles.get(p);
 			String appendTxtTw3 = "" + directory;
@@ -2569,14 +2568,14 @@ public void run(String arg) {
 			+ "	" + "Plugin version: "+PLUGINVERSION);	
 			tw3.append(appendTxtTw3);				
 		}
-		tw3.saveAs(savePath);
+		tw3.finish();
 	}
 
 	/**
 	 * saves one-line results file containing the results for the long-term parameters
 	 * */
 	void saveOneRowResultsLT(ArrayList<TimelapseParticle> particles, int frames, double xCorr, double yCorr, double zCorr, String directory, String name, String savePath){
-		TextPanel tw3 =new TextPanel("One Row Results");
+		OutputTextFile tw3 = new OutputTextFile(savePath);
 		for(int p = 0; p < particles.size(); p++){
 			TimelapseParticle particle = particles.get(p);
 			String appendTxtTw3 = "" + directory;
@@ -3201,7 +3200,7 @@ public void run(String arg) {
 					+ "	" + "Plugin version: "+PLUGINVERSION);		
 			tw3.append(appendTxtTw3);
 		}
-		tw3.saveAs(savePath);
+		tw3.finish();
 	}
 
 	/**
