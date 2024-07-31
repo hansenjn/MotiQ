@@ -4,7 +4,7 @@
  * 
  * Copyright (C) 2015-2024 Jan N. Hansen
  * First version: January 05, 2015
- * This version: July 30, 2024
+ * This version: July 31, 2024
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,13 +38,12 @@ import ij.measure.*;
 import ij.process.*;
 import ij.plugin.*;
 import ij.plugin.frame.Recorder;
-import ij.text.*;
 import java.text.*;
 
 public class Thresholder implements PlugIn, Measurements{//, DialogListener {
 	//Name variables
 	final static String PLUGINNAME = "MotiQ Thresholder";
-	final static String PLUGINVERSION = "v0.2.3";
+	final static String PLUGINVERSION = "v0.2.4";
 	
 	//Fonts
 	static final Font SuperHeadingFont = new Font("Sansserif", Font.BOLD, 16);
@@ -1244,7 +1243,7 @@ if (IJ.macroRunning()
 				
 					//generate log file
 					SimpleDateFormat FullDateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					TextPanel tw1 =new TextPanel("Results");
+					OutputTextFile tw1 = new OutputTextFile(outputPath + "_log.txt");
 					tw1.append("Output image name:	" + outputPath.substring(dir[task].length()) + ".tif");
 					tw1.append("Input image name:	" + name[task]);
 					tw1.append("Processing started: " + FullDateFormatter.format(startDate));
@@ -1312,7 +1311,7 @@ if (IJ.macroRunning()
 					if (record) {	
 						Recorder.record = false;
 					}
-					tw1.saveAs(outputPath + "_log.txt");
+					tw1.finish();
 					if (record) {	
 						Recorder.record = true;
 					}
