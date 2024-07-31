@@ -29,33 +29,39 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-class outputTextFile {
+class OutputTextFile {
 	String path;	
 	FileWriter writer = null;
+	String output;
 	
-	public outputTextFile(String outputPath) {
+	public OutputTextFile(String outputPath) {
+		output = "";
 		path = outputPath;		
-		try {
-			writer = new FileWriter(new File(path));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 	}
 	
 	public void append(String text) {
-		try {
-			writer.write(text + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		output += (text + "\n");
 	}
 	
-	public void finish() {
+	public boolean finish() {
+		if(output.length() == 0) return false;
+		if(path.length() == 0) return false;
+		
+		output = output.replaceAll("\n$", "");
+		
 		try {
+			writer = new FileWriter(new File(path));
+			writer.write(output);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		output = "";
+		path = "";
+		return true;
+	}
+	
+	public void changePath(String newOutputPath) {
+		path = newOutputPath;
 	}
 }

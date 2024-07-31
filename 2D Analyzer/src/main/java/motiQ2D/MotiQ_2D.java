@@ -1230,7 +1230,7 @@ public void run(String arg) {
 		//Generate legends
 		
 		//Save results text files
-			outputTextFile tw1 = new outputTextFile(dir[task] + filePrefix + ".txt");
+			OutputTextFile tw1 = new OutputTextFile(dir[task] + filePrefix + ".txt");
 			tw1.append("Saving date:	" + FullDateFormatter.format(currentDate) + "	Analysis started:	" + FullDateFormatter.format(startDate));
 			tw1.append("Image");
 			tw1.append("	name:	" + name [task]);
@@ -1535,7 +1535,7 @@ public void run(String arg) {
 }
 
 void saveLegendST(int frames, String savePath){
-	outputTextFile tw =new outputTextFile(savePath);
+	OutputTextFile tw =new OutputTextFile(savePath);
 	
 	String legendTw2 = "		particle nr";
 	String legendTw2l2 = "			";
@@ -1635,7 +1635,7 @@ void saveLegendLT(int frames, String savePath){
 	String spacer = "";
 	for(int g = 0; g < nrOfGroups; g++)spacer += "	";
 	
-	outputTextFile tp = new outputTextFile (savePath);
+	OutputTextFile tp = new OutputTextFile (savePath);
 	String legendLTheader = "	";
 	legendLTheader += "		" + "Long-term scanning behaviour" + spacer;
 	for(int s = 0; s < 5; s++){
@@ -1771,7 +1771,7 @@ void saveLegendLT(int frames, String savePath){
 }
 
 void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, double xCorr, double yCorr, String directory, String name, String savePath){
-	outputTextFile tw3 =new outputTextFile(savePath);
+	OutputTextFile tw3 =new OutputTextFile(savePath);
 	for(int p = 0; p < particles.size(); p++){
 		TimelapseParticle2D particle = particles.get(p);
 		String appendTxtTw3 = "" + directory;
@@ -2330,7 +2330,7 @@ void saveOneRowResultsST(ArrayList<TimelapseParticle2D> particles, int frames, d
 }
 
 void saveOneRowResultsLT(ArrayList<TimelapseParticle2D> particles, int frames, double xCorr, double yCorr, String directory, String name, String savePath){
-	outputTextFile tw3 =new outputTextFile(savePath);
+	OutputTextFile tw3 =new OutputTextFile(savePath);
 	for(int p = 0; p < particles.size(); p++){
 		TimelapseParticle2D particle = particles.get(p);
 		String appendTxtTw3 = "" + directory;
